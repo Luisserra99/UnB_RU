@@ -26,8 +26,8 @@
 
 | Papel | Responsável |
 |---|---|
-| **Scrum Master** | Nome |
-| **Product Owner** | Nome |
+| **Scrum Master** | Daniel Dezan Baby |
+| **Product Owner** | Leonardo Tome Sampaio |
 
 ---
 
@@ -64,6 +64,16 @@
 | | | **Total (Velocity da Sprint)** | **0** |
 
 > **Velocity** = soma dos pontos das histórias de usuário concluídas na sprint.
+
+### 3.1 Divisão das issues
+
+| Responsável | Issues | MVP |
+|---|---|---|
+| Leonardo Tome Sampaio | [#1](https://github.com/neatzzy/UnB_RU/issues/1) Cadastro de Usuário, [#3](https://github.com/neatzzy/UnB_RU/issues/3) Extrato e Histórico, [#10](https://github.com/neatzzy/UnB_RU/issues/10) Cardápio da refeição atual | #1 |
+| Tarsila Marques de Oliveira Alves | [#2](https://github.com/neatzzy/UnB_RU/issues/2) Recarga de Saldo, [#9](https://github.com/neatzzy/UnB_RU/issues/9) Relatório Global de Acessos | #2 |
+| Daniel Dezan Baby | [#4](https://github.com/neatzzy/UnB_RU/issues/4) Autenticação do Funcionário, [#5](https://github.com/neatzzy/UnB_RU/issues/5) Configuração de Ponto de Acesso, [#12](https://github.com/neatzzy/UnB_RU/issues/12) Exportação em PDF do Relatório de Operação | #4 |
+| Luis Eduardo Curi Serra | [#6](https://github.com/neatzzy/UnB_RU/issues/6) Validação de Entrada, [#7](https://github.com/neatzzy/UnB_RU/issues/7) Histórico Local da Catraca | #6 |
+| Weldo Gonçalves da Silva Junior | [#8](https://github.com/neatzzy/UnB_RU/issues/8) Gestão de Restaurantes e Catracas, [#11](https://github.com/neatzzy/UnB_RU/issues/11) Exportação em PDF do Histórico do Estudante | #8 |
 
 ---
 
@@ -108,3 +118,7 @@ Exemplo: `feat(cardapio): adiciona listagem do cardápio do dia`
 ## 5. Links úteis
 
 - [issues-sprint1](https://github.com/neatzzy/UnB_RU/issues)
+  
+## 6. Uso de IA na sprint
+
+- Tempalte da wiki montado pelo Claude Code Sonnet 5.5 Medium
