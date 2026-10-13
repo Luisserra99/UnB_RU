@@ -42,14 +42,16 @@
 - **RN01.1:** …
 - **RN01.2:** …
 
-### F02 — Nome da funcionalidade
+### F10 — Cardápio da refeição atual
 
-**Descrição:** …
+**Descrição:** Permite o estudante ver o cardápio da refeição que está sendo servida no momento, incluindo as opções padrão, ovolactovegetariano e vegetariano estrito.
 
 **Regras de negócio:**
 
-- **RN02.1:** …
-- **RN02.2:** …
+- **RN10.1:** O cardápio exibido deve corresponder à refeição em andamento no horário da consulta (café, almoço ou jantar).
+- **RN10.2:** O cardápio deve apresentar separadamente as opções padrão, ovolactovegetariano e vegetariano estrito.
+- **RN10.3:** Caso não haja refeição sendo servida no horário da consulta, o sistema deve informar que não há cardápio disponível no momento.
+- **RN10.4:** Caso alguma das opções (padrão, ovolactovegetariano ou vegetariano estrito) não tenha itens cadastrados, o sistema deve indicar que essa opção não está disponível.
 
 <!-- Copie o bloco acima para cada nova funcionalidade -->
 
@@ -61,6 +63,8 @@
 |---|---|---|---|
 | F01 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 3 |
 | F02 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 5 |
+| F10 | Como estudante, eu quero poder ver o cardápio da refeição que esteja sendo servida agora. Incluindo as opções padrão, ovolactovegetariano e vegetariano estrito. | Leonardo | 5 |
+
 | | | **Total (Velocity da Sprint)** | **0** |
 
 > **Velocity** = soma dos pontos das histórias de usuário concluídas na sprint.
