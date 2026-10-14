@@ -51,6 +51,18 @@
 - **RN02.1:** …
 - **RN02.2:** …
 
+### F06 — Validação de Entrada ([#6](https://github.com/neatzzy/UnB_RU/issues/6))
+
+**Descrição:** como aplicação de controle, ler a identificação do aluno na catraca, verificar se há saldo suficiente, liberar a catraca e efetuar o débito do valor da refeição no momento em que o aluno efetivamente passa.
+
+**Regras de negócio:**
+
+- **RN06.1:** a identificação deve corresponder a uma matrícula cadastrada; identificações vazias, não numéricas ou com formato inválido são rejeitadas com a mensagem "Identificação desconhecida".
+- **RN06.2:** a catraca só é liberada se o saldo do aluno for maior ou igual ao valor da refeição.
+- **RN06.3:** se o saldo for insuficiente, a catraca permanece bloqueada e é exibida a mensagem "Saldo insuficiente", sem débito.
+- **RN06.4:** o débito do valor da refeição só ocorre quando o aluno efetivamente passa pela catraca, nunca no momento da liberação.
+- **RN06.5:** se a catraca for liberada e o aluno não passar dentro do tempo limite (5 segundos), o acesso é cancelado, a catraca é bloqueada novamente e nenhum débito é realizado.
+
 <!-- Copie o bloco acima para cada nova funcionalidade -->
 
 ---
@@ -61,6 +73,7 @@
 |---|---|---|---|
 | F01 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 3 |
 | F02 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 5 |
+| F06 | Como aplicação de controle, quero ler a identificação do aluno, verificar saldo, liberar a catraca e debitar a refeição na passagem para garantir que apenas alunos com saldo entrem no RU | Luis Eduardo Curi Serra | 5 |
 | | | **Total (Velocity da Sprint)** | **0** |
 
 > **Velocity** = soma dos pontos das histórias de usuário concluídas na sprint.
@@ -122,3 +135,4 @@ Exemplo: `feat(cardapio): adiciona listagem do cardápio do dia`
 ## 6. Uso de IA na sprint
 
 - Tempalte da wiki montado pelo Claude Code Sonnet 5.5 Medium
+- Seção F06 — Validação de Entrada (descrição e regras de negócio) e os cenários BDD de `features/validacao_entrada.feature` escritos com apoio do Claude Code Sonnet 5, a partir da história de usuário fornecida e revisados/ajustados manualmente pelo integrante responsável.
