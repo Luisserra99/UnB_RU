@@ -42,15 +42,19 @@
 - **RN01.1:** …
 - **RN01.2:** …
 
-### F02 — Nome da funcionalidade
+### F02 — Recarga de Saldo ([#2](https://github.com/neatzzy/UnB_RU/issues/2))
 
-**Descrição:** …
+**Descrição:** Permite que o estudante adicione créditos à sua conta do RU comprando pacotes de refeições ou quantidades personalizadas, com opções de pagamento via PIX ou Cartão de Crédito.
 
 **Regras de negócio:**
 
-- **RN02.1:** …
-- **RN02.2:** …
-
+- **RN02.1:** O valor de recarga é padronizado pelo valor das refeições, o usuário escolhe se quer café da manhã e/ou almoço/jantar e escolhe a quantidade.
+- **RN02.2:** O saldo só deve ser efetivamente atualizado após a confirmação da transação de pagamento.
+- **RN02.3:** O limite máximo de saldo acumulado será de 330 reais.
+- **RN02.4:** Os métodos de pagamento aceitos são PIX Instantâneo e Cartão de Crédito. Para PIX, o sistema deve gerar um QR Code e código Copia e Cola.
+- **RN02.5:** O código e QR Code do PIX ficam disponiveis por 10 min antes de expirar.
+- **RN02.6:** O valor total da recarga é calculado somando o subtotal de Almoços/Jantares com o subtotal de Cafés da Manhã.
+- **RN02.7:** Não é possível gerar uma cobrança zerada.
 <!-- Copie o bloco acima para cada nova funcionalidade -->
 
 ---
