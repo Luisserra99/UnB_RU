@@ -156,6 +156,18 @@
 
 **Cenários BDD:** [features/configuracao_ponto_acesso.feature](../features/configuracao_ponto_acesso.feature).
 
+### F06 — Validação de Entrada ([#6](https://github.com/neatzzy/UnB_RU/issues/6))
+
+**Descrição:** como aplicação de controle, ler a identificação do aluno na catraca, verificar se há saldo suficiente, liberar a catraca e efetuar o débito do valor da refeição no momento em que o aluno efetivamente passa.
+
+**Regras de negócio:**
+
+- **RN06.1:** a identificação deve corresponder a uma matrícula cadastrada; identificações vazias, não numéricas ou com formato inválido são rejeitadas com a mensagem "Identificação desconhecida".
+- **RN06.2:** a catraca só é liberada se o saldo do aluno for maior ou igual ao valor da refeição.
+- **RN06.3:** se o saldo for insuficiente, a catraca permanece bloqueada e é exibida a mensagem "Saldo insuficiente", sem débito.
+- **RN06.4:** o débito do valor da refeição só ocorre quando o aluno efetivamente passa pela catraca, nunca no momento da liberação.
+- **RN06.5:** se a catraca for liberada e o aluno não passar dentro do tempo limite (5 segundos), o acesso é cancelado, a catraca é bloqueada novamente e nenhum débito é realizado.
+
 <!-- Copie o bloco acima para cada nova funcionalidade -->
 
 ---
@@ -166,6 +178,7 @@
 |---|---|---|---|
 | F01 | Como estudante, eu quero me cadastrar no sistema utilizando minha matrícula, para que eu possa criar minha conta de acesso ao RU. | Leonardo Tomé Sampaio | 3 |
 | F02 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 5 |
+| F06 | Como aplicação de controle, quero ler a identificação do aluno, verificar saldo, liberar a catraca e debitar a refeição na passagem para garantir que apenas alunos com saldo entrem no RU | Luis Eduardo Curi Serra | 5 |
 | F12 | Como administrador geral, quero exportar o Relatório Global de Operação em PDF para realizar auditorias internas. | Daniel Dezan Baby | 5 |
 | F05 | Como funcionário do restaurante, quero selecionar o restaurante e a catraca após o login para aplicar as regras e registrar os logs no ponto de acesso correto. | Daniel Dezan Baby | 3 |
 | F03 | Como estudante, eu quero visualizar meu extrato de recargas e histórico de refeições, para ter controle sobre meus gastos e utilizações | Leonardo Tomé Sampaio | 5 |
@@ -234,6 +247,7 @@ Exemplo: `feat(cardapio): adiciona listagem do cardápio do dia`
 ## 6. Uso de IA na sprint
 
 - Tempalte da wiki montado pelo Claude Code Sonnet 5.5 Medium
+- Seção F06 — Validação de Entrada (descrição e regras de negócio) e os cenários BDD de `features/validacao_entrada.feature` escritos com apoio do Claude Code Sonnet 5, a partir da história de usuário fornecida e revisados/ajustados manualmente pelo integrante responsável.
 
 - A especificação F12 (descrição, regras de negócio, história e cenários de `features/exportacao_pdf_relatorio_operacao.feature`) foi produzida com apoio do **OpenAI Codex**. Estratégia: leitura das issues e das instruções da sprint, comparação com as branches dos colegas, divisão da análise e da redação entre agentes, revisão cruzada de consistência e validação da sintaxe com o parser Gherkin. As premissas que detalham a história estão indicadas na seção da funcionalidade para revisão pelo grupo.
 - A especificação F05 (descrição, regras de negócio, história e cenários de `features/configuracao_ponto_acesso.feature`) foi produzida com apoio do **OpenAI Codex**. Estratégia: leitura das issues e das instruções da sprint, comparação com as branches dos colegas, divisão da análise e da redação entre agentes, revisão cruzada de consistência e validação da sintaxe com o parser Gherkin. As premissas que detalham a história estão indicadas na seção da funcionalidade para revisão pelo grupo.
