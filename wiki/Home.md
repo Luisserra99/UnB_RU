@@ -55,6 +55,17 @@
 - **RN02.1:** …
 - **RN02.2:** …
 
+### F03 — Extrato e recargas
+
+**Descrição:** Permite o usuário de ver o seu extrato de recargas e histórico de refeições.
+
+**Regras de negócio:**
+
+- **RN03.1:** O usuário só pode ver o extrato de recargas e o histórico de refeições da própria conta.
+- **RN03.2:** O histórico deve exibir data, horário e tipo de refeição de cada acesso registrado.
+- **RN03.3:** O extrato deve exibir o saldo atual e as últimas recargas realizadas.
+- **RN03.4:** Caso não haja registros de recarga ou de refeição, o sistema deve exibir uma mensagem informando a ausência de histórico.
+
 <!-- Copie o bloco acima para cada nova funcionalidade -->
 
 ---
@@ -65,6 +76,7 @@
 |---|---|---|---|
 | F01 | Como estudante, eu quero me cadastrar no sistema utilizando minha matrícula, para que eu possa criar minha conta de acesso ao RU. | Leonardo Tomé Sampaio | 3 |
 | F02 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 5 |
+| F03 | Como estudante, eu quero visualizar meu extrato de recargas e histórico de refeições, para ter controle sobre meus gastos e utilizações | Leonardo Tomé Sampaio | 5 |
 | | | **Total (Velocity da Sprint)** | **0** |
 
 > **Velocity** = soma dos pontos das histórias de usuário concluídas na sprint.
