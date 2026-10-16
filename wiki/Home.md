@@ -51,6 +51,24 @@
 - **RN02.1:** …
 - **RN02.2:** …
 
+### F04 — Autenticação do Funcionário ([#4](https://github.com/neatzzy/UnB_RU/issues/4))
+
+**Descrição:** Permite que o funcionário do restaurante faça login na aplicação de controle para autenticar sua sessão e operar o sistema de forma segura.
+
+**Regras de negócio:**
+
+- **RN04.1:** A identificação e a senha são obrigatórias para o login; campos vazios devem ser indicados ao usuário.
+- **RN04.2:** Somente funcionários cadastrados e ativos, com identificação e senha corretas, podem autenticar uma sessão na aplicação de controle.
+- **RN04.3:** Senha incorreta, identificação não cadastrada ou funcionário inativo devem resultar em falha de autenticação, sem criar uma sessão e mantendo a tela de login.
+- **RN04.4:** Uma conta exclusivamente de estudante não permite acesso à aplicação de controle.
+- **RN04.5:** Após o login válido, o sistema deve autenticar a sessão e apresentar a escolha do restaurante e da catraca do ponto de acesso, conforme a [F05](https://github.com/neatzzy/UnB_RU/issues/5).
+- **RN04.6:** As funções de controle exigem uma sessão autenticada de funcionário; sem sessão ou com sessão expirada, o sistema deve exigir login e impedir a execução da função solicitada.
+- **RN04.7:** Ao sair da aplicação, a sessão deve ser encerrada, a tela de login deve ser exibida e o acesso às funções de controle deve exigir novo login.
+
+**Premissas de especificação:** identificação e senha, situação ativa do funcionário, encerramento e expiração da sessão detalham a autenticação segura para os cenários de aceitação e devem ser revisados pela equipe. Não se define um formato para a identificação nem um prazo de expiração nesta história.
+
+**Cenários BDD:** [features/autenticacao_funcionario.feature](../features/autenticacao_funcionario.feature).
+
 <!-- Copie o bloco acima para cada nova funcionalidade -->
 
 ---
@@ -61,9 +79,12 @@
 |---|---|---|---|
 | F01 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 3 |
 | F02 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 5 |
+| F04 | Como funcionário do restaurante, quero fazer login na aplicação de controle para autenticar minha sessão e operar o sistema de forma segura. | Daniel Dezan Baby | 3 |
 | | | **Total (Velocity da Sprint)** | **0** |
 
 > **Velocity** = soma dos pontos das histórias de usuário concluídas na sprint.
+
+> Os pontos das histórias de Daniel são estimativas de planejamento para revisão pelo grupo. A Velocity será atualizada após a conclusão e a revisão das histórias na sprint.
 
 ### 3.1 Divisão das issues
 
@@ -122,3 +143,5 @@ Exemplo: `feat(cardapio): adiciona listagem do cardápio do dia`
 ## 6. Uso de IA na sprint
 
 - Tempalte da wiki montado pelo Claude Code Sonnet 5.5 Medium
+
+- A especificação F04 (descrição, regras de negócio, história e cenários de `features/autenticacao_funcionario.feature`) foi produzida com apoio do **OpenAI Codex**. Estratégia: leitura das issues e das instruções da sprint, comparação com as branches dos colegas, divisão da análise e da redação entre agentes, revisão cruzada de consistência e validação da sintaxe com o parser Gherkin. As premissas que detalham a história estão indicadas na seção da funcionalidade para revisão pelo grupo.
