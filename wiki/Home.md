@@ -57,37 +57,6 @@
 - **RN02.4:** O código e QR Code do PIX ficam disponiveis por 10 min antes de expirar.
 - **RN02.5:** O valor total da recarga é calculado somando o subtotal de Almoços/Jantares com o subtotal de Cafés da Manhã.
 - **RN02.6:** Não é possível gerar uma cobrança zerada.
-### F09 — Relatório Global de Acessos ([#9](https://github.com/neatzzy/UnB_RU/issues/9))
-
-**Descrição:** Permite ao administrador visualizar a consolidação operacional de todos os restaurantes do campus. O relatório traz refeições servidas, arrecadação, métodos de liquidação e distribuição por refeição. Pode ser filtrado por data contábil, turno e unidade gestora, e exportado em CSV e PDF oficial.
-
-**Regras de negócio:**
-
-- **RN09.1:** Somente usuários autenticados com perfil de administrador podem acessar o relatório. Qualquer outro perfil ou usuário não autenticado deve ter o acesso negado.
-- **RN09.2:** O relatório é somente leitura. Nenhum dado operacional pode ser editado ou excluído por essa tela.
-- **RN09.3:** Ao abrir o relatório, os filtros iniciam com data contábil = hoje, janela de serviço = "Todos os Turnos (Café, Almoço, Jantar)" e unidade gestora = "Campus Darcy Ribeiro".
-- **RN09.4:** Todos os filtros atuam em conjunto e recalculam os cards, a tabela, os métodos de liquidação e a distribuição por refeição.
-- **RN09.5:** O indicador "Catracas Online" exibe a quantidade de catracas online sobre o total de catracas cadastradas na unidade gestora (ex.: 6/6), conforme o cadastro de Restaurantes e Catracas.
-- **RN09.6:** O card "Arrecadação Global" exibe a soma da arrecadação de todos os restaurantes.
-- **RN09.7:** A tabela "Consolidação Operacional dos Restaurantes" lista uma linha por restaurante da unidade gestora, ordenada pela numeração do restaurante, com: acessos e arrecadação bruta.
-- **RN09.8:** A arrecadação bruta de cada restaurante é seus acessos × tarifa aplicada. O restaurante sem acessos no filtro continua listado, com valores zerados.
-- **RN09.9:** A linha "Total Consolidado" soma os acessos e a arrecadação de todos os restaurantes.
-- **RN09.10:** O painel "Métodos de Liquidação" exibe, para PIX Institucional Instantâneo e Cartão de Crédito/Débito, o valor liquidado e o percentual sobre a arrecadação global. A soma dos métodos deve ser igual à arrecadação global.
-- **RN09.11:** O painel de liquidação exibe também: ticket médio por estudante (arrecadação ÷ refeições servidas), transações validadas (quantidade de operações) e divergências contábeis.
-- **RN09.12:** O botão "Exportar CSV" gera um arquivo com os dados do relatório conforme os filtros aplicados.
-- **RN09.13:** O botão "Exportar PDF Oficial" gera um documento com os mesmos dados exibidos, os filtros aplicados, a data e hora de emissão e o usuário emissor.
-- **RN09.14:** Quando nenhum acesso corresponde aos filtros, o sistema exibe a mensagem "Nenhum acesso encontrado" e todos os totais são zerados.
-
-### F10 — Cardápio da refeição atual
-
-**Descrição:** Permite o estudante ver o cardápio da refeição que está sendo servida no momento, incluindo as opções padrão, ovolactovegetariano e vegetariano estrito.
-
-**Regras de negócio:**
-
-- **RN10.1:** O cardápio exibido deve corresponder à refeição em andamento no horário da consulta (café, almoço ou jantar).
-- **RN10.2:** O cardápio deve apresentar separadamente as opções padrão, ovolactovegetariano e vegetariano estrito.
-- **RN10.3:** Caso não haja refeição sendo servida no horário da consulta, o sistema deve informar que não há cardápio disponível no momento.
-- **RN10.4:** Caso alguma das opções (padrão, ovolactovegetariano ou vegetariano estrito) não tenha itens cadastrados, o sistema deve indicar que essa opção não está disponível.
 
 ### F03 — Extrato e recargas
 
@@ -118,24 +87,6 @@
 
 **Cenários BDD:** [features/autenticacao_funcionario.feature](../features/autenticacao_funcionario.feature).
 
-### F12 — Exportação em PDF do Relatório de Operação ([#12](https://github.com/neatzzy/UnB_RU/issues/12))
-
-**Descrição:** permite que o administrador geral exporte o Relatório Global de Operação em PDF para auditoria interna, respeitando os filtros e agrupamentos aplicados ao histórico de acessos da issue [#9](https://github.com/neatzzy/UnB_RU/issues/9).
-
-**Regras de negócio:**
-
-- **RN12.1:** somente o administrador geral com sessão válida pode exportar o relatório; funcionários e estudantes não têm permissão, inclusive por acesso direto à exportação.
-- **RN12.2:** o PDF deve conter todos os acessos que correspondem aos filtros de período, restaurante e catraca aplicados no relatório, inclusive os que estejam em outras páginas da listagem. Os limites do período são inclusivos.
-- **RN12.3:** cada acesso exportado deve identificar data e hora, matrícula do estudante, restaurante, catraca, refeição e valor debitado; o relatório deve apresentar a quantidade de acessos e o total debitado correspondentes aos registros exportados.
-- **RN12.4:** o PDF deve identificar o administrador responsável pela emissão, a data e hora da emissão, os filtros e os agrupamentos aplicados, permitindo conferir o contexto da auditoria.
-- **RN12.5:** os agrupamentos por restaurante e por catraca devem preservar seus vínculos e apresentar subtotais de acessos e valores, sem misturar catracas de mesmo nome em restaurantes diferentes.
-- **RN12.6:** filtros sem resultados devem produzir a mensagem "Não há acessos para os filtros selecionados", sem download de arquivo.
-- **RN12.7:** um período com data inicial posterior à final deve ser rejeitado com a mensagem "A data inicial deve ser anterior ou igual à data final", sem gerar arquivo.
-- **RN12.8:** em caso de falha na geração, o sistema deve informar "Não foi possível gerar o PDF. Tente novamente" e permitir nova tentativa, sem disponibilizar arquivo incompleto nem alterar os acessos registrados.
-
-**Premissas de especificação:** os campos, mensagens, subtotais e o comportamento sem resultados acima detalham a história para os cenários de aceitação e devem ser revisados pela equipe. Os valores monetários nos cenários são dados de exemplo, não uma definição de preço das refeições.
-
-**Cenários BDD:** [features/exportacao_pdf_relatorio_operacao.feature](../features/exportacao_pdf_relatorio_operacao.feature).
 ### F05 — Configuração de Ponto de Acesso ([#5](https://github.com/neatzzy/UnB_RU/issues/5))
 
 **Descrição:** permite que o funcionário autenticado selecione, logo após o login, o restaurante e uma de suas catracas para gerenciar. O ponto de acesso definido na sessão direciona as regras do restaurante e identifica corretamente os registros das operações.
@@ -182,6 +133,57 @@
 - **RN07.6:** se a catraca for liberada e o aluno não passar em até 5 segundos, o registro tem catraca liberada "S", acesso realizado "N" e timestamp de bloqueio no fim do tempo limite.
 - **RN07.7:** identificações inválidas ou desconhecidas também são registradas, sem saldo lido, com catraca liberada e acesso realizado como "N".
 
+### F09 — Relatório Global de Acessos ([#9](https://github.com/neatzzy/UnB_RU/issues/9))
+
+**Descrição:** Permite ao administrador visualizar a consolidação operacional de todos os restaurantes do campus. O relatório traz refeições servidas, arrecadação, métodos de liquidação e distribuição por refeição. Pode ser filtrado por data contábil, turno e unidade gestora, e exportado em CSV e PDF oficial.
+
+**Regras de negócio:**
+
+- **RN09.1:** Somente usuários autenticados com perfil de administrador podem acessar o relatório. Qualquer outro perfil ou usuário não autenticado deve ter o acesso negado.
+- **RN09.2:** O relatório é somente leitura. Nenhum dado operacional pode ser editado ou excluído por essa tela.
+- **RN09.3:** Ao abrir o relatório, os filtros iniciam com data contábil = hoje, janela de serviço = "Todos os Turnos (Café, Almoço, Jantar)" e unidade gestora = "Campus Darcy Ribeiro".
+- **RN09.4:** Todos os filtros atuam em conjunto e recalculam os cards, a tabela, os métodos de liquidação e a distribuição por refeição.
+- **RN09.5:** O indicador "Catracas Online" exibe a quantidade de catracas online sobre o total de catracas cadastradas na unidade gestora (ex.: 6/6), conforme o cadastro de Restaurantes e Catracas.
+- **RN09.6:** O card "Arrecadação Global" exibe a soma da arrecadação de todos os restaurantes.
+- **RN09.7:** A tabela "Consolidação Operacional dos Restaurantes" lista uma linha por restaurante da unidade gestora, ordenada pela numeração do restaurante, com: acessos e arrecadação bruta.
+- **RN09.8:** A arrecadação bruta de cada restaurante é seus acessos × tarifa aplicada. O restaurante sem acessos no filtro continua listado, com valores zerados.
+- **RN09.9:** A linha "Total Consolidado" soma os acessos e a arrecadação de todos os restaurantes.
+- **RN09.10:** O painel "Métodos de Liquidação" exibe, para PIX Institucional Instantâneo e Cartão de Crédito/Débito, o valor liquidado e o percentual sobre a arrecadação global. A soma dos métodos deve ser igual à arrecadação global.
+- **RN09.11:** O painel de liquidação exibe também: ticket médio por estudante (arrecadação ÷ refeições servidas), transações validadas (quantidade de operações) e divergências contábeis.
+- **RN09.12:** O botão "Exportar CSV" gera um arquivo com os dados do relatório conforme os filtros aplicados.
+- **RN09.13:** O botão "Exportar PDF Oficial" gera um documento com os mesmos dados exibidos, os filtros aplicados, a data e hora de emissão e o usuário emissor.
+- **RN09.14:** Quando nenhum acesso corresponde aos filtros, o sistema exibe a mensagem "Nenhum acesso encontrado" e todos os totais são zerados.
+
+### F10 — Cardápio da refeição atual
+
+**Descrição:** Permite o estudante ver o cardápio da refeição que está sendo servida no momento, incluindo as opções padrão, ovolactovegetariano e vegetariano estrito.
+
+**Regras de negócio:**
+
+- **RN10.1:** O cardápio exibido deve corresponder à refeição em andamento no horário da consulta (café, almoço ou jantar).
+- **RN10.2:** O cardápio deve apresentar separadamente as opções padrão, ovolactovegetariano e vegetariano estrito.
+- **RN10.3:** Caso não haja refeição sendo servida no horário da consulta, o sistema deve informar que não há cardápio disponível no momento.
+- **RN10.4:** Caso alguma das opções (padrão, ovolactovegetariano ou vegetariano estrito) não tenha itens cadastrados, o sistema deve indicar que essa opção não está disponível.
+
+### F12 — Exportação em PDF do Relatório de Operação ([#12](https://github.com/neatzzy/UnB_RU/issues/12))
+
+**Descrição:** permite que o administrador geral exporte o Relatório Global de Operação em PDF para auditoria interna, respeitando os filtros e agrupamentos aplicados ao histórico de acessos da issue [#9](https://github.com/neatzzy/UnB_RU/issues/9).
+
+**Regras de negócio:**
+
+- **RN12.1:** somente o administrador geral com sessão válida pode exportar o relatório; funcionários e estudantes não têm permissão, inclusive por acesso direto à exportação.
+- **RN12.2:** o PDF deve conter todos os acessos que correspondem aos filtros de período, restaurante e catraca aplicados no relatório, inclusive os que estejam em outras páginas da listagem. Os limites do período são inclusivos.
+- **RN12.3:** cada acesso exportado deve identificar data e hora, matrícula do estudante, restaurante, catraca, refeição e valor debitado; o relatório deve apresentar a quantidade de acessos e o total debitado correspondentes aos registros exportados.
+- **RN12.4:** o PDF deve identificar o administrador responsável pela emissão, a data e hora da emissão, os filtros e os agrupamentos aplicados, permitindo conferir o contexto da auditoria.
+- **RN12.5:** os agrupamentos por restaurante e por catraca devem preservar seus vínculos e apresentar subtotais de acessos e valores, sem misturar catracas de mesmo nome em restaurantes diferentes.
+- **RN12.6:** filtros sem resultados devem produzir a mensagem "Não há acessos para os filtros selecionados", sem download de arquivo.
+- **RN12.7:** um período com data inicial posterior à final deve ser rejeitado com a mensagem "A data inicial deve ser anterior ou igual à data final", sem gerar arquivo.
+- **RN12.8:** em caso de falha na geração, o sistema deve informar "Não foi possível gerar o PDF. Tente novamente" e permitir nova tentativa, sem disponibilizar arquivo incompleto nem alterar os acessos registrados.
+
+**Premissas de especificação:** os campos, mensagens, subtotais e o comportamento sem resultados acima detalham a história para os cenários de aceitação e devem ser revisados pela equipe. Os valores monetários nos cenários são dados de exemplo, não uma definição de preço das refeições.
+
+**Cenários BDD:** [features/exportacao_pdf_relatorio_operacao.feature](../features/exportacao_pdf_relatorio_operacao.feature).
+
 <!-- Copie o bloco acima para cada nova funcionalidade -->
 
 ---
@@ -190,20 +192,26 @@
 
 | Funcionalidade | História de usuário | Responsável | Pontos |
 |---|---|---|---|
-| F01 | Como estudante, eu quero me cadastrar no sistema utilizando minha matrícula, para que eu possa criar minha conta de acesso ao RU. | Leonardo Tomé Sampaio | 3 |
-| F02 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 5 |
-| F06 | Como aplicação de controle, quero ler a identificação do aluno, verificar saldo, liberar a catraca e debitar a refeição na passagem para garantir que apenas alunos com saldo entrem no RU | Luis Eduardo Curi Serra | 5 |
-| F07 | Como funcionário, quero visualizar o histórico de acessos registrados apenas na catraca que estou gerenciando para realizar auditorias ou conferências locais de fluxo | Luis Eduardo Curi Serra | 5 |
-| F12 | Como administrador geral, quero exportar o Relatório Global de Operação em PDF para realizar auditorias internas. | Daniel Dezan Baby | 5 |
-| F05 | Como funcionário do restaurante, quero selecionar o restaurante e a catraca após o login para aplicar as regras e registrar os logs no ponto de acesso correto. | Daniel Dezan Baby | 3 |
-| F03 | Como estudante, eu quero visualizar meu extrato de recargas e histórico de refeições, para ter controle sobre meus gastos e utilizações | Leonardo Tomé Sampaio | 5 |
+| F01 | Como estudante, quero me cadastrar no sistema utilizando minha matrícula para acessar minha conta do RU. | Leonardo Tome Sampaio | 3 |
+| F02 | Como estudante, quero comprar créditos para Café da Manhã e Almoço/Jantar para ter saldo para acessar os restaurantes. | Tarsila Marques de Oliveira Alves | — |
+| F03 | Como estudante, quero visualizar meu extrato de recargas e histórico de refeições para ter controle sobre meus gastos e utilizações. | Leonardo Tome Sampaio | 5 |
 | F04 | Como funcionário do restaurante, quero fazer login na aplicação de controle para autenticar minha sessão e operar o sistema de forma segura. | Daniel Dezan Baby | 3 |
-| F10 | Como estudante, eu quero poder ver o cardápio da refeição que esteja sendo servida agora. Incluindo as opções padrão, ovolactovegetariano e vegetariano estrito. | Leonardo Tomé Sampaio | 5 |
-| | | **Total (Velocity da Sprint)** | **0** |
+| F05 | Como funcionário do restaurante, quero selecionar o restaurante e a catraca após o login para aplicar as regras e registrar os logs no ponto de acesso correto. | Daniel Dezan Baby | 3 |
+| F06 | Como aplicação de controle, quero ler a identificação do aluno, verificar saldo, liberar a catraca e debitar a refeição na passagem para garantir que apenas alunos com saldo entrem no RU. | Luis Eduardo Curi Serra | 5 |
+| F07 | Como funcionário, quero visualizar o histórico de acessos registrados apenas na catraca que estou gerenciando para realizar auditorias ou conferências locais de fluxo. | Luis Eduardo Curi Serra | 5 |
+| F08 | Como administrador, quero cadastrar, editar e remover restaurantes e suas catracas físicas para que os funcionários possam selecioná-las na aplicação de controle. | Weldo Gonçalves da Silva Junior | — |
+| F09 | Como administrador, quero visualizar o relatório global de operação dos restaurantes, filtrando por data, turno e unidade, para ter uma visão gerencial consolidada. | Tarsila Marques de Oliveira Alves | — |
+| F10 | Como estudante, quero ver o cardápio da refeição servida agora, incluindo as opções padrão, ovolactovegetariano e vegetariano estrito. | Leonardo Tome Sampaio | 5 |
+| F11 | Como estudante, quero exportar meu extrato e histórico de refeições em PDF para controlar melhor minhas finanças. | Weldo Gonçalves da Silva Junior | — |
+| F12 | Como administrador geral, quero exportar o Relatório Global de Operação em PDF para realizar auditorias internas. | Daniel Dezan Baby | 5 |
+| | | **Total (Velocity da Sprint)** | **34** |
 
 > **Velocity** = soma dos pontos das histórias de usuário concluídas na sprint.
 
-> Os pontos das histórias de Daniel são estimativas de planejamento para revisão pelo grupo. A Velocity será atualizada após a conclusão e a revisão das histórias na sprint.
+**Papéis Scrum na sprint:**
+
+- **Scrum Master (Daniel Dezan Baby):** organização da reunião, condução do rito ágil e orquestração do time.
+- **Product Owner (Leonardo Tome Sampaio):** mapeamento das issues do backlog e divisão entre os colegas.
 
 ### 3.1 Divisão das issues
 
