@@ -63,6 +63,20 @@
 - **RN06.4:** o débito do valor da refeição só ocorre quando o aluno efetivamente passa pela catraca, nunca no momento da liberação.
 - **RN06.5:** se a catraca for liberada e o aluno não passar dentro do tempo limite (5 segundos), o acesso é cancelado, a catraca é bloqueada novamente e nenhum débito é realizado.
 
+### F07 — Histórico Local da Catraca ([#7](https://github.com/neatzzy/UnB_RU/issues/7))
+
+**Descrição:** como funcionário, visualizar na aplicação de controle o histórico de todos os acessos registrados apenas na catraca que está gerenciando, para auditorias e conferências locais de fluxo.
+
+**Regras de negócio:**
+
+- **RN07.1:** o histórico só é exibido após validação da credencial do funcionário (matrícula e senha); credenciais vazias, incorretas, não cadastradas ou de funcionário que não gerencia a catraca são rejeitadas com a mensagem "Credencial inválida".
+- **RN07.2:** são exibidos apenas os registros da catraca gerenciada pelo funcionário; registros de outras catracas nunca aparecem.
+- **RN07.3:** se não houver registros na catraca, é exibida a mensagem "Nenhum acesso registrado nesta catraca".
+- **RN07.4:** toda leitura de identificação gera um registro com: identificação, data, hora, saldo lido, catraca liberada (S/N), acesso realizado (S/N), timestamp de liberação e timestamp de bloqueio.
+- **RN07.5:** leituras com saldo insuficiente são registradas com catraca liberada e acesso realizado como "N", sem timestamps.
+- **RN07.6:** se a catraca for liberada e o aluno não passar em até 5 segundos, o registro tem catraca liberada "S", acesso realizado "N" e timestamp de bloqueio no fim do tempo limite.
+- **RN07.7:** identificações inválidas ou desconhecidas também são registradas, sem saldo lido, com catraca liberada e acesso realizado como "N".
+
 <!-- Copie o bloco acima para cada nova funcionalidade -->
 
 ---
@@ -74,6 +88,7 @@
 | F01 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 3 |
 | F02 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 5 |
 | F06 | Como aplicação de controle, quero ler a identificação do aluno, verificar saldo, liberar a catraca e debitar a refeição na passagem para garantir que apenas alunos com saldo entrem no RU | Luis Eduardo Curi Serra | 5 |
+| F07 | Como funcionário, quero visualizar o histórico de acessos registrados apenas na catraca que estou gerenciando para realizar auditorias ou conferências locais de fluxo | Luis Eduardo Curi Serra | 5 |
 | | | **Total (Velocity da Sprint)** | **0** |
 
 > **Velocity** = soma dos pontos das histórias de usuário concluídas na sprint.
@@ -136,3 +151,4 @@ Exemplo: `feat(cardapio): adiciona listagem do cardápio do dia`
 
 - Tempalte da wiki montado pelo Claude Code Sonnet 5.5 Medium
 - Seção F06 — Validação de Entrada (descrição e regras de negócio) e os cenários BDD de `features/validacao_entrada.feature` escritos com apoio do Claude Code Sonnet 5, a partir da história de usuário fornecida e revisados/ajustados manualmente pelo integrante responsável.
+- Seção F07 — Histórico Local da Catraca (descrição e regras de negócio) escrita wiki com apoio do Claude Code Opus 5.5, a partir dos cenários BDD de `features/historico_local_catraca.feature`, e revisada pelo integrante responsável.
