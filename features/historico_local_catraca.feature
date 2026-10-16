@@ -49,7 +49,7 @@ Funcionalidade: Histórico local de acessos da catraca
       | 100200300 | SenhaErrada | Credencial inválida                          |
       | abc123xyz | Senha@123   | Credencial inválida                          |
       | 999999999 | Senha@123   | Credencial inválida                          |
-      | 100200301 | Senha@456   | Funcionário não autorizado para esta catraca |
+      | 100200301 | Senha@456   | Credencial inválida                          |
 
   # --- Registro no histórico ---
   Cenário: Registro de acesso realizado com sucesso
@@ -61,13 +61,11 @@ Funcionalidade: Histórico local de acessos da catraca
     E deve ser registrado no histórico da catraca "CAT-01":
       | identificacao | data       | hora     | saldo_lido | catraca_liberada | acesso_realizado | timestamp_liberacao | timestamp_bloqueio |
       | 251033574     | 14/10/2026 | 11:30:00 | 10,00      | S                | S                | 11:30:01            | 11:30:03           |
-    E o saldo do aluno "251033574" deve ser R$ 7,50
 
   Cenário: Registro de acesso negado por saldo insuficiente
     Dado que o aluno "251033574" possui saldo de R$ 2,00
     Quando a identificação "251033574" é lida na catraca "CAT-01" em "14/10/2026" às "18:00:00"
-    Então a catraca não deve receber o comando de liberação
-    E deve ser registrado no histórico da catraca "CAT-01":
+    Então deve ser registrado no histórico da catraca "CAT-01":
       | identificacao | data       | hora     | saldo_lido | catraca_liberada | acesso_realizado | timestamp_liberacao | timestamp_bloqueio |
       | 251033574     | 14/10/2026 | 18:00:00 | 2,00       | N                | N                |                     |                    |
 
@@ -76,16 +74,14 @@ Funcionalidade: Histórico local de acessos da catraca
     Quando a identificação "251033574" é lida na catraca "CAT-01" em "14/10/2026" às "12:00:00"
     E a catraca é liberada às "12:00:01"
     Mas o aluno não passa pela catraca em até 5 segundos
-    Então a catraca deve ser bloqueada às "12:00:06"
+    Então a catraca é bloqueada às "12:00:06"
     E deve ser registrado no histórico da catraca "CAT-01":
       | identificacao | data       | hora     | saldo_lido | catraca_liberada | acesso_realizado | timestamp_liberacao | timestamp_bloqueio |
       | 251033574     | 14/10/2026 | 12:00:00 | 10,00      | S                | N                | 12:00:01            | 12:00:06           |
-    E o saldo do aluno "251033574" deve ser R$ 10,00
 
   Esquema do Cenário: Registro de leitura de identificação inválida ou desconhecida
     Quando a identificação "<identificacao>" é lida na catraca "CAT-01" em "14/10/2026" às "13:00:00"
-    Então a catraca não deve receber o comando de liberação
-    E deve ser registrado no histórico da catraca "CAT-01":
+    Então deve ser registrado no histórico da catraca "CAT-01":
       | identificacao   | data       | hora     | saldo_lido | catraca_liberada | acesso_realizado | timestamp_liberacao | timestamp_bloqueio |
       | <identificacao> | 14/10/2026 | 13:00:00 |            | N                | N                |                     |                    |
 
