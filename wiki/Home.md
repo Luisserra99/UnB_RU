@@ -33,14 +33,18 @@
 
 ## 2. Funcionalidades e Regras de Negócio
 
-### F01 — Nome da funcionalidade
+### F01 — Cadastro de usuário
 
-**Descrição:** breve descrição do que a funcionalidade faz.
+**Descrição:** Permite o usuário se cadastrar no sistema utilizando a sua matrícula para ter acesso a conta do RU.
 
 **Regras de negócio:**
 
-- **RN01.1:** …
-- **RN01.2:** …
+- **RN01.1:** Matrícula deve ser de 9 números e ativo.
+- **RN01.2:** Deve ser informado um email e de formato válido.
+- **RN01.3:** A senha deve conter no mínimo 8 caracteres.
+- **RN01.4:** O email informado pelo usuário deve ter o domínio da faculdade.
+- **RN01.5:** O cadastro deve ser concluído após o preenchimento correto da matrícula e da senha.
+
 
 ### F02 — Nome da funcionalidade
 
@@ -59,7 +63,7 @@
 
 | Funcionalidade | História de usuário | Responsável | Pontos |
 |---|---|---|---|
-| F01 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 3 |
+| F01 | Como estudante, eu quero me cadastrar no sistema utilizando minha matrícula, para que eu possa criar minha conta de acesso ao RU. | Leonardo Tomé Sampaio | 3 |
 | F02 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 5 |
 | | | **Total (Velocity da Sprint)** | **0** |
 
