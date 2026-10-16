@@ -1,185 +1,180 @@
-Funcionalidade: Relatório Global de Acessos
+Funcionalidade: Relatório Global de Operação
   Como administrador
-  Eu quero visualizar o histórico completo de todos os acessos do campus, podendo filtrar e agrupar por restaurante e por catraca
-  Para ter uma visão gerencial de toda a operação
+  Eu quero visualizar o relatório global de operação dos restaurantes do campus, filtrando por data, turno e unidade
+  Para ter uma visão gerencial consolidada de acessos, arrecadação e liquidação
 
   Contexto:
-    Dado que o valor da refeição é R$ 2,50 para café da manhâ e 4,50 para almoço e jantar
-    E que existem os seguintes restaurantes e catracas:
-      | restaurante | catraca    |
-      | RU Central  | Catraca 01 |
-      | RU Central  | Catraca 02 |
-      | RU Setorial | Catraca 01 |
-    E que existem os seguintes acessos registrados:
-      | data_hora        | restaurante | catraca    | matricula | resultado               | valor_debitado |
-      | 14/10/2026 11:30 | RU Central  | Catraca 01 | 251033574 | Acesso liberado         | 2,50           |
-      | 14/10/2026 11:45 | RU Central  | Catraca 02 | 251033575 | Saldo insuficiente      | 0,00           |
-      | 14/10/2026 12:00 | RU Setorial | Catraca 01 | 251033576 | Acesso liberado         | 2,50           |
-      | 14/10/2026 12:10 | RU Setorial | Catraca 01 | 251033577 | Acesso cancelado        | 0,00           |
-      | 15/10/2026 11:35 | RU Central  | Catraca 01 | 251033578 | Acesso liberado         | 2,50           |
-      | 15/10/2026 11:50 | RU Central  | Catraca 02 | abc123xyz | Identificação desconhecida | 0,00        |
+    Dado que a tarifa fixa universitária é R$ 4,50 por refeição de almoço e janta, e 2,50 para café da manhã
+    E que o "Campus Darcy Ribeiro" possui 6 restaurantes e 6 catracas cadastradas, todas online
+    E que em "24/10/2025" foram registrados os seguintes acessos por restaurante:
+      | restaurante   | acessos |
+      | Restaurante 1 | 2100    |
+      | Restaurante 2 | 720     |
+      | Restaurante 3 | 710     |
+      | Restaurante 4 | 480     |
+      | Restaurante 5 | 460     |
+      | Restaurante 6 | 350     |
+    E que em "24/10/2025" foram registrados os seguintes acessos por turno:
+      | turno         | acessos |
+      | Café da Manhã | 650     |
+      | Almoço        | 2980    |
+      | Jantar        | 1190    |
+    E que a arrecadação de "24/10/2025" foi liquidada nos seguintes métodos:
+      | metodo                        | valor       |
+      | PIX Institucional Instantâneo | R$ 15616,80 |
+      | Cartão de Crédito / Débito    | R$ 6073,20  |
 
   # --- Caminho feliz ---
-  Cenário: Administrador visualiza o histórico completo sem filtros
+  Cenário: Administrador abre o relatório com os filtros padrão
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    Então devem ser exibidos 6 acessos
-    E o primeiro acesso exibido deve ser o de "15/10/2026 11:50"
-    E o último acesso exibido deve ser o de "14/10/2026 11:30"
-    E cada registro deve exibir data e hora, restaurante, catraca, matrícula, resultado e valor debitado
+    E que a data atual é "24/10/2025"
+    Quando acesso o Relatório Global de Operação
+    Então o filtro de data contábil deve exibir "Hoje (24/10/2025)"
+    E o filtro de janela de serviço deve exibir "Todos os Turnos (Café, Almoço, Jantar)"
+    E o filtro de unidade gestora deve exibir "Campus Darcy Ribeiro"
 
-  Cenário: Relatório inclui acessos liberados e negados
+  Cenário: Indicador de catracas online
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    Então devem constar acessos com o resultado "Acesso liberado"
-    E devem constar acessos com o resultado "Saldo insuficiente"
-    E devem constar acessos com o resultado "Acesso cancelado"
-    E devem constar acessos com o resultado "Identificação desconhecida"
+    Quando acesso o Relatório Global de Operação
+    Então o indicador de catracas online deve exibir "6/6"
 
-  Cenário: Filtrar acessos por restaurante
+  Cenário: Card de arrecadação global exibe a soma de todos os restaurantes
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E filtro pelo restaurante "RU Central"
-    Então devem ser exibidos 4 acessos
-    E todos os acessos exibidos devem pertencer ao restaurante "RU Central"
+    Quando acesso o Relatório Global de Operação
+    Então o card "Arrecadação Global" deve exibir "R$ 21.690,00"
 
-  Cenário: Filtrar acessos por catraca específica de um restaurante
+  Cenário: Tabela de consolidação exibe uma linha por restaurante
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E filtro pelo restaurante "RU Central"
-    E filtro pela catraca "Catraca 01"
-    Então devem ser exibidos 2 acessos
-    E todos os acessos exibidos devem pertencer à catraca "Catraca 01" do restaurante "RU Central"
+    Quando acesso o Relatório Global de Operação
+    Então a tabela de consolidação deve exibir as seguintes linhas, nesta ordem:
+      | restaurante   | acessos | arrecadacao_bruta |
+      | Restaurante 1 | 2.100   | R$ 9.450,00       |
+      | Restaurante 2 | 720     | R$ 3.240,00       |
+      | Restaurante 3 | 710     | R$ 3.195,00       |
+      | Restaurante 4 | 480     | R$ 2.160,00       |
+      | Restaurante 5 | 460     | R$ 2.070,00       |
+      | Restaurante 6 | 350     | R$ 1.575,00       |
 
-  Cenário: Filtrar acessos por período
+  Cenário: Linha de total consolidado
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E filtro pelo período de "15/10/2026" até "15/10/2026"
-    Então devem ser exibidos 2 acessos
-    E todos os acessos exibidos devem ser do dia "15/10/2026"
+    Quando acesso o Relatório Global de Operação
+    Então a linha "Total Consolidado" deve exibir 4.820 acessos
+    E a linha "Total Consolidado" deve exibir arrecadação de "R$ 21.690,00"
 
-  Cenário: Combinar filtros de restaurante e período
+  Cenário: Painel de métodos de liquidação
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E filtro pelo restaurante "RU Setorial"
-    E filtro pelo período de "14/10/2026" até "14/10/2026"
-    Então devem ser exibidos 2 acessos
+    Quando acesso o Relatório Global de Operação
+    Então o método "PIX Institucional Instantâneo" deve exibir "72%" e "R$ 15.616,80"
+    E o método "Cartão de Crédito / Débito" deve exibir "28%" e "R$ 6.073,20"
+    E a soma dos métodos de liquidação deve ser igual a "R$ 21.690,00"
 
-  Cenário: Agrupar acessos por restaurante
+  Cenário: Filtrar por janela de serviço recalcula todo o relatório
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E agrupo os dados por restaurante
-    Então devem ser exibidos os seguintes grupos:
-      | restaurante | total_acessos | liberados | negados | valor_arrecadado |
-      | RU Central  | 4             | 2         | 2       | R$ 5,00          |
-      | RU Setorial | 2             | 1         | 1       | R$ 2,50          |
+    Quando acesso o Relatório Global de Operação
+    E seleciono a janela de serviço "Almoço"
+    Então o card "Arrecadação Global" deve exibir "R$ 13.410,00"
+    E a linha "Total Consolidado" deve exibir 2.980 acessos
+    E a soma dos métodos de liquidação deve ser igual a "R$ 13.410,00"
+    E as transações validadas devem ser 2.980 operações
 
-  Cenário: Agrupar acessos por catraca
+  Cenário: Filtrar por uma data contábil anterior
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E agrupo os dados por catraca
-    Então devem ser exibidos os seguintes grupos:
-      | restaurante | catraca    | total_acessos | liberados | negados | valor_arrecadado |
-      | RU Central  | Catraca 01 | 2             | 2         | 0       | R$ 5,00          |
-      | RU Central  | Catraca 02 | 2             | 0         | 2       | R$ 0,00          |
-      | RU Setorial | Catraca 01 | 2             | 1         | 1       | R$ 2,50          |
+    E que em "23/10/2025" o campus teve 4.000 acessos
+    Quando acesso o Relatório Global de Operação
+    E seleciono a data contábil "23/10/2025"
+    Então o card "Arrecadação Global" deve exibir "R$ 18.000,00"
+    E a linha "Total Consolidado" deve exibir 4.000 acessos
 
-  Cenário: Catracas com o mesmo nome em restaurantes diferentes são agrupadas separadamente
+  Cenário: Filtros de data e turno atuam em conjunto
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E agrupo os dados por catraca
-    Então deve existir um grupo para "Catraca 01" do restaurante "RU Central"
-    E deve existir um grupo para "Catraca 01" do restaurante "RU Setorial"
-    E os dois grupos não devem ser somados
+    E que em "23/10/2025" o campus teve 2.000 acessos no turno "Almoço"
+    E que em "23/10/2025" o campus teve 1.500 acessos nos demais turnos
+    Quando acesso o Relatório Global de Operação
+    E seleciono a data contábil "23/10/2025"
+    E seleciono a janela de serviço "Almoço"
+    Então o card "Arrecadação Global" deve exibir "R$ 9.000,00"
+    E a linha "Total Consolidado" deve exibir 2.000 acessos
 
-  Cenário: Agrupamento combinado com filtro de restaurante
+  Cenário: Restaurante sem acessos no filtro continua listado com valores zerados
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E filtro pelo restaurante "RU Central"
-    E agrupo os dados por catraca
-    Então devem ser exibidos apenas os grupos "Catraca 01" e "Catraca 02" do restaurante "RU Central"
+    E que no turno "Jantar" de "24/10/2025" somente o "Restaurante 1" teve acessos
+    Quando acesso o Relatório Global de Operação
+    E seleciono a janela de serviço "Jantar"
+    Então a tabela de consolidação deve exibir 6 restaurantes
+    E o "Restaurante 1" deve exibir 1.190 acessos e arrecadação bruta de "R$ 5.355,00"
+    E o "Restaurante 2" deve exibir 0 acessos e arrecadação bruta de "R$ 0,00"
+    E o "Restaurante 6" deve exibir 0 acessos e arrecadação bruta de "R$ 0,00"
 
-  Cenário: Valor debitado apenas em acessos liberados
+  Cenário: Exportar o relatório em CSV respeitando os filtros
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    Então os acessos com resultado "Acesso liberado" devem exibir valor debitado de R$ 2,50
-    E os acessos com qualquer outro resultado devem exibir valor debitado de R$ 0,00
+    Quando acesso o Relatório Global de Operação
+    E seleciono a janela de serviço "Almoço"
+    E clico em "Exportar CSV"
+    Então deve ser gerado um arquivo CSV com os dados do relatório
+    E o arquivo deve conter somente os dados do turno "Almoço"
+
+  Cenário: Exportar o relatório em PDF oficial
+    Dado que sou um administrador autenticado
+    Quando acesso o Relatório Global de Operação
+    E clico em "Exportar PDF Oficial"
+    Então deve ser gerado um documento PDF com os mesmos dados exibidos no relatório
+    E o documento deve conter os filtros aplicados, a data e hora de emissão e o usuário emissor
 
   # --- Caminhos tristes ---
   Cenário: Usuário sem perfil de administrador tenta acessar o relatório
     Dado que sou um usuário autenticado com perfil de aluno
-    Quando tento acessar o Relatório Global de Acessos
+    Quando tento acessar o Relatório Global de Operação
     Então o acesso deve ser negado
     E deve ser exibida a mensagem "Acesso não autorizado"
-    E nenhum dado de acesso deve ser exibido
+    E nenhum dado operacional deve ser exibido
 
-  Cenário: Usuário não autenticado tenta acessar o relatório
-    Dado que não estou autenticado
-    Quando tento acessar o Relatório Global de Acessos
-    Então devo ser redirecionado para a tela de login
-    E nenhum dado de acesso deve ser exibido
-
-  Cenário: Filtro sem nenhum acesso correspondente
+  Cenário: Nenhum acesso corresponde aos filtros aplicados
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E filtro pelo período de "01/01/2026" até "31/01/2026"
+    E que não há acessos registrados em "01/01/2025"
+    Quando acesso o Relatório Global de Operação
+    E seleciono a data contábil "01/01/2025"
     Então deve ser exibida a mensagem "Nenhum acesso encontrado"
-    E o total de acessos deve ser 0
-    E o valor total arrecadado deve ser R$ 0,00
+    E o card "Arrecadação Global" deve exibir "R$ 0,00"
+    E a linha "Total Consolidado" deve exibir 0 acessos
+    E a linha "Total Consolidado" deve exibir arrecadação de "R$ 0,00"
+    E os métodos de liquidação devem exibir "R$ 0,00"
 
-  Cenário: Data inicial posterior à data final
+  Cenário: Catraca offline é refletida no indicador de catracas online
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E filtro pelo período de "15/10/2026" até "14/10/2026"
-    Então deve ser exibida a mensagem "Período inválido"
-    E o relatório não deve ser gerado
-
-  Cenário: Filtrar por catraca sem selecionar o restaurante
-    Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    Então o filtro de catraca deve estar desabilitado até que um restaurante seja selecionado
+    E que 1 das 6 catracas cadastradas está offline
+    Quando acesso o Relatório Global de Operação
+    Então o indicador de catracas online deve exibir "5/6"
 
   Cenário: Relatório é somente leitura
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    Então não deve existir nenhuma opção para editar ou excluir um registro de acesso
+    Quando acesso o Relatório Global de Operação
+    Então não deve existir nenhuma opção para editar ou excluir dados operacionais
 
   # --- Esquemas de teste ---
-  Esquema do Cenário: Filtro por restaurante e catraca
+  Esquema do Cenário: Arrecadação bruta por restaurante
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E filtro pelo restaurante "<restaurante>"
-    E filtro pela catraca "<catraca>"
-    Então devem ser exibidos <quantidade> acessos
+    Quando acesso o Relatório Global de Operação
+    Então o "<restaurante>" deve exibir <acessos> acessos e arrecadação bruta de "R$ <arrecadacao>"
 
     Exemplos:
-      | restaurante | catraca    | quantidade |
-      | RU Central  | Catraca 01 | 2          |
-      | RU Central  | Catraca 02 | 2          |
-      | RU Setorial | Catraca 01 | 2          |
+      | restaurante   | acessos | arrecadacao |
+      | Restaurante 1 | 2.100   | 9.450,00    |
+      | Restaurante 2 | 720     | 3.240,00    |
+      | Restaurante 3 | 710     | 3.195,00    |
+      | Restaurante 4 | 480     | 2.160,00    |
+      | Restaurante 5 | 460     | 2.070,00    |
+      | Restaurante 6 | 350     | 1.575,00    |
 
-  Esquema do Cenário: Filtro por período
+  Esquema do Cenário: Filtro de janela de serviço
     Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E filtro pelo período de "<data_inicial>" até "<data_final>"
-    Então <resultado>
+    Quando acesso o Relatório Global de Operação
+    E seleciono a janela de serviço "<turno>"
+    Então o card "Arrecadação Global" deve exibir "R$ <arrecadacao>"
+    E a linha "Total Consolidado" deve exibir <acessos> acessos
 
     Exemplos:
-      | data_inicial | data_final | resultado                                   |
-      | 14/10/2026   | 14/10/2026 | devem ser exibidos 4 acessos                |
-      | 15/10/2026   | 15/10/2026 | devem ser exibidos 2 acessos                |
-      | 14/10/2026   | 15/10/2026 | devem ser exibidos 6 acessos                |
-      | 16/10/2026   | 17/10/2026 | deve ser exibida a mensagem "Nenhum acesso encontrado" |
-      | 15/10/2026   | 14/10/2026 | deve ser exibida a mensagem "Período inválido"         |
-
-  Esquema do Cenário: Totais do agrupamento por restaurante
-    Dado que sou um administrador autenticado
-    Quando acesso o Relatório Global de Acessos
-    E agrupo os dados por restaurante
-    Então o grupo "<restaurante>" deve exibir <total> acessos, sendo <liberados> liberados e <negados> negados
-    E o valor arrecadado do grupo "<restaurante>" deve ser R$ <valor>
-
-    Exemplos:
-      | restaurante | total | liberados | negados | valor |
-      | RU Central  | 4     | 2         | 2       | 5,00  |
-      | RU Setorial | 2     | 1         | 1       | 2,50  |
+      | turno                                  | acessos | arrecadacao |
+      | Todos os Turnos (Café, Almoço, Jantar) | 4.820   | 21.690,00   |
+      | Café da Manhã                          | 650     | 2.925,00    |
+      | Almoço                                 | 2.980   | 13.410,00   |
+      | Jantar                                 | 1.190   | 5.355,00    |
