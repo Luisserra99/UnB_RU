@@ -42,14 +42,26 @@
 - **RN01.1:** …
 - **RN01.2:** …
 
-### F02 — Nome da funcionalidade
+### F09 — Relatório Global de Acessos ([#9](https://github.com/neatzzy/UnB_RU/issues/9))
 
-**Descrição:** …
+**Descrição:** Permite ao administrador visualizar a consolidação operacional de todos os restaurantes do campus. O relatório traz refeições servidas, arrecadação, métodos de liquidação e distribuição por refeição. Pode ser filtrado por data contábil, turno e unidade gestora, e exportado em CSV e PDF oficial.
 
 **Regras de negócio:**
 
-- **RN02.1:** …
-- **RN02.2:** …
+- **RN09.1:** Somente usuários autenticados com perfil de administrador podem acessar o relatório. Qualquer outro perfil ou usuário não autenticado deve ter o acesso negado.
+- **RN09.2:** O relatório é somente leitura. Nenhum dado operacional pode ser editado ou excluído por essa tela.
+- **RN09.3:** Ao abrir o relatório, os filtros iniciam com data contábil = hoje, janela de serviço = "Todos os Turnos (Café, Almoço, Jantar)" e unidade gestora = "Campus Darcy Ribeiro".
+- **RN09.4:** Todos os filtros atuam em conjunto e recalculam os cards, a tabela, os métodos de liquidação e a distribuição por refeição.
+- **RN09.5:** O indicador "Catracas Online" exibe a quantidade de catracas online sobre o total de catracas cadastradas na unidade gestora (ex.: 6/6), conforme o cadastro de Restaurantes e Catracas.
+- **RN09.6:** O card "Arrecadação Global" exibe a soma da arrecadação de todos os restaurantes.
+- **RN09.7:** A tabela "Consolidação Operacional dos Restaurantes" lista uma linha por restaurante da unidade gestora, ordenada pela numeração do restaurante, com: acessos e arrecadação bruta.
+- **RN09.8:** A arrecadação bruta de cada restaurante é seus acessos × tarifa aplicada. O restaurante sem acessos no filtro continua listado, com valores zerados.
+- **RN09.9:** A linha "Total Consolidado" soma os acessos e a arrecadação de todos os restaurantes.
+- **RN09.10:** O painel "Métodos de Liquidação" exibe, para PIX Institucional Instantâneo e Cartão de Crédito/Débito, o valor liquidado e o percentual sobre a arrecadação global. A soma dos métodos deve ser igual à arrecadação global.
+- **RN09.11:** O painel de liquidação exibe também: ticket médio por estudante (arrecadação ÷ refeições servidas), transações validadas (quantidade de operações) e divergências contábeis.
+- **RN09.12:** O botão "Exportar CSV" gera um arquivo com os dados do relatório conforme os filtros aplicados.
+- **RN09.13:** O botão "Exportar PDF Oficial" gera um documento com os mesmos dados exibidos, os filtros aplicados, a data e hora de emissão e o usuário emissor.
+- **RN09.14:** Quando nenhum acesso corresponde aos filtros, o sistema exibe a mensagem "Nenhum acesso encontrado" e todos os totais são zerados.
 
 <!-- Copie o bloco acima para cada nova funcionalidade -->
 
