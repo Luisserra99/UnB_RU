@@ -33,23 +33,40 @@
 
 ## 2. Funcionalidades e Regras de Negócio
 
-### F01 — Nome da funcionalidade
+### F01 — Cadastro de usuário
 
-**Descrição:** breve descrição do que a funcionalidade faz.
-
-**Regras de negócio:**
-
-- **RN01.1:** …
-- **RN01.2:** …
-
-### F02 — Nome da funcionalidade
-
-**Descrição:** …
+**Descrição:** Permite o usuário se cadastrar no sistema utilizando a sua matrícula para ter acesso a conta do RU.
 
 **Regras de negócio:**
 
-- **RN02.1:** …
-- **RN02.2:** …
+- **RN01.1:** Matrícula deve ser de 9 números e ativo.
+- **RN01.2:** Deve ser informado um email e de formato válido.
+- **RN01.3:** A senha deve conter no mínimo 8 caracteres.
+- **RN01.4:** O email informado pelo usuário deve ter o domínio da faculdade.
+- **RN01.5:** O cadastro deve ser concluído após o preenchimento correto da matrícula e da senha.
+
+
+### F10 — Cardápio da refeição atual
+
+**Descrição:** Permite o estudante ver o cardápio da refeição que está sendo servida no momento, incluindo as opções padrão, ovolactovegetariano e vegetariano estrito.
+
+**Regras de negócio:**
+
+- **RN10.1:** O cardápio exibido deve corresponder à refeição em andamento no horário da consulta (café, almoço ou jantar).
+- **RN10.2:** O cardápio deve apresentar separadamente as opções padrão, ovolactovegetariano e vegetariano estrito.
+- **RN10.3:** Caso não haja refeição sendo servida no horário da consulta, o sistema deve informar que não há cardápio disponível no momento.
+- **RN10.4:** Caso alguma das opções (padrão, ovolactovegetariano ou vegetariano estrito) não tenha itens cadastrados, o sistema deve indicar que essa opção não está disponível.
+
+### F03 — Extrato e recargas
+
+**Descrição:** Permite o usuário de ver o seu extrato de recargas e histórico de refeições.
+
+**Regras de negócio:**
+
+- **RN03.1:** O usuário só pode ver o extrato de recargas e o histórico de refeições da própria conta.
+- **RN03.2:** O histórico deve exibir data, horário e tipo de refeição de cada acesso registrado.
+- **RN03.3:** O extrato deve exibir o saldo atual e as últimas recargas realizadas.
+- **RN03.4:** Caso não haja registros de recarga ou de refeição, o sistema deve exibir uma mensagem informando a ausência de histórico.
 
 ### F04 — Autenticação do Funcionário ([#4](https://github.com/neatzzy/UnB_RU/issues/4))
 
@@ -77,9 +94,11 @@
 
 | Funcionalidade | História de usuário | Responsável | Pontos |
 |---|---|---|---|
-| F01 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 3 |
+| F01 | Como estudante, eu quero me cadastrar no sistema utilizando minha matrícula, para que eu possa criar minha conta de acesso ao RU. | Leonardo Tomé Sampaio | 3 |
 | F02 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 5 |
+| F03 | Como estudante, eu quero visualizar meu extrato de recargas e histórico de refeições, para ter controle sobre meus gastos e utilizações | Leonardo Tomé Sampaio | 5 |
 | F04 | Como funcionário do restaurante, quero fazer login na aplicação de controle para autenticar minha sessão e operar o sistema de forma segura. | Daniel Dezan Baby | 3 |
+| F10 | Como estudante, eu quero poder ver o cardápio da refeição que esteja sendo servida agora. Incluindo as opções padrão, ovolactovegetariano e vegetariano estrito. | Leonardo Tomé Sampaio | 5 |
 | | | **Total (Velocity da Sprint)** | **0** |
 
 > **Velocity** = soma dos pontos das histórias de usuário concluídas na sprint.
