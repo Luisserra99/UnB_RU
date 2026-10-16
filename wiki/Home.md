@@ -45,6 +45,18 @@
 - **RN01.4:** O email informado pelo usuário deve ter o domínio da faculdade.
 - **RN01.5:** O cadastro deve ser concluído após o preenchimento correto da matrícula e da senha.
 
+### F02 — Recarga de Saldo ([#2](https://github.com/neatzzy/UnB_RU/issues/2))
+
+**Descrição:** Permite que o estudante adicione créditos à sua conta do RU comprando pacotes de refeições ou quantidades personalizadas, com opções de pagamento via PIX ou Cartão de Crédito.
+
+**Regras de negócio:**
+
+- **RN02.1:** O valor de recarga é padronizado pelo valor das refeições, o usuário escolhe se quer café da manhã e/ou almoço/jantar e escolhe a quantidade.
+- **RN02.2:** O saldo só deve ser efetivamente atualizado após a confirmação da transação de pagamento.
+- **RN02.3:** Os métodos de pagamento aceitos são PIX Instantâneo e Cartão de Crédito. Para PIX, o sistema deve gerar um QR Code e código Copia e Cola.
+- **RN02.4:** O código e QR Code do PIX ficam disponiveis por 10 min antes de expirar.
+- **RN02.5:** O valor total da recarga é calculado somando o subtotal de Almoços/Jantares com o subtotal de Cafés da Manhã.
+- **RN02.6:** Não é possível gerar uma cobrança zerada.
 ### F09 — Relatório Global de Acessos ([#9](https://github.com/neatzzy/UnB_RU/issues/9))
 
 **Descrição:** Permite ao administrador visualizar a consolidação operacional de todos os restaurantes do campus. O relatório traz refeições servidas, arrecadação, métodos de liquidação e distribuição por refeição. Pode ser filtrado por data contábil, turno e unidade gestora, e exportado em CSV e PDF oficial.
