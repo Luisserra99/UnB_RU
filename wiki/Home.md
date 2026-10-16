@@ -51,6 +51,25 @@
 - **RN02.1:** …
 - **RN02.2:** …
 
+### F12 — Exportação em PDF do Relatório de Operação ([#12](https://github.com/neatzzy/UnB_RU/issues/12))
+
+**Descrição:** permite que o administrador geral exporte o Relatório Global de Operação em PDF para auditoria interna, respeitando os filtros e agrupamentos aplicados ao histórico de acessos da issue [#9](https://github.com/neatzzy/UnB_RU/issues/9).
+
+**Regras de negócio:**
+
+- **RN12.1:** somente o administrador geral com sessão válida pode exportar o relatório; funcionários e estudantes não têm permissão, inclusive por acesso direto à exportação.
+- **RN12.2:** o PDF deve conter todos os acessos que correspondem aos filtros de período, restaurante e catraca aplicados no relatório, inclusive os que estejam em outras páginas da listagem. Os limites do período são inclusivos.
+- **RN12.3:** cada acesso exportado deve identificar data e hora, matrícula do estudante, restaurante, catraca, refeição e valor debitado; o relatório deve apresentar a quantidade de acessos e o total debitado correspondentes aos registros exportados.
+- **RN12.4:** o PDF deve identificar o administrador responsável pela emissão, a data e hora da emissão, os filtros e os agrupamentos aplicados, permitindo conferir o contexto da auditoria.
+- **RN12.5:** os agrupamentos por restaurante e por catraca devem preservar seus vínculos e apresentar subtotais de acessos e valores, sem misturar catracas de mesmo nome em restaurantes diferentes.
+- **RN12.6:** filtros sem resultados devem produzir a mensagem "Não há acessos para os filtros selecionados", sem download de arquivo.
+- **RN12.7:** um período com data inicial posterior à final deve ser rejeitado com a mensagem "A data inicial deve ser anterior ou igual à data final", sem gerar arquivo.
+- **RN12.8:** em caso de falha na geração, o sistema deve informar "Não foi possível gerar o PDF. Tente novamente" e permitir nova tentativa, sem disponibilizar arquivo incompleto nem alterar os acessos registrados.
+
+**Premissas de especificação:** os campos, mensagens, subtotais e o comportamento sem resultados acima detalham a história para os cenários de aceitação e devem ser revisados pela equipe. Os valores monetários nos cenários são dados de exemplo, não uma definição de preço das refeições.
+
+**Cenários BDD:** [features/exportacao_pdf_relatorio_operacao.feature](../features/exportacao_pdf_relatorio_operacao.feature).
+
 <!-- Copie o bloco acima para cada nova funcionalidade -->
 
 ---
@@ -61,9 +80,12 @@
 |---|---|---|---|
 | F01 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 3 |
 | F02 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 5 |
+| F12 | Como administrador geral, quero exportar o Relatório Global de Operação em PDF para realizar auditorias internas. | Daniel Dezan Baby | 5 |
 | | | **Total (Velocity da Sprint)** | **0** |
 
 > **Velocity** = soma dos pontos das histórias de usuário concluídas na sprint.
+
+> Os pontos das histórias de Daniel são estimativas de planejamento para revisão pelo grupo. A Velocity será atualizada após a conclusão e a revisão das histórias na sprint.
 
 ### 3.1 Divisão das issues
 
@@ -122,3 +144,5 @@ Exemplo: `feat(cardapio): adiciona listagem do cardápio do dia`
 ## 6. Uso de IA na sprint
 
 - Tempalte da wiki montado pelo Claude Code Sonnet 5.5 Medium
+
+- A especificação F12 (descrição, regras de negócio, história e cenários de `features/exportacao_pdf_relatorio_operacao.feature`) foi produzida com apoio do **OpenAI Codex**. Estratégia: leitura das issues e das instruções da sprint, comparação com as branches dos colegas, divisão da análise e da redação entre agentes, revisão cruzada de consistência e validação da sintaxe com o parser Gherkin. As premissas que detalham a história estão indicadas na seção da funcionalidade para revisão pelo grupo.
