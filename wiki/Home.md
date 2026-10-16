@@ -57,6 +57,26 @@
 - **RN02.4:** O código e QR Code do PIX ficam disponiveis por 10 min antes de expirar.
 - **RN02.5:** O valor total da recarga é calculado somando o subtotal de Almoços/Jantares com o subtotal de Cafés da Manhã.
 - **RN02.6:** Não é possível gerar uma cobrança zerada.
+### F09 — Relatório Global de Acessos ([#9](https://github.com/neatzzy/UnB_RU/issues/9))
+
+**Descrição:** Permite ao administrador visualizar a consolidação operacional de todos os restaurantes do campus. O relatório traz refeições servidas, arrecadação, métodos de liquidação e distribuição por refeição. Pode ser filtrado por data contábil, turno e unidade gestora, e exportado em CSV e PDF oficial.
+
+**Regras de negócio:**
+
+- **RN09.1:** Somente usuários autenticados com perfil de administrador podem acessar o relatório. Qualquer outro perfil ou usuário não autenticado deve ter o acesso negado.
+- **RN09.2:** O relatório é somente leitura. Nenhum dado operacional pode ser editado ou excluído por essa tela.
+- **RN09.3:** Ao abrir o relatório, os filtros iniciam com data contábil = hoje, janela de serviço = "Todos os Turnos (Café, Almoço, Jantar)" e unidade gestora = "Campus Darcy Ribeiro".
+- **RN09.4:** Todos os filtros atuam em conjunto e recalculam os cards, a tabela, os métodos de liquidação e a distribuição por refeição.
+- **RN09.5:** O indicador "Catracas Online" exibe a quantidade de catracas online sobre o total de catracas cadastradas na unidade gestora (ex.: 6/6), conforme o cadastro de Restaurantes e Catracas.
+- **RN09.6:** O card "Arrecadação Global" exibe a soma da arrecadação de todos os restaurantes.
+- **RN09.7:** A tabela "Consolidação Operacional dos Restaurantes" lista uma linha por restaurante da unidade gestora, ordenada pela numeração do restaurante, com: acessos e arrecadação bruta.
+- **RN09.8:** A arrecadação bruta de cada restaurante é seus acessos × tarifa aplicada. O restaurante sem acessos no filtro continua listado, com valores zerados.
+- **RN09.9:** A linha "Total Consolidado" soma os acessos e a arrecadação de todos os restaurantes.
+- **RN09.10:** O painel "Métodos de Liquidação" exibe, para PIX Institucional Instantâneo e Cartão de Crédito/Débito, o valor liquidado e o percentual sobre a arrecadação global. A soma dos métodos deve ser igual à arrecadação global.
+- **RN09.11:** O painel de liquidação exibe também: ticket médio por estudante (arrecadação ÷ refeições servidas), transações validadas (quantidade de operações) e divergências contábeis.
+- **RN09.12:** O botão "Exportar CSV" gera um arquivo com os dados do relatório conforme os filtros aplicados.
+- **RN09.13:** O botão "Exportar PDF Oficial" gera um documento com os mesmos dados exibidos, os filtros aplicados, a data e hora de emissão e o usuário emissor.
+- **RN09.14:** Quando nenhum acesso corresponde aos filtros, o sistema exibe a mensagem "Nenhum acesso encontrado" e todos os totais são zerados.
 
 ### F10 — Cardápio da refeição atual
 
@@ -98,6 +118,44 @@
 
 **Cenários BDD:** [features/autenticacao_funcionario.feature](../features/autenticacao_funcionario.feature).
 
+### F12 — Exportação em PDF do Relatório de Operação ([#12](https://github.com/neatzzy/UnB_RU/issues/12))
+
+**Descrição:** permite que o administrador geral exporte o Relatório Global de Operação em PDF para auditoria interna, respeitando os filtros e agrupamentos aplicados ao histórico de acessos da issue [#9](https://github.com/neatzzy/UnB_RU/issues/9).
+
+**Regras de negócio:**
+
+- **RN12.1:** somente o administrador geral com sessão válida pode exportar o relatório; funcionários e estudantes não têm permissão, inclusive por acesso direto à exportação.
+- **RN12.2:** o PDF deve conter todos os acessos que correspondem aos filtros de período, restaurante e catraca aplicados no relatório, inclusive os que estejam em outras páginas da listagem. Os limites do período são inclusivos.
+- **RN12.3:** cada acesso exportado deve identificar data e hora, matrícula do estudante, restaurante, catraca, refeição e valor debitado; o relatório deve apresentar a quantidade de acessos e o total debitado correspondentes aos registros exportados.
+- **RN12.4:** o PDF deve identificar o administrador responsável pela emissão, a data e hora da emissão, os filtros e os agrupamentos aplicados, permitindo conferir o contexto da auditoria.
+- **RN12.5:** os agrupamentos por restaurante e por catraca devem preservar seus vínculos e apresentar subtotais de acessos e valores, sem misturar catracas de mesmo nome em restaurantes diferentes.
+- **RN12.6:** filtros sem resultados devem produzir a mensagem "Não há acessos para os filtros selecionados", sem download de arquivo.
+- **RN12.7:** um período com data inicial posterior à final deve ser rejeitado com a mensagem "A data inicial deve ser anterior ou igual à data final", sem gerar arquivo.
+- **RN12.8:** em caso de falha na geração, o sistema deve informar "Não foi possível gerar o PDF. Tente novamente" e permitir nova tentativa, sem disponibilizar arquivo incompleto nem alterar os acessos registrados.
+
+**Premissas de especificação:** os campos, mensagens, subtotais e o comportamento sem resultados acima detalham a história para os cenários de aceitação e devem ser revisados pela equipe. Os valores monetários nos cenários são dados de exemplo, não uma definição de preço das refeições.
+
+**Cenários BDD:** [features/exportacao_pdf_relatorio_operacao.feature](../features/exportacao_pdf_relatorio_operacao.feature).
+### F05 — Configuração de Ponto de Acesso ([#5](https://github.com/neatzzy/UnB_RU/issues/5))
+
+**Descrição:** permite que o funcionário autenticado selecione, logo após o login, o restaurante e uma de suas catracas para gerenciar. O ponto de acesso definido na sessão direciona as regras do restaurante e identifica corretamente os registros das operações.
+
+**Regras de negócio:**
+
+- **RN05.1:** somente um funcionário com sessão autenticada ativa pode configurar um ponto de acesso. Após cada login, o sistema deve solicitar a seleção de restaurante e catraca antes de permitir operações que dependam desse contexto.
+- **RN05.2:** a seleção deve utilizar os restaurantes e as catracas cadastrados na gestão de restaurantes e catracas ([#8](https://github.com/neatzzy/UnB_RU/issues/8)). Apenas cadastros existentes e ativos podem ser confirmados; a disponibilidade deve ser verificada novamente na confirmação.
+- **RN05.3:** a catraca selecionada deve pertencer ao restaurante selecionado. A lista de catracas deve apresentar somente as catracas disponíveis daquele restaurante.
+- **RN05.4:** um ponto de acesso somente está configurado após a confirmação de restaurante e catraca válidos. Sem essa confirmação, as operações de controle e a consulta ao histórico da catraca atual devem permanecer indisponíveis.
+- **RN05.5:** ao iniciar a alteração do ponto de acesso, as operações que dependem desse contexto devem ficar indisponíveis enquanto a reconfiguração estiver pendente. Selecionar outro restaurante válido deve remover a catraca selecionada no formulário de alteração, mantendo o ponto de acesso confirmado na sessão até uma nova confirmação válida. Após essa confirmação, o novo ponto de acesso deve ser ativado e suas operações podem ser retomadas.
+- **RN05.6:** uma tentativa de seleção inválida não deve substituir o ponto de acesso anteriormente confirmado nem ser registrada como configuração concluída. O sistema deve informar o motivo da rejeição e manter a reconfiguração pendente, com as operações que dependem do ponto de acesso indisponíveis até uma nova confirmação válida.
+- **RN05.7:** a confirmação do ponto de acesso e os registros das operações realizadas nele devem identificar o funcionário, o restaurante, a catraca, a data e a hora. Uma troca de ponto de acesso deve afetar somente os novos registros, preservando a identificação dos anteriores.
+- **RN05.8:** quando não houver restaurantes disponíveis ou o restaurante selecionado não possuir catracas disponíveis, o sistema deve informar essa ausência e impedir a confirmação de um ponto de acesso incompleto.
+- **RN05.9:** o ponto de acesso pertence à sessão autenticada atual. Logout ou expiração devem remover esse contexto; um novo login deve exigir uma nova seleção e confirmação.
+
+**Premissas de especificação:** a seleção de catraca complementa a seleção de restaurante a partir das histórias de histórico local da catraca ([#7](https://github.com/neatzzy/UnB_RU/issues/7)) e de gestão de restaurantes e catracas ([#8](https://github.com/neatzzy/UnB_RU/issues/8)). O status ativo dos cadastros, as mensagens apresentadas e as regras de troca de ponto de acesso detalham a história e devem ser revisados pela equipe.
+
+**Cenários BDD:** [features/configuracao_ponto_acesso.feature](../features/configuracao_ponto_acesso.feature).
+
 <!-- Copie o bloco acima para cada nova funcionalidade -->
 
 ---
@@ -108,6 +166,8 @@
 |---|---|---|---|
 | F01 | Como estudante, eu quero me cadastrar no sistema utilizando minha matrícula, para que eu possa criar minha conta de acesso ao RU. | Leonardo Tomé Sampaio | 3 |
 | F02 | Como *[perfil]*, quero *[ação]* para *[benefício]* | Nome | 5 |
+| F12 | Como administrador geral, quero exportar o Relatório Global de Operação em PDF para realizar auditorias internas. | Daniel Dezan Baby | 5 |
+| F05 | Como funcionário do restaurante, quero selecionar o restaurante e a catraca após o login para aplicar as regras e registrar os logs no ponto de acesso correto. | Daniel Dezan Baby | 3 |
 | F03 | Como estudante, eu quero visualizar meu extrato de recargas e histórico de refeições, para ter controle sobre meus gastos e utilizações | Leonardo Tomé Sampaio | 5 |
 | F04 | Como funcionário do restaurante, quero fazer login na aplicação de controle para autenticar minha sessão e operar o sistema de forma segura. | Daniel Dezan Baby | 3 |
 | F10 | Como estudante, eu quero poder ver o cardápio da refeição que esteja sendo servida agora. Incluindo as opções padrão, ovolactovegetariano e vegetariano estrito. | Leonardo Tomé Sampaio | 5 |
@@ -175,4 +235,6 @@ Exemplo: `feat(cardapio): adiciona listagem do cardápio do dia`
 
 - Tempalte da wiki montado pelo Claude Code Sonnet 5.5 Medium
 
+- A especificação F12 (descrição, regras de negócio, história e cenários de `features/exportacao_pdf_relatorio_operacao.feature`) foi produzida com apoio do **OpenAI Codex**. Estratégia: leitura das issues e das instruções da sprint, comparação com as branches dos colegas, divisão da análise e da redação entre agentes, revisão cruzada de consistência e validação da sintaxe com o parser Gherkin. As premissas que detalham a história estão indicadas na seção da funcionalidade para revisão pelo grupo.
+- A especificação F05 (descrição, regras de negócio, história e cenários de `features/configuracao_ponto_acesso.feature`) foi produzida com apoio do **OpenAI Codex**. Estratégia: leitura das issues e das instruções da sprint, comparação com as branches dos colegas, divisão da análise e da redação entre agentes, revisão cruzada de consistência e validação da sintaxe com o parser Gherkin. As premissas que detalham a história estão indicadas na seção da funcionalidade para revisão pelo grupo.
 - A especificação F04 (descrição, regras de negócio, história e cenários de `features/autenticacao_funcionario.feature`) foi produzida com apoio do **OpenAI Codex**. Estratégia: leitura das issues e das instruções da sprint, comparação com as branches dos colegas, divisão da análise e da redação entre agentes, revisão cruzada de consistência e validação da sintaxe com o parser Gherkin. As premissas que detalham a história estão indicadas na seção da funcionalidade para revisão pelo grupo.
