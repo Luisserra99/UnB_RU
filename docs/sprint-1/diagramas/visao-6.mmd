@@ -1,0 +1,38 @@
+erDiagram
+    CONFIGURACAO_PONTO_ACESSO ||--o{ REGISTRO_ACESSO : registra
+    ESTUDANTE o|--o{ REGISTRO_ACESSO : identificado_em
+    SERVICO_REFEICAO o|--o{ REGISTRO_ACESSO : atende
+    TARIFA_REFEICAO o|--o{ REGISTRO_ACESSO : aplica
+    REGISTRO_ACESSO o|--o| MOVIMENTACAO_SALDO : gera_debito
+    CONFIGURACAO_PONTO_ACESSO {
+        bigint id PK
+    }
+    ESTUDANTE {
+        bigint id PK
+    }
+    SERVICO_REFEICAO {
+        bigint id PK
+    }
+    TARIFA_REFEICAO {
+        bigint id PK
+    }
+    REGISTRO_ACESSO {
+        bigint id PK
+        bigint configuracao_ponto_acesso_id FK
+        bigint estudante_id FK
+        bigint servico_refeicao_id FK
+        bigint tarifa_refeicao_id FK
+        string referencia_evento UK
+        string identificacao_lida
+        decimal saldo_lido
+        decimal valor_previsto
+        string estado
+        datetime lido_em
+        datetime liberado_em
+        datetime passagem_em
+        datetime bloqueado_em
+    }
+    MOVIMENTACAO_SALDO {
+        bigint id PK
+        bigint registro_acesso_id FK, UK
+    }

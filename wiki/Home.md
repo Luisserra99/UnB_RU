@@ -266,8 +266,12 @@ Exemplo: `feat(cardapio): adiciona listagem do cardápio do dia`
 ## 5. Links úteis
 
 - [issues-sprint1](https://github.com/neatzzy/UnB_RU/issues)
+- [Relatório da segunda etapa: modelo ER e spike de views Rails](../docs/sprint-1/relatorio-etapa-2.md)
+- [Relatório da segunda etapa em PDF](../docs/sprint-1/relatorio-etapa-2.pdf)
   
 ## 6. Uso de IA na sprint
+
+- O [relatório da segunda etapa](../docs/sprint-1/relatorio-etapa-2.md), os diagramas ER e o spike documental de views Rails foram elaborados com apoio do **OpenAI Codex**, a partir do enunciado, do template LaTeX, da wiki e das 12 features. A estratégia e os limites da investigação estão registrados no Apêndice E; as decisões propostas e divergências entre requisitos estão identificadas para revisão pelo grupo.
 
 - Tempalte da wiki montado pelo Claude Code Sonnet 5.5 Medium
 - Seção F06 — Validação de Entrada (descrição e regras de negócio) e os cenários BDD de `features/validacao_entrada.feature` escritos com apoio do Claude Code Sonnet 5, a partir da história de usuário fornecida e revisados/ajustados manualmente pelo integrante responsável.

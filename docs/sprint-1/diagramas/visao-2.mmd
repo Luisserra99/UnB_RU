@@ -1,0 +1,29 @@
+erDiagram
+    USUARIO ||--o{ SESSAO_AUTENTICACAO : autentica
+    SESSAO_AUTENTICACAO ||--o{ CONFIGURACAO_PONTO_ACESSO : confirma
+    CATRACA ||--o{ CONFIGURACAO_PONTO_ACESSO : contextualiza
+    USUARIO ||--o{ EXPORTACAO_RELATORIO : emite
+    USUARIO {
+        bigint id PK
+    }
+    SESSAO_AUTENTICACAO {
+        bigint id PK
+        bigint usuario_id FK
+        datetime expira_em
+        boolean ponto_acesso_pendente
+    }
+    CONFIGURACAO_PONTO_ACESSO {
+        bigint id PK
+        bigint sessao_autenticacao_id FK
+        bigint catraca_id FK
+        datetime confirmada_em
+    }
+    CATRACA {
+        bigint id PK
+    }
+    EXPORTACAO_RELATORIO {
+        bigint id PK
+        bigint usuario_id FK
+        string tipo
+        string status
+    }

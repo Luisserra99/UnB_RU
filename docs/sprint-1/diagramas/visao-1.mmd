@@ -1,0 +1,25 @@
+erDiagram
+    USUARIO ||--o| ESTUDANTE : possui
+    USUARIO ||--|{ USUARIO_PAPEL : recebe
+    PAPEL ||--o{ USUARIO_PAPEL : autoriza
+    USUARIO {
+        bigint id PK
+        string identificacao UK
+        string email UK
+        string password_digest
+        boolean ativo
+    }
+    PAPEL {
+        bigint id PK
+        string codigo UK
+    }
+    USUARIO_PAPEL {
+        bigint usuario_id PK, FK
+        bigint papel_id PK, FK
+    }
+    ESTUDANTE {
+        bigint id PK
+        bigint usuario_id FK, UK
+        string matricula UK
+        boolean vinculo_ativo
+    }

@@ -1,0 +1,24 @@
+erDiagram
+    SERVICO_REFEICAO ||--o{ CARDAPIO : publica
+    CARDAPIO ||--o{ OPCAO_CARDAPIO : apresenta
+    OPCAO_CARDAPIO ||--o{ ITEM_CARDAPIO : contem
+    SERVICO_REFEICAO {
+        bigint id PK
+    }
+    CARDAPIO {
+        bigint id PK
+        bigint servico_refeicao_id FK
+        date data_referencia
+    }
+    OPCAO_CARDAPIO {
+        bigint id PK
+        bigint cardapio_id FK
+        string dieta
+    }
+    ITEM_CARDAPIO {
+        bigint id PK
+        bigint opcao_cardapio_id FK
+        string categoria
+        string descricao
+        int ordem
+    }

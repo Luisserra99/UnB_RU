@@ -1,0 +1,36 @@
+erDiagram
+    ESTUDANTE ||--o{ RECARGA : solicita
+    RECARGA ||--|{ ITEM_RECARGA : contem
+    TIPO_REFEICAO ||--o{ ITEM_RECARGA : compoe
+    TARIFA_REFEICAO ||--o{ ITEM_RECARGA : fundamenta
+    RECARGA ||--o{ PAGAMENTO : tenta
+    ESTUDANTE {
+        bigint id PK
+    }
+    RECARGA {
+        bigint id PK
+        bigint estudante_id FK
+        decimal valor_total
+        string status
+        datetime confirmada_em
+    }
+    ITEM_RECARGA {
+        bigint id PK
+        bigint recarga_id FK
+        bigint tipo_refeicao_id FK
+        bigint tarifa_refeicao_id FK
+        int quantidade
+        decimal valor_unitario
+    }
+    TIPO_REFEICAO {
+        bigint id PK
+    }
+    TARIFA_REFEICAO {
+        bigint id PK
+    }
+    PAGAMENTO {
+        bigint id PK
+        bigint recarga_id FK
+        string metodo
+        string status
+    }
