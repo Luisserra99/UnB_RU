@@ -300,9 +300,244 @@ Centraliza os dados de autenticação de estudantes, funcionários e administrad
 
 # Modelo Relacional UML
 
-O modelo está dividido em sete visões do mesmo esquema para manter a legibilidade. Entidades repetidas entre as figuras representam as mesmas tabelas. Os diagramas exibem chaves e atributos centrais; o dicionário anterior define os demais atributos e restrições.
+A visão geral apresenta o esquema completo em um único diagrama, com as 23 entidades, todos os atributos do dicionário e os 30 relacionamentos; como a figura é vetorial, seus detalhes podem ser ampliados no PDF. Para manter a legibilidade, o mesmo esquema é detalhado em sete visões parciais. Entidades repetidas entre as figuras representam as mesmas tabelas. As visões parciais exibem chaves e atributos centrais; o dicionário anterior define os demais atributos e restrições.
 
-**Legenda:** `||` significa exatamente um; `o|`, zero ou um; `o{`, zero ou muitos; `|{`, um ou muitos. `PK` indica chave primária, `FK` chave estrangeira e `UK` chave única. As relações opcionais entre acesso, tarifa e estudante permitem registrar leituras rejeitadas sem inventar um estudante válido. As condições entre estado e existência de registros são detalhadas no Apêndice A.
+**Legenda:** `||` significa exatamente um; `o|`, zero ou um; `o{`, zero ou muitos; `|{`, um ou muitos. `PK` indica chave primária, `FK` chave estrangeira e `UK` chave única. Na visão geral, a última coluna das entidades anota unicidades compostas ou parciais e restrições entre relacionamentos que a cardinalidade não expressa, como o XOR entre as origens de uma movimentação. As relações opcionais entre acesso, tarifa e estudante permitem registrar leituras rejeitadas sem inventar um estudante válido. As condições entre estado e existência de registros são detalhadas no Apêndice A.
+
+## Visão geral — Modelo completo
+
+```mermaid
+---
+config:
+  layout: elk
+  elk:
+    nodePlacementStrategy: NETWORK_SIMPLEX
+---
+erDiagram
+    %% Identidade, papéis, sessão e emissão (visões 1 e 2)
+    USUARIO ||--o| ESTUDANTE : possui
+    USUARIO ||--|{ USUARIO_PAPEL : recebe
+    PAPEL ||--o{ USUARIO_PAPEL : autoriza
+    USUARIO ||--o{ SESSAO_AUTENTICACAO : autentica
+    USUARIO ||--o{ EXPORTACAO_RELATORIO : emite
+    SESSAO_AUTENTICACAO ||--o{ CONFIGURACAO_PONTO_ACESSO : confirma
+    CATRACA ||--o{ CONFIGURACAO_PONTO_ACESSO : contextualiza
+
+    %% Leitura, autorização e passagem (visão 6)
+    CONFIGURACAO_PONTO_ACESSO ||--o{ REGISTRO_ACESSO : registra
+    ESTUDANTE o|--o{ REGISTRO_ACESSO : identificado_em
+    SERVICO_REFEICAO o|--o{ REGISTRO_ACESSO : atende
+    TARIFA_REFEICAO o|--o{ REGISTRO_ACESSO : aplica
+
+    %% Extrato e origem dos recursos consumidos (visão 5)
+    ESTUDANTE ||--o{ MOVIMENTACAO_SALDO : contabiliza
+    RECARGA o|--o| MOVIMENTACAO_SALDO : origina_credito
+    REGISTRO_ACESSO o|--o| MOVIMENTACAO_SALDO : origina_debito
+    MOVIMENTACAO_SALDO ||--o{ RATEIO_CONSUMO : distribui_debito
+    RECARGA ||--o{ RATEIO_CONSUMO : financia
+
+    %% Compra e pagamento (visão 4)
+    ESTUDANTE ||--o{ RECARGA : solicita
+    RECARGA ||--|{ ITEM_RECARGA : contem
+    TIPO_REFEICAO ||--o{ ITEM_RECARGA : compoe
+    TARIFA_REFEICAO ||--o{ ITEM_RECARGA : fundamenta
+    RECARGA ||--o{ PAGAMENTO : tenta
+
+    %% Estrutura física e oferta de refeições (visão 3)
+    UNIDADE_GESTORA ||--o{ RESTAURANTE : agrupa
+    RESTAURANTE ||--|{ PISO : possui
+    PISO ||--o{ CATRACA : localiza
+    RESTAURANTE ||--o{ SERVICO_REFEICAO : oferece
+    TIPO_REFEICAO ||--o{ SERVICO_REFEICAO : classifica
+    TIPO_REFEICAO ||--o{ TARIFA_REFEICAO : precifica
+
+    %% Cardápios e alternativas alimentares (visão 7)
+    SERVICO_REFEICAO ||--o{ CARDAPIO : publica
+    CARDAPIO ||--o{ OPCAO_CARDAPIO : apresenta
+    OPCAO_CARDAPIO ||--o{ ITEM_CARDAPIO : contem
+
+    USUARIO {
+        bigint id PK
+        string nome
+        string identificacao UK
+        string email UK
+        string password_digest
+        boolean ativo
+    }
+    PAPEL {
+        bigint id PK
+        string codigo UK
+        string descricao
+    }
+    USUARIO_PAPEL {
+        bigint usuario_id PK, FK
+        bigint papel_id PK, FK
+    }
+    ESTUDANTE {
+        bigint id PK
+        bigint usuario_id FK, UK
+        string matricula UK
+        boolean vinculo_ativo
+    }
+    SESSAO_AUTENTICACAO {
+        bigint id PK
+        bigint usuario_id FK
+        string token_digest UK
+        datetime autenticada_em
+        datetime expira_em
+        datetime encerrada_em
+        boolean ponto_acesso_pendente
+    }
+    CONFIGURACAO_PONTO_ACESSO {
+        bigint id PK
+        bigint sessao_autenticacao_id FK "uma vigente por sessão"
+        bigint catraca_id FK
+        datetime confirmada_em
+        datetime finalizada_em
+    }
+    UNIDADE_GESTORA {
+        bigint id PK
+        string nome UK
+        boolean ativa
+    }
+    RESTAURANTE {
+        bigint id PK
+        bigint unidade_gestora_id FK
+        string nome UK
+        int numero "único na unidade gestora"
+        int capacidade_refeicoes_hora
+        boolean ativo
+    }
+    PISO {
+        bigint id PK
+        bigint restaurante_id FK
+        int numero "único no restaurante"
+    }
+    CATRACA {
+        bigint id PK
+        bigint piso_id FK
+        string identificacao "única no restaurante"
+        boolean ativa
+        boolean online
+        datetime estado_verificado_em
+    }
+    TIPO_REFEICAO {
+        bigint id PK
+        string codigo UK
+        string nome
+    }
+    TARIFA_REFEICAO {
+        bigint id PK
+        bigint tipo_refeicao_id FK
+        decimal valor
+        datetime vigente_desde
+        datetime vigente_ate
+    }
+    SERVICO_REFEICAO {
+        bigint id PK
+        bigint restaurante_id FK
+        bigint tipo_refeicao_id FK
+        int dia_semana "único por restaurante e tipo"
+        time inicio
+        time fim
+        boolean ativo
+    }
+    RECARGA {
+        bigint id PK
+        bigint estudante_id FK
+        datetime solicitada_em
+        decimal valor_total
+        string status
+        datetime confirmada_em
+    }
+    ITEM_RECARGA {
+        bigint id PK
+        bigint recarga_id FK
+        bigint tipo_refeicao_id FK "único na recarga"
+        bigint tarifa_refeicao_id FK "do mesmo tipo do item"
+        int quantidade
+        decimal valor_unitario
+    }
+    PAGAMENTO {
+        bigint id PK
+        bigint recarga_id FK "um confirmado por recarga"
+        string metodo
+        string status
+        string referencia_provedor UK
+        decimal valor_solicitado
+        decimal valor_confirmado
+        datetime criado_em
+        datetime expira_em
+        datetime confirmado_em
+        string pix_copia_cola
+    }
+    REGISTRO_ACESSO {
+        bigint id PK
+        bigint configuracao_ponto_acesso_id FK
+        bigint estudante_id FK
+        bigint servico_refeicao_id FK "do restaurante da catraca"
+        bigint tarifa_refeicao_id FK "do tipo do serviço"
+        string referencia_evento UK
+        string identificacao_lida
+        datetime lido_em
+        decimal saldo_lido
+        decimal valor_previsto
+        string estado
+        string motivo_negacao
+        datetime liberado_em
+        datetime passagem_em
+        datetime bloqueado_em
+    }
+    MOVIMENTACAO_SALDO {
+        bigint id PK
+        bigint estudante_id FK "igual ao da origem"
+        bigint recarga_id FK, UK "XOR registro_acesso_id"
+        bigint registro_acesso_id FK, UK "XOR recarga_id"
+        string natureza
+        decimal valor
+        datetime ocorrida_em
+    }
+    RATEIO_CONSUMO {
+        bigint id PK
+        bigint movimentacao_saldo_id FK "somente débito"
+        bigint recarga_id FK "única no débito; mesmo estudante"
+        decimal valor
+    }
+    CARDAPIO {
+        bigint id PK
+        bigint servico_refeicao_id FK
+        date data_referencia "única no serviço"
+    }
+    OPCAO_CARDAPIO {
+        bigint id PK
+        bigint cardapio_id FK
+        string dieta "única no cardápio"
+    }
+    ITEM_CARDAPIO {
+        bigint id PK
+        bigint opcao_cardapio_id FK
+        string categoria
+        string descricao
+        int ordem "única na opção"
+    }
+    EXPORTACAO_RELATORIO {
+        bigint id PK
+        bigint usuario_id FK
+        string tipo
+        string formato
+        json filtros
+        json agrupamentos
+        datetime solicitada_em
+        datetime emitida_em
+        string status
+        int quantidade_registros
+        decimal total_debitos
+        decimal total_creditos
+        string arquivo_chave
+        string arquivo_sha256
+        string assinatura_status
+    }
+```
 
 ## Visão 1 — Identidade e papéis
 
@@ -581,7 +816,7 @@ Totais do relatório, percentuais, saldo atual, flags de liberação e quantidad
 
 O modelo proposto cobre as 12 funcionalidades da primeira sprint com 23 entidades. A estrutura distingue solicitação de recarga, confirmação de pagamento, leitura de identificação, autorização temporária e passagem efetiva. Essas distinções permitem representar os caminhos tristes dos cenários sem criar créditos ou débitos indevidos.
 
-A proposta mantém a origem de cada lançamento e o contexto de cada operação, permitindo construir o extrato individual, o histórico local e os relatórios globais a partir de fatos consistentes. As sete visões do diagrama pertencem ao mesmo esquema; as restrições adicionais complementam cardinalidades que, sozinhas, não expressam regras de estado, tempo e concorrência.
+A proposta mantém a origem de cada lançamento e o contexto de cada operação, permitindo construir o extrato individual, o histórico local e os relatórios globais a partir de fatos consistentes. A visão geral e as sete visões parciais representam o mesmo esquema; as restrições adicionais complementam cardinalidades que, sozinhas, não expressam regras de estado, tempo e concorrência.
 
 Antes da implementação, o grupo deve decidir os pontos identificados no Apêndice D, especialmente a política de tarifas, o significado financeiro dos métodos de liquidação, o consumo de créditos e a assinatura digital. A investigação de views apresentada no Apêndice C oferece uma direção técnica para a próxima sprint. Sua aderência visual ao protótipo precisa ser conferida no Figma, cujo conteúdo não pôde ser acessado nesta elaboração.
 
@@ -819,6 +1054,10 @@ As divergências foram documentadas sem alterar os arquivos de aceitação dos i
 Este relatório, sua proposta de modelo ER, os diagramas Mermaid e a investigação das views foram elaborados com apoio do **OpenAI Codex**. A estratégia utilizada foi a leitura do enunciado e do template LaTeX fornecidos pelo usuário, análise da wiki e dos 12 arquivos BDD, extração dos relacionamentos, levantamento de restrições e comparação das regras entre funcionalidades. A investigação Rails consultou fontes oficiais e separou resultados documentais de validações práticas ainda não realizadas.
 
 Foi utilizada a skill **plugin-management** para procurar uma integração com Figma após a tentativa de leitura do protótipo pela web. A integração não estava conectada durante a elaboração, portanto não se afirma ter inspecionado os frames. Não foram utilizados agentes paralelos. As entidades auxiliares e as decisões propostas estão identificadas para que o grupo possa revisá-las e explicar sua finalidade antes da entrega.
+
+A visão geral do modelo foi elaborada posteriormente com apoio do **Claude Code** (Anthropic, modelo Claude Opus 5.5), a pedido de um integrante do grupo, que definiu a tarefa e revisou o resultado. A estratégia foi a seguinte: a IA leu o dicionário de dados e as sete visões, reuniu as 23 entidades com todos os atributos do dicionário e os 30 relacionamentos correspondentes às chaves estrangeiras, e eliminou um relacionamento duplicado entre as visões 5 e 6, que representavam a mesma chave estrangeira com rótulos diferentes. As anotações da última coluna foram extraídas do dicionário e do Apêndice A, sem acrescentar regras novas. Também não foram criadas chaves estrangeiras deriváveis por outros caminhos, conforme a seção de normalização.
+
+A verificação foi automatizada por scripts auxiliares, que não fazem parte do repositório. Um deles comparou o diagrama com o dicionário e com as sete visões: entidades, atributos, chaves, obrigatoriedade e unicidade das chaves estrangeiras e as cardinalidades resultantes. Esse script foi testado com erros inseridos de propósito. Outro mediu a legibilidade de 126 alternativas de layout do Mermaid, contando arestas sobre marcadores de cardinalidade, sobre caixas ou sobre rótulos e cruzamentos entre arestas; a alternativa adotada não apresenta os três primeiros problemas e tem quatro cruzamentos. A IA ajustou ainda o script `gerar_relatorio.py` para incluir a visão geral sem renumerar as demais figuras, ajustar o PDF do diagrama a uma página e manter a regra de quebra de identificadores longos independentemente dos pacotes LaTeX instalados. Não foram utilizados agentes paralelos.
 
 # Referências
 

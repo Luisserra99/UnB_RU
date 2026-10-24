@@ -1,0 +1,230 @@
+---
+config:
+  layout: elk
+  elk:
+    nodePlacementStrategy: NETWORK_SIMPLEX
+---
+erDiagram
+    %% Identidade, papéis, sessão e emissão (visões 1 e 2)
+    USUARIO ||--o| ESTUDANTE : possui
+    USUARIO ||--|{ USUARIO_PAPEL : recebe
+    PAPEL ||--o{ USUARIO_PAPEL : autoriza
+    USUARIO ||--o{ SESSAO_AUTENTICACAO : autentica
+    USUARIO ||--o{ EXPORTACAO_RELATORIO : emite
+    SESSAO_AUTENTICACAO ||--o{ CONFIGURACAO_PONTO_ACESSO : confirma
+    CATRACA ||--o{ CONFIGURACAO_PONTO_ACESSO : contextualiza
+
+    %% Leitura, autorização e passagem (visão 6)
+    CONFIGURACAO_PONTO_ACESSO ||--o{ REGISTRO_ACESSO : registra
+    ESTUDANTE o|--o{ REGISTRO_ACESSO : identificado_em
+    SERVICO_REFEICAO o|--o{ REGISTRO_ACESSO : atende
+    TARIFA_REFEICAO o|--o{ REGISTRO_ACESSO : aplica
+
+    %% Extrato e origem dos recursos consumidos (visão 5)
+    ESTUDANTE ||--o{ MOVIMENTACAO_SALDO : contabiliza
+    RECARGA o|--o| MOVIMENTACAO_SALDO : origina_credito
+    REGISTRO_ACESSO o|--o| MOVIMENTACAO_SALDO : origina_debito
+    MOVIMENTACAO_SALDO ||--o{ RATEIO_CONSUMO : distribui_debito
+    RECARGA ||--o{ RATEIO_CONSUMO : financia
+
+    %% Compra e pagamento (visão 4)
+    ESTUDANTE ||--o{ RECARGA : solicita
+    RECARGA ||--|{ ITEM_RECARGA : contem
+    TIPO_REFEICAO ||--o{ ITEM_RECARGA : compoe
+    TARIFA_REFEICAO ||--o{ ITEM_RECARGA : fundamenta
+    RECARGA ||--o{ PAGAMENTO : tenta
+
+    %% Estrutura física e oferta de refeições (visão 3)
+    UNIDADE_GESTORA ||--o{ RESTAURANTE : agrupa
+    RESTAURANTE ||--|{ PISO : possui
+    PISO ||--o{ CATRACA : localiza
+    RESTAURANTE ||--o{ SERVICO_REFEICAO : oferece
+    TIPO_REFEICAO ||--o{ SERVICO_REFEICAO : classifica
+    TIPO_REFEICAO ||--o{ TARIFA_REFEICAO : precifica
+
+    %% Cardápios e alternativas alimentares (visão 7)
+    SERVICO_REFEICAO ||--o{ CARDAPIO : publica
+    CARDAPIO ||--o{ OPCAO_CARDAPIO : apresenta
+    OPCAO_CARDAPIO ||--o{ ITEM_CARDAPIO : contem
+
+    USUARIO {
+        bigint id PK
+        string nome
+        string identificacao UK
+        string email UK
+        string password_digest
+        boolean ativo
+    }
+    PAPEL {
+        bigint id PK
+        string codigo UK
+        string descricao
+    }
+    USUARIO_PAPEL {
+        bigint usuario_id PK, FK
+        bigint papel_id PK, FK
+    }
+    ESTUDANTE {
+        bigint id PK
+        bigint usuario_id FK, UK
+        string matricula UK
+        boolean vinculo_ativo
+    }
+    SESSAO_AUTENTICACAO {
+        bigint id PK
+        bigint usuario_id FK
+        string token_digest UK
+        datetime autenticada_em
+        datetime expira_em
+        datetime encerrada_em
+        boolean ponto_acesso_pendente
+    }
+    CONFIGURACAO_PONTO_ACESSO {
+        bigint id PK
+        bigint sessao_autenticacao_id FK "uma vigente por sessão"
+        bigint catraca_id FK
+        datetime confirmada_em
+        datetime finalizada_em
+    }
+    UNIDADE_GESTORA {
+        bigint id PK
+        string nome UK
+        boolean ativa
+    }
+    RESTAURANTE {
+        bigint id PK
+        bigint unidade_gestora_id FK
+        string nome UK
+        int numero "único na unidade gestora"
+        int capacidade_refeicoes_hora
+        boolean ativo
+    }
+    PISO {
+        bigint id PK
+        bigint restaurante_id FK
+        int numero "único no restaurante"
+    }
+    CATRACA {
+        bigint id PK
+        bigint piso_id FK
+        string identificacao "única no restaurante"
+        boolean ativa
+        boolean online
+        datetime estado_verificado_em
+    }
+    TIPO_REFEICAO {
+        bigint id PK
+        string codigo UK
+        string nome
+    }
+    TARIFA_REFEICAO {
+        bigint id PK
+        bigint tipo_refeicao_id FK
+        decimal valor
+        datetime vigente_desde
+        datetime vigente_ate
+    }
+    SERVICO_REFEICAO {
+        bigint id PK
+        bigint restaurante_id FK
+        bigint tipo_refeicao_id FK
+        int dia_semana "único por restaurante e tipo"
+        time inicio
+        time fim
+        boolean ativo
+    }
+    RECARGA {
+        bigint id PK
+        bigint estudante_id FK
+        datetime solicitada_em
+        decimal valor_total
+        string status
+        datetime confirmada_em
+    }
+    ITEM_RECARGA {
+        bigint id PK
+        bigint recarga_id FK
+        bigint tipo_refeicao_id FK "único na recarga"
+        bigint tarifa_refeicao_id FK "do mesmo tipo do item"
+        int quantidade
+        decimal valor_unitario
+    }
+    PAGAMENTO {
+        bigint id PK
+        bigint recarga_id FK "um confirmado por recarga"
+        string metodo
+        string status
+        string referencia_provedor UK
+        decimal valor_solicitado
+        decimal valor_confirmado
+        datetime criado_em
+        datetime expira_em
+        datetime confirmado_em
+        string pix_copia_cola
+    }
+    REGISTRO_ACESSO {
+        bigint id PK
+        bigint configuracao_ponto_acesso_id FK
+        bigint estudante_id FK
+        bigint servico_refeicao_id FK "do restaurante da catraca"
+        bigint tarifa_refeicao_id FK "do tipo do serviço"
+        string referencia_evento UK
+        string identificacao_lida
+        datetime lido_em
+        decimal saldo_lido
+        decimal valor_previsto
+        string estado
+        string motivo_negacao
+        datetime liberado_em
+        datetime passagem_em
+        datetime bloqueado_em
+    }
+    MOVIMENTACAO_SALDO {
+        bigint id PK
+        bigint estudante_id FK "igual ao da origem"
+        bigint recarga_id FK, UK "XOR registro_acesso_id"
+        bigint registro_acesso_id FK, UK "XOR recarga_id"
+        string natureza
+        decimal valor
+        datetime ocorrida_em
+    }
+    RATEIO_CONSUMO {
+        bigint id PK
+        bigint movimentacao_saldo_id FK "somente débito"
+        bigint recarga_id FK "única no débito; mesmo estudante"
+        decimal valor
+    }
+    CARDAPIO {
+        bigint id PK
+        bigint servico_refeicao_id FK
+        date data_referencia "única no serviço"
+    }
+    OPCAO_CARDAPIO {
+        bigint id PK
+        bigint cardapio_id FK
+        string dieta "única no cardápio"
+    }
+    ITEM_CARDAPIO {
+        bigint id PK
+        bigint opcao_cardapio_id FK
+        string categoria
+        string descricao
+        int ordem "única na opção"
+    }
+    EXPORTACAO_RELATORIO {
+        bigint id PK
+        bigint usuario_id FK
+        string tipo
+        string formato
+        json filtros
+        json agrupamentos
+        datetime solicitada_em
+        datetime emitida_em
+        string status
+        int quantidade_registros
+        decimal total_debitos
+        decimal total_creditos
+        string arquivo_chave
+        string arquivo_sha256
+        string assinatura_status
+    }

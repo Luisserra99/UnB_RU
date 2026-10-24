@@ -80,6 +80,8 @@
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
 \usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
 \newcounter{none} % for unnumbered tables
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
@@ -87,9 +89,6 @@
 \makeatletter
 \patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
 \makeatother
-% Allow footnotes in longtable head/foot
-\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
-\makesavenoteenv{longtable}
 \ifLuaTeX
 \usepackage[bidi=basic,shorthands=off]{babel}
 \else
@@ -110,10 +109,14 @@
 \AtBeginEnvironment{longtable}{\footnotesize}
 \setlength{\emergencystretch}{3em}
 \setlength{\parskip}{0.4em}
-\def\UrlBreaks{\do\_\do\/\do\.\do\-}
+\AtBeginDocument{\def\UrlBreaks{\do\_\do\/\do\.\do\-}\Urlmuskip=0mu}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
 \hypersetup{
   pdftitle={Modelo Entidade-Relacionamento da Aplicação UnB RU},
   pdflang={pt-BR},
@@ -911,18 +914,31 @@ ser rotulado como assinado antes desse processo.
 
 \section{Modelo Relacional UML}\label{modelo-relacional-uml}
 
-O modelo está dividido em sete visões do mesmo esquema para manter a
-legibilidade. Entidades repetidas entre as figuras representam as mesmas
-tabelas. Os diagramas exibem chaves e atributos centrais; o dicionário
-anterior define os demais atributos e restrições.
+A visão geral apresenta o esquema completo em um único diagrama, com as
+23 entidades, todos os atributos do dicionário e os 30 relacionamentos;
+como a figura é vetorial, seus detalhes podem ser ampliados no PDF. Para
+manter a legibilidade, o mesmo esquema é detalhado em sete visões
+parciais. Entidades repetidas entre as figuras representam as mesmas
+tabelas. As visões parciais exibem chaves e atributos centrais; o
+dicionário anterior define os demais atributos e restrições.
 
 \textbf{Legenda:} \texttt{\textbar{}\textbar{}} significa exatamente um;
 \texttt{o\textbar{}}, zero ou um; \texttt{o\{}, zero ou muitos;
 \texttt{\textbar{}\{}, um ou muitos. \texttt{PK} indica chave primária,
-\texttt{FK} chave estrangeira e \texttt{UK} chave única. As relações
-opcionais entre acesso, tarifa e estudante permitem registrar leituras
-rejeitadas sem inventar um estudante válido. As condições entre estado e
-existência de registros são detalhadas no Apêndice A.
+\texttt{FK} chave estrangeira e \texttt{UK} chave única. Na visão geral,
+a última coluna das entidades anota unicidades compostas ou parciais e
+restrições entre relacionamentos que a cardinalidade não expressa, como
+o XOR entre as origens de uma movimentação. As relações opcionais entre
+acesso, tarifa e estudante permitem registrar leituras rejeitadas sem
+inventar um estudante válido. As condições entre estado e existência de
+registros são detalhadas no Apêndice A.
+
+\clearpage
+\subsection*{Visão geral — Modelo completo}
+\begin{center}
+\includegraphics[width=\linewidth,height=0.88\textheight,keepaspectratio]{diagramas/visao-geral.pdf}
+\end{center}
+\clearpage
 
 \clearpage
 \subsection*{Visão 1 — Identidade e papéis}
@@ -1018,10 +1034,10 @@ cenários sem criar créditos ou débitos indevidos.
 
 A proposta mantém a origem de cada lançamento e o contexto de cada
 operação, permitindo construir o extrato individual, o histórico local e
-os relatórios globais a partir de fatos consistentes. As sete visões do
-diagrama pertencem ao mesmo esquema; as restrições adicionais
-complementam cardinalidades que, sozinhas, não expressam regras de
-estado, tempo e concorrência.
+os relatórios globais a partir de fatos consistentes. A visão geral e as
+sete visões parciais representam o mesmo esquema; as restrições
+adicionais complementam cardinalidades que, sozinhas, não expressam
+regras de estado, tempo e concorrência.
 
 Antes da implementação, o grupo deve decidir os pontos identificados no
 Apêndice D, especialmente a política de tarifas, o significado
@@ -1750,6 +1766,32 @@ afirma ter inspecionado os frames. Não foram utilizados agentes
 paralelos. As entidades auxiliares e as decisões propostas estão
 identificadas para que o grupo possa revisá-las e explicar sua
 finalidade antes da entrega.
+
+A visão geral do modelo foi elaborada posteriormente com apoio do
+\textbf{Claude Code} (Anthropic, modelo Claude Opus 5.5), a pedido de um
+integrante do grupo, que definiu a tarefa e revisou o resultado. A
+estratégia foi a seguinte: a IA leu o dicionário de dados e as sete
+visões, reuniu as 23 entidades com todos os atributos do dicionário e os
+30 relacionamentos correspondentes às chaves estrangeiras, e eliminou um
+relacionamento duplicado entre as visões 5 e 6, que representavam a
+mesma chave estrangeira com rótulos diferentes. As anotações da última
+coluna foram extraídas do dicionário e do Apêndice A, sem acrescentar
+regras novas. Também não foram criadas chaves estrangeiras deriváveis
+por outros caminhos, conforme a seção de normalização.
+
+A verificação foi automatizada por scripts auxiliares, que não fazem
+parte do repositório. Um deles comparou o diagrama com o dicionário e
+com as sete visões: entidades, atributos, chaves, obrigatoriedade e
+unicidade das chaves estrangeiras e as cardinalidades resultantes. Esse
+script foi testado com erros inseridos de propósito. Outro mediu a
+legibilidade de 126 alternativas de layout do Mermaid, contando arestas
+sobre marcadores de cardinalidade, sobre caixas ou sobre rótulos e
+cruzamentos entre arestas; a alternativa adotada não apresenta os três
+primeiros problemas e tem quatro cruzamentos. A IA ajustou ainda o
+script \path|gerar_relatorio.py| para incluir a visão geral sem
+renumerar as demais figuras, ajustar o PDF do diagrama a uma página e
+manter a regra de quebra de identificadores longos independentemente dos
+pacotes LaTeX instalados. Não foram utilizados agentes paralelos.
 
 \section{Referências}\label{referuxeancias}
 

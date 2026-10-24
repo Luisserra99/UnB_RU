@@ -12,6 +12,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import unicodedata
 import xml.etree.ElementTree as ET
 
 
@@ -55,8 +56,9 @@ def main():
         config.write_text(json.dumps(configuracao), encoding="utf-8")
 
         substituicoes = {}
-        for numero, visao in enumerate(visoes, 1):
-            nome = f"visao-{numero}"
+        for visao in visoes:
+            rotulo = unicodedata.normalize("NFKD", visao[1].split(" — ")[0])
+            nome = rotulo.encode("ascii", "ignore").decode().lower().replace(" ", "-")
             fonte = pasta / f"{nome}.mmd"
             conteudo = visao[2] + "\n"
             atualizado = fonte.exists() and fonte.read_text(encoding="utf-8") == conteudo
@@ -66,7 +68,7 @@ def main():
                     continue
                 comando = [argumentos.mmdc, "-i", str(fonte), "-o",
                            str(pasta / f"{nome}.{extensao}"), "-p", str(config),
-                           "-b", "white", "-t", "neutral"]
+                           "-b", "white", "-t", "neutral", "--pdfFit"]
                 executar(comando)
             raiz = ET.parse(pasta / f"{nome}.svg").getroot()
             _, _, largura, altura = map(float, raiz.attrib["viewBox"].split())
@@ -81,7 +83,7 @@ def main():
                   "keepaspectratio]{diagramas/" + nome + ".pdf}\n"
                 + "\\end{center}\n" + fim + "\\clearpage\n"
             )
-            print(f"Diagrama {numero}: validado e renderizado.")
+            print(f"Diagrama {nome}: validado e renderizado.")
 
         for original, substituicao in substituicoes.items():
             texto = texto.replace(original, substituicao)
@@ -97,7 +99,7 @@ def main():
 \AtBeginEnvironment{longtable}{\footnotesize}
 \setlength{\emergencystretch}{3em}
 \setlength{\parskip}{0.4em}
-\def\UrlBreaks{\do\_\do\/\do\.\do\-}
+\AtBeginDocument{\def\UrlBreaks{\do\_\do\/\do\.\do\-}\Urlmuskip=0mu}
 """, encoding="utf-8")
         filtro = temp / "quebrar-identificadores.lua"
         filtro.write_text(r"""
