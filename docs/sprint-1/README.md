@@ -1,13 +1,14 @@
 # Sprint 1 — Segunda etapa
 
-O relatório segue a estrutura do template LaTeX fornecido em `TemplateRelatorioSprint1_1/ER-MyRottenPotatoes.tex` e contém o modelo ER das 12 features e o spike documental das views Rails.
+O relatório segue a estrutura do template LaTeX fornecido em `TemplateRelatorioSprint1_1/ER-MyRottenPotatoes.tex` e contém o modelo ER das 12 features.
 
 - [Relatório em PDF](relatorio-etapa-2.pdf): versão para leitura e entrega no Aprender.
 - [Relatório em Markdown](relatorio-etapa-2.md): fonte principal editável, com diagramas Mermaid.
 - [Relatório em LaTeX](relatorio-etapa-2.tex): fonte gerada a partir do Markdown.
 - [Diagramas](diagramas/): fontes Mermaid, SVGs e PDFs vetoriais utilizados no relatório.
+- [Referência futura](referencia-spike-views-e-decisoes.md): spike das views Rails e divergências entre cenários, retirados do relatório entregue.
 
-As decisões propostas e divergências entre cenários estão explicitadas nos apêndices. A investigação Rails é documental; não foi validada visualmente contra o Figma nem executada uma aplicação Rails.
+As decisões pendentes e a investigação Rails ficaram no arquivo de referência futura. A investigação é documental; não foi validada visualmente contra o Figma nem executada uma aplicação Rails.
 
 ## Regenerar os arquivos
 
@@ -27,4 +28,4 @@ python3 docs/sprint-1/gerar_relatorio.py \
   --chromium /caminho/para/chromium
 ```
 
-O script extrai os diagramas do Markdown, renderiza as imagens, produz o LaTeX e compila o PDF em duas passagens para resolver o sumário. As seções e o conteúdo do template são adaptados ao domínio UnB RU; o arquivo original do professor é preservado.
+O script extrai os diagramas do Markdown, renderiza as imagens, produz o LaTeX e compila o PDF em três passagens para resolver o sumário. As seções e o conteúdo do template são adaptados ao domínio UnB RU; o arquivo original do professor é preservado.

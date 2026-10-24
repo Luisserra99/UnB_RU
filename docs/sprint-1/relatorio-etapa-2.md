@@ -9,7 +9,7 @@ lang: pt-BR
 
 O UnB RU é um sistema de gerenciamento do Restaurante Universitário da Universidade de Brasília. O domínio reúne a conta do estudante, a compra de créditos, a operação de catracas, a gestão de restaurantes, a consulta de cardápios e a produção de relatórios para estudantes e administradores. Este relatório apresenta um modelo entidade-relacionamento lógico, com indicação de chaves e restrições para sua futura implementação em Ruby on Rails e banco relacional.
 
-O documento segue as seções do template `ER-MyRottenPotatoes.tex`, disponibilizado em `TemplateRelatorioSprint1_1`: Introdução, Entidades Principais, Modelo Relacional UML e Considerações Finais. O diagrama utiliza a notação ER de pé de galinha, em vez da notação de classes UML do exemplo, conforme a possibilidade de utilizar Mermaid indicada no enunciado. Os apêndices detalham integridade, rastreabilidade e a investigação técnica das views em Rails.
+O documento segue as seções do template `ER-MyRottenPotatoes.tex`, disponibilizado em `TemplateRelatorioSprint1_1`: Introdução, Entidades Principais, Modelo Relacional UML e Considerações Finais. O diagrama utiliza a notação ER de pé de galinha, em vez da notação de classes UML do exemplo, conforme a possibilidade de utilizar Mermaid indicada no enunciado. O apêndice registra o uso de inteligência artificial na elaboração.
 
 | Integrante | Matrícula | Papel na sprint |
 |:---|:---|:---|
@@ -302,7 +302,7 @@ Centraliza os dados de autenticação de estudantes, funcionários e administrad
 
 A visão geral apresenta o esquema completo em um único diagrama, com as 23 entidades, todos os atributos do dicionário e os 30 relacionamentos; como a figura é vetorial, seus detalhes podem ser ampliados no PDF. Para manter a legibilidade, o mesmo esquema é detalhado em sete visões parciais. Entidades repetidas entre as figuras representam as mesmas tabelas. As visões parciais exibem chaves e atributos centrais; o dicionário anterior define os demais atributos e restrições.
 
-**Legenda:** `||` significa exatamente um; `o|`, zero ou um; `o{`, zero ou muitos; `|{`, um ou muitos. `PK` indica chave primária, `FK` chave estrangeira e `UK` chave única. Na visão geral, a última coluna das entidades anota unicidades compostas ou parciais e restrições entre relacionamentos que a cardinalidade não expressa, como o XOR entre as origens de uma movimentação. As relações opcionais entre acesso, tarifa e estudante permitem registrar leituras rejeitadas sem inventar um estudante válido. As condições entre estado e existência de registros são detalhadas no Apêndice A.
+**Legenda:** `||` significa exatamente um; `o|`, zero ou um; `o{`, zero ou muitos; `|{`, um ou muitos. `PK` indica chave primária, `FK` chave estrangeira e `UK` chave única. Na visão geral, a última coluna das entidades anota unicidades compostas ou parciais e restrições entre relacionamentos que a cardinalidade não expressa, como o XOR entre as origens de uma movimentação. As relações opcionais entre acesso, tarifa e estudante permitem registrar leituras rejeitadas sem inventar um estudante válido.
 
 ## Visão geral — Modelo completo
 
@@ -800,277 +800,28 @@ erDiagram
     }
 ```
 
-## Normalização e preservação histórica
-
-Cada movimentação tem exatamente uma das duas origens opcionais representadas na visão financeira. A notação não expressa essa exclusividade; ela é garantida pela restrição XOR descrita no Apêndice A. Uma recarga origina no máximo um crédito; uma movimentação de débito não possui recarga como origem direta, embora possa consumir suas reservas por rateios.
-
-As informações cadastrais são separadas de eventos e movimentos financeiros. Restaurante não é repetido como FK na catraca porque já é determinado pelo piso. Funcionário não é repetido no acesso porque é determinado pela configuração e sua sessão. A associação de papéis e o rateio financeiro resolvem relações N:N sem listas em uma coluna.
-
-Os itens de recarga, opções de dieta e itens do cardápio evitam grupos repetidos como `item1`, `item2` ou uma coluna por alternativa alimentar. A descrição de um prato permanece texto de apresentação; não se propõe um cadastro de ingredientes ou estoque, ausentes do escopo.
-
-Valores unitários de compra, saldo lido e valor previsto de entrada são fotografias intencionais do evento. Não devem ser substituídos pelo preço ou saldo atuais. Os vínculos que determinam o contexto histórico não podem ser realocados depois de referenciados: não se troca o estudante de uma recarga, o piso histórico de uma catraca, a sessão de uma configuração ou a origem de um lançamento.
-
-Totais do relatório, percentuais, saldo atual, flags de liberação e quantidade de pisos são derivados. Os totais registrados em uma emissão representam o documento emitido, não uma nova fonte de verdade para as operações. JSON é reservado aos parâmetros variáveis de uma emissão; os relacionamentos do domínio continuam representados por FKs.
-
 # Considerações Finais
 
-O modelo proposto cobre as 12 funcionalidades da primeira sprint com 23 entidades. A estrutura distingue solicitação de recarga, confirmação de pagamento, leitura de identificação, autorização temporária e passagem efetiva. Essas distinções permitem representar os caminhos tristes dos cenários sem criar créditos ou débitos indevidos.
+O modelo cobre as 12 funcionalidades da primeira sprint com 23 entidades e 30 relacionamentos, apresentados na visão geral e detalhados nas sete visões parciais. Ao separar solicitação de recarga, confirmação de pagamento, leitura na catraca e passagem efetiva, e ao registrar a origem de cada lançamento, o esquema sustenta o extrato do estudante, o histórico das catracas e os relatórios globais sem gerar créditos ou débitos indevidos. Antes da implementação, o grupo ainda precisa definir a política de tarifas, o critério de consumo dos créditos e o mecanismo de assinatura digital dos relatórios.
 
-A proposta mantém a origem de cada lançamento e o contexto de cada operação, permitindo construir o extrato individual, o histórico local e os relatórios globais a partir de fatos consistentes. A visão geral e as sete visões parciais representam o mesmo esquema; as restrições adicionais complementam cardinalidades que, sozinhas, não expressam regras de estado, tempo e concorrência.
+# Apêndice — Uso de inteligência artificial
 
-Antes da implementação, o grupo deve decidir os pontos identificados no Apêndice D, especialmente a política de tarifas, o significado financeiro dos métodos de liquidação, o consumo de créditos e a assinatura digital. A investigação de views apresentada no Apêndice C oferece uma direção técnica para a próxima sprint. Sua aderência visual ao protótipo precisa ser conferida no Figma, cujo conteúdo não pôde ser acessado nesta elaboração.
-
-# Apêndice A — Integridade e ciclos de negócio
-
-## A.1 Restrições de banco e de serviço
-
-| Restrição | Garantia proposta |
-|:---|:---|
-| Identificação, matrícula e email sem duplicação | Índices únicos; normalização de email antes de persistir; matrícula com nove dígitos. |
-| Permissões consistentes | PK composta em `UsuarioPapel`; serviço de cadastro cria conta, papel e estudante na mesma transação. |
-| Uma configuração vigente por sessão | Índice único parcial em `sessao_autenticacao_id` quando `finalizada_em IS NULL`. |
-| Restaurante com pelo menos um piso | Criação/alteração por serviço transacional; impedir exclusão do último piso. |
-| Catraca com nome único no restaurante | Validação pelo restaurante do piso, serialização no restaurante e gatilho no banco na implementação PostgreSQL. |
-| Preços e horários não ambíguos | Rejeitar vigências tarifárias sobrepostas por tipo e janelas de serviço sobrepostas por restaurante/dia. |
-| Pedido de recarga íntegro | Pelo menos um item; quantidade positiva; soma dos subtotais igual ao total. Escrita transacional. |
-| Uma confirmação financeira por pedido | Índice único parcial de pagamento confirmado por recarga e índice único da referência externa. |
-| Uma origem por lançamento | `CHECK` de natureza, sinal e XOR entre `recarga_id` e `registro_acesso_id`; ambas as FKs com índice único. |
-| Valor e titular coerentes com a origem | Serviço transacional e validações entre tabelas, reforçáveis com gatilhos; não são verificáveis apenas por `CHECK` da linha. |
-| Débito com financiamento suficiente | Soma dos rateios igual ao débito; soma consumida de cada recarga menor ou igual ao crédito. |
-| Acesso coerente com o restaurante | Serviço de refeição deve pertencer ao restaurante da catraca da configuração; tarifa deve ser do tipo do serviço. |
-| Eventos repetidos sem cobrança duplicada | Referência única do evento e débito único por acesso; estados terminais não são reprocessados. |
-| Preservação histórica | FKs com exclusão restrita para cadastros referenciados; impedir reatribuição dos vínculos históricos. |
-
-As condições sobre somas, períodos e registros relacionados devem ser implementadas em serviços de domínio dentro de transações, com bloqueios consistentes. Validações isoladas de model não protegem de duas requisições simultâneas. Não se apresenta um esquema SQL executável nesta entrega; esta tabela orienta as migrations e os serviços da próxima sprint.
-
-## A.2 Pagamento e atualização do saldo
-
-1. O estudante informa quantidades inteiras não negativas. Itens com quantidade zero são omitidos; se todos forem zero, a solicitação é rejeitada com “Não é possível gerar uma cobrança zerada”.
-2. O servidor consulta tarifas vigentes, fixa os valores unitários e calcula o total. Dados de preço enviados pelo navegador não são aceitos como fonte do valor.
-3. São criados pedido, itens e tentativa de pagamento. No PIX, a cobrança exibe QR Code e Copia e Cola e tem validade de dez minutos. Até a confirmação, não existe movimentação de crédito.
-4. A confirmação autenticada do provedor bloqueia o estudante e a recarga, verifica estado, referência, titularidade e valor e aceita somente uma confirmação para o pedido.
-5. A mesma transação confirma pedido/pagamento e grava um único crédito. A repetição da notificação devolve o resultado já registrado.
-6. Pagamento recusado ou PIX expirado não gera crédito. Um novo pedido ou uma tentativa válida posterior depende das regras de reemissão definidas na implementação.
-
-**Exemplo:** saldo inicial zero, dois cafés a R$ 2,50 e quatro almoços/jantares a R$ 4,50 produzem pedido de R$ 23,00. Saldo pendente: R$ 0,00; após confirmação: R$ 23,00. Não são seis lançamentos de crédito, mas um crédito e seus itens de composição.
-
-## A.3 Configuração e troca do ponto de acesso
-
-Após login, `ponto_acesso_pendente` é verdadeiro e nenhuma operação dependente do ponto está disponível. O formulário lista restaurantes ativos e catracas do restaurante escolhido. A confirmação revalida disponibilidade e pertencimento; só então cria uma configuração confirmada e desmarca a pendência.
-
-Ao iniciar uma troca, a sessão volta ao estado pendente. Selecionar outro restaurante limpa a catraca apenas no formulário. A configuração anterior continua identificável, mas não autoriza operações durante a pendência. A confirmação válida finaliza a anterior e cria a nova na mesma transação. Erros mantêm a pendência e não geram um evento de configuração concluída.
-
-Logout/expiração invalidam o uso da configuração, mesmo se uma tarefa de limpeza ainda não tiver preenchido seu encerramento. O servidor verifica a validade da sessão em cada operação. O histórico da catraca exige também a validação da credencial do funcionário prevista em F07 e compara a catraca solicitada com o ponto que ele gerencia; autenticar outro funcionário não concede acesso ao histórico local.
-
-## A.4 Estados da leitura e cobrança na passagem
-
-| Estado | Liberação | Passagem | Bloqueio registrado | Efeito financeiro |
-|:---|:---|:---|:---|:---|
-| `negado` | Não | Não | Sem timestamp de novo comando de bloqueio | Nenhum débito; identificação e motivo são preservados. |
-| `aguardando_passagem` | Sim | Ainda não | Não | Nenhum débito; autorização temporária de até cinco segundos. |
-| `realizado` | Sim | Sim | No instante da passagem | Um débito do valor previsto e respectivos rateios. |
-| `expirado` | Sim | Não | No fim do prazo | Nenhum débito; mensagem “Acesso cancelado”. |
-
-Para a identificação inválida ou desconhecida, `estudante_id` e `saldo_lido` ficam ausentes e a mensagem é “Identificação desconhecida”. Para saldo insuficiente, o estudante e seu saldo lido são preservados, a catraca não é liberada e a mensagem é “Saldo insuficiente”. Quando o saldo é exatamente o preço, o acesso é permitido.
-
-O prazo é contado a partir da liberação, não da leitura. Com leitura às 12:00:00 e liberação às 12:00:01, o bloqueio por expiração ocorre às 12:00:06, como em F07. A tabela de F06 admite passagem após cinco segundos; por isso, propõe-se aceitar um evento de passagem com horário menor ou igual ao limite. Em empate entre passagem e timeout, o processamento precisa comparar o timestamp do evento e serializar a transição. A precisão e a origem confiável do relógio do equipamento devem ser definidas na integração.
-
-**Concorrência proposta:** permitir no máximo uma autorização pendente por estudante e por catraca, com índices únicos parciais para `estado = 'aguardando_passagem'`. Expirações pendentes são resolvidas antes de nova autorização. Isso evita liberar duas catracas para gastar o mesmo saldo. A identificação de uma nova tentativa concorrente e sua mensagem ainda precisam ser especificadas pela equipe.
-
-Na passagem, uma transação bloqueia o estudante e o acesso, revalida o estado e o prazo, cria o débito, distribui os rateios e finaliza o registro. Confirmação de pagamento, autorização, timeout e passagem seguem uma ordem de bloqueios consistente para evitar interbloqueios. Débito e rateio só se tornam visíveis juntos. O comando físico de bloqueio/liberação precisa de confirmação e política de falha de integração; uma transação de banco não garante, sozinha, a execução de um comando no equipamento.
-
-**Exemplo:** saldo lido de R$ 10,00 e tarifa de R$ 2,50. Antes da passagem, saldo financeiro de R$ 10,00. Passagem válida em dois segundos: débito de R$ 2,50, saldo final R$ 7,50 e mensagem “Boa refeição”. Sem passagem no prazo: saldo final R$ 10,00 e registro de autorização expirada.
-
-## A.5 Extratos, relatórios e fórmulas
-
-O extrato estudantil consulta somente `MovimentacaoSaldo` do estudante autenticado. O histórico de refeições contém passagens realizadas; leituras rejeitadas ou expiradas aparecem no histórico operacional da catraca, sem serem apresentadas como refeições cobradas.
-
-| Indicador | Definição proposta |
-|:---|:---|
-| Saldo atual | Soma de todos os valores assinados do estudante; não apenas do período filtrado. |
-| Total recarregado no período | Soma dos créditos confirmados que correspondem aos filtros pertinentes. |
-| Total gasto no período | Valor absoluto da soma dos débitos correspondentes ao filtro. |
-| Refeições servidas | Quantidade de acessos realizados, com débito correspondente, no escopo consultado. |
-| Arrecadação operacional | Soma dos valores efetivamente debitados pelas refeições selecionadas. |
-| Total por restaurante | Mesma soma e contagem, agrupadas pelo ID do restaurante da catraca. |
-| Distribuição por refeição | Contagem e valores dos acessos realizados, agrupados pelo tipo do serviço. |
-| Catracas online | Quantidade `online = true` sobre o total cadastrado na unidade; a inclusão de desativadas requer decisão do grupo. |
-| Métodos de liquidação | Soma dos rateios dos débitos filtrados, agrupados pelo método do pagamento confirmado da recarga de origem. |
-| Percentual de um método | Valor do método dividido pela arrecadação operacional, vezes 100; zero quando não há arrecadação. |
-| Ticket médio | Arrecadação operacional dividida pelo número de refeições servidas; zero sem refeições. |
-| Transações validadas | Nesta proposta, quantidade de débitos de refeições no escopo, distinta do número de tentativas de pagamento. |
-| Divergências contábeis | Ocorrências de valor de crédito/pagamento inconsistente, débito sem rateio integral ou uso superior ao crédito de origem. |
-
-As fórmulas são propostas de interpretação da tela de F09. Não representam, por si só, conciliação bancária com taxas e datas de liquidação do adquirente. Se esse for o objetivo do painel, será necessária uma entidade própria de liquidação e dados fornecidos pelo provedor.
-
-O relatório começa com hoje, todos os turnos e a unidade Campus Darcy Ribeiro. Os filtros de data, turno, unidade, restaurante e catraca são combinados antes de calcular cards, tabela e painéis. Restaurantes sem acessos permanecem listados com zero; isso exige partir do cadastro de restaurantes e agregar os resultados filtrados sem excluí-los por um filtro aplicado incorretamente sobre um `LEFT JOIN`.
-
-O total consolidado soma as linhas por restaurante. Não se multiplica toda a contagem do restaurante por uma tarifa única quando há refeições com preços diferentes. O agrupamento de catracas utiliza IDs e o vínculo com o restaurante, pois duas catracas podem ter o mesmo nome em restaurantes distintos. A interface é somente leitura; não existe edição de acesso pelo relatório.
-
-**Exemplo de origem dos recursos:** uma refeição de R$ 4,50 pode consumir R$ 2,00 de uma recarga PIX e R$ 2,50 de uma recarga no cartão. Os rateios atribuem exatamente esses valores aos métodos. As recargas podem ser de dias anteriores. A soma por método continua igual ao débito do período, sem somar novamente o crédito recebido.
-
-## A.6 Exportação, autorização e integridade do arquivo
-
-F11 utiliza o mesmo escopo de dados da conta autenticada. Os filtros de refeição e catraca reduzem os lançamentos; recargas sem catraca não devem ser atribuídas artificialmente a um restaurante. A feature mostra que filtrar “Almoço” exclui a recarga do extrato. Já o saldo atual permanece sendo o saldo da conta, independentemente do filtro.
-
-F12 exige administrador geral com sessão válida. O PDF inclui data/hora da passagem, matrícula, restaurante, catraca, refeição, valor debitado, total de acessos, total debitado, emissor, horário de emissão, filtros e agrupamentos. O agrupamento mantém subtotais por restaurante e catraca. F09 também prevê CSV e PDF consolidado; a distinção de permissões para a exportação oficial é um ponto de alinhamento entre as features.
-
-As exportações usam a consulta filtrada antes da paginação. Um período invertido é rejeitado antes da geração. Sem dados, não há arquivo; o estado de emissão pode registrar `sem_dados`. Falha de renderização mantém `arquivo_chave` ausente, informa o erro e permite nova tentativa. Falha de exportação não altera acessos, saldos nem pagamentos.
-
-O processamento assíncrono precisa autorizar a solicitação, fixar um conjunto consistente de dados para a emissão e revalidar a permissão no download. Credenciais expiradas não são contornadas por uma URL pública permanente. A escolha do gerador de PDF, do armazenamento e da assinatura deve ser validada na implementação.
-
-## A.7 Cardápio atual e transformação do JSON
-
-O serviço atual é encontrado por restaurante, dia da semana e horário local. Sem serviço em andamento, exibe-se ausência de cardápio atual; com serviço e sem publicação, informa-se indisponibilidade para a data. O estudante deve conseguir distinguir esse estado de uma única dieta sem itens.
-
-O arquivo `cardapio.json` organiza a semana em `cafe_da_manha`, `almoco` e `jantar`, com campos comuns e específicos de dieta. A importação proposta cria o cardápio por serviço/data e as três opções alimentares, copia bebidas, frutas e acompanhamentos comuns para cada opção e encaminha `complemento_*` e `prato_principal_*` à dieta adequada. Valores opcionais ausentes são ignorados. As categorias e a ordem preservam a apresentação dos itens.
-
-O JSON não contém o restaurante, a semana de validade nem os horários. Esses dados devem ser fornecidos na importação e na configuração dos serviços; não podem ser inferidos como fatos do arquivo.
-
-# Apêndice B — Rastreabilidade com as features
-
-| Feature e arquivo | Entidades e consultas | Cenários e restrições representados |
-|:---|:---|:---|
-| F01 — `cadastro_usuario.feature` | Usuario, Papel, UsuarioPapel, Estudante | Matrícula de nove dígitos, domínio institucional e senha mínima de oito caracteres; cadastro inválido não cria conta parcial. |
-| F02 — `recarga_saldo.feature` | Recarga, ItemRecarga, TarifaRefeicao, Pagamento, MovimentacaoSaldo | Soma de quantidades e preços; PIX/Copia e Cola; expiração em dez minutos; cartão recusado e PIX pendente não geram crédito; pedido zerado é rejeitado. |
-| F03 — `extrato_historico.feature` | Estudante, MovimentacaoSaldo, RegistroAcesso | Saldo, recargas e passagens da própria conta; extrato vazio; negação de acesso ao extrato alheio. |
-| F04 — `autenticacao_funcionario.feature` | Usuario, Papel, UsuarioPapel, SessaoAutenticacao | Atividade, credenciais obrigatórias, login válido, senha errada, perfil estudantil exclusivo, logout e sessão expirada. |
-| F05 — `configuracao_ponto_acesso.feature` | SessaoAutenticacao, ConfiguracaoPontoAcesso, Restaurante, Piso, Catraca | Seleção dependente, pertencimento, revalidação, troca pendente, rejeição sem substituir contexto e preservação dos registros anteriores. |
-| F06 — `validacao_entrada.feature` | RegistroAcesso, Estudante, ServicoRefeicao, TarifaRefeicao, MovimentacaoSaldo | Identificação desconhecida, saldo insuficiente/exato, liberação sem débito, passagem com débito único e timeout sem cobrança. |
-| F07 — `historico_local_catraca.feature` | Usuario, SessaoAutenticacao, ConfiguracaoPontoAcesso, RegistroAcesso | Credencial e catraca gerenciada, isolamento de registros, histórico vazio, saldo lido, flags e timestamps, inclusive leituras inválidas. |
-| F08 — `gestao_restaurante_catracas.feature` | UnidadeGestora, Restaurante, Piso, Catraca | Cadastro/edição, pisos e capacidade positivos, nome duplicado, catraca repetida entre pisos, exclusão com dependências e catraca em operação. |
-| F09 — `relatorio_global_acesso.feature` | Estrutura física, RegistroAcesso, MovimentacaoSaldo, RateioConsumo, Pagamento, ExportacaoRelatorio | Perfil administrativo, filtros conjuntos, totais, online, restaurantes zerados, métodos, CSV/PDF e consulta sem resultados. |
-| F10 — `cardapio_atual.feature` | ServicoRefeicao, Cardapio, OpcaoCardapio, ItemCardapio | Refeição atual, três dietas, ausência de serviço e opção sem itens. |
-| F11 — `exportacao_PDF_historico_estudante.feature` | Usuario, Estudante, MovimentacaoSaldo, RegistroAcesso, ExportacaoRelatorio | Titularidade, filtros, saldo e totais, identificação, período, sem lançamentos, sessão expirada e assinatura digital a implementar. |
-| F12 — `exportacao_pdf_relatorio_operacao.feature` | RegistroAcesso, ConfiguracaoPontoAcesso, MovimentacaoSaldo, ExportacaoRelatorio | Período inclusivo, filtros por unidade física, subtotais, emissor, exportação integral com paginação, acesso direto, ausência de dados e erro sem arquivo parcial. |
-
-# Apêndice C — Spike: implementação das views em Rails
-
-## C.1 Pergunta, método e resultado
-
-**Pergunta:** como transformar as telas do protótipo UnB RU em views Rails, preservando os fluxos e estados das 12 features sem concentrar regras financeiras ou de autorização no navegador?
-
-**Investigação realizada:** leitura dos cenários e da wiki, identificação dos componentes e estados necessários e consulta à documentação oficial de Action View, formulários, Turbo, Stimulus e bloqueios transacionais. O link do Figma foi extraído do PDF, mas seu conteúdo não foi acessível pela consulta web. O plugin Figma foi localizado, porém não estava conectado nesta sessão. Assim, o mapeamento abaixo deriva das features; cores, tipografia, espaçamento, ícones e fidelidade dos frames ainda não foram verificados.
-
-**Resultado:** propõe-se Rails com templates ERB, layouts por área e partials compartilhados. `form_with` atende cadastros e filtros; Turbo Frames permite atualizar partes das páginas; Stimulus atende comportamentos locais, como quantidades, cópia do PIX e seleção dependente. A solução foi investigada documentalmente; não foi executada uma aplicação Rails ou comprovada integração com equipamentos, pagamentos ou assinatura.
-
-## C.2 Organização das telas
-
-| Área/tela | Views propostas | Componentes e estados relevantes |
-|:---|:---|:---|
-| Cadastro do estudante | `cadastros/new.html.erb` | Matrícula, email, senha, erros por campo, envio em andamento e sucesso. |
-| Login de funcionário | `controle/sessoes/new.html.erb` | Identificação/senha, campos obrigatórios, falha de autenticação e redirecionamento à configuração. |
-| Ponto de acesso | `controle/pontos_acesso/edit.html.erb` | Restaurante, catraca dependente, nenhuma opção, seleção incompleta, reconfiguração e confirmação rejeitada. |
-| Operação da catraca | `controle/acessos/new.html.erb` | Aguardando identificação, negado, liberado, passagem realizada e acesso cancelado. |
-| Histórico local | `controle/historicos/index.html.erb` | Validação da credencial, tabela restrita à catraca atual, flags/timestamps e vazio. |
-| Recarga | `estudante/recargas/new.html.erb` e `show.html.erb` | Quantidades, subtotais, total, PIX/cartão, cobrança pendente, recusa, confirmação e expiração. |
-| Extrato | `estudante/extratos/show.html.erb` | Saldo, filtros, total gasto, total recarregado, contagem de refeições, tabela, vazio e exportação. |
-| Cardápio | `estudante/cardapios/show.html.erb` | Refeição atual, três alternativas, dieta indisponível e ausência de serviço. |
-| Gestão física | `admin/restaurantes/index.html.erb`, `_form.html.erb` e `admin/catracas/_form.html.erb` | Pisos, capacidade, criação/edição, confirmação/cancelamento de remoção e erros de dependência. |
-| Relatório global | `admin/relatorios/show.html.erb` | Filtros combinados, cards, consolidação, métodos, distribuição, online, vazio e exportações. |
-
-Usar layouts `estudante`, `controle` e `admin`, com navegação adequada aos papéis do usuário. Partializar mensagens de erro, filtros, cartões de indicadores, status e tabelas. Uma pasta comum pode conter `_flash`, `_erros_formulario` e `_estado_vazio`. O recorte de componentes deve ser confirmado ao examinar os frames do Figma. A documentação de [layouts e partials do Rails](https://guides.rubyonrails.org/layouts_and_rendering.html) fundamenta essa organização.
-
-## C.3 Formulários, atualizações e fronteiras de responsabilidade
-
-`form_with` permite construir formulários associados aos objetos e exibir os erros retornados pelo servidor. Filtros usam GET para manter os critérios na URL; alterações e confirmações usam métodos de escrita e proteção CSRF. O servidor permite apenas parâmetros esperados e deriva usuário/estudante da sessão. Referência: [Action View Form Helpers](https://guides.rubyonrails.org/form_helpers.html).
-
-Um único Turbo Frame deve conter os cards, a tabela e os painéis recalculados do relatório, garantindo que os filtros atualizem o conjunto. O frame da lista de catracas depende do restaurante e precisa retornar o mesmo ID esperado. Exportações saem do frame para uma resposta de download. Referência: [Turbo Frames](https://turbo.hotwired.dev/handbook/frames).
-
-Controllers Stimulus podem calcular uma prévia dos subtotais em centavos inteiros, limpar a seleção de catraca ao mudar o restaurante, copiar o PIX e exibir um cronômetro. O preço final, a validade do pagamento e o saldo são calculados no servidor. O cronômetro nunca confirma pagamento ou lança débito. Referência: [Stimulus Handbook](https://stimulus.hotwired.dev/handbook/introduction).
-
-O controle da catraca pode receber atualizações por eventos do servidor ou consultas periódicas. A escolha depende do protocolo do equipamento e da infraestrutura. O navegador apresenta o estado persistido; não interpreta um clique como passagem física. A concorrência financeira requer transações e bloqueio de linhas, conforme a [API de bloqueio pessimista do Active Record](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Pessimistic.html).
-
-## C.4 Esboço de fluxo para o relatório
-
-O exemplo abaixo é pseudocódigo de organização, não um controller já implementado. Os objetos de consulta e autorização deverão ser criados e testados na próxima sprint.
-
-```ruby
-def show
-  autorizar_relatorio_operacional!
-  @filtros = FiltrosOperacao.validar!(parametros_permitidos)
-  @relatorio = RelatorioOperacao.consultar(@filtros)
-end
-
-def exportar
-  autorizar_exportacao_solicitada!
-  filtros = FiltrosOperacao.validar!(parametros_permitidos)
-  # A mesma consulta de show, antes de qualquer paginacao.
-  relatorio = RelatorioOperacao.consultar(filtros)
-  emitir_documento_completo!(relatorio, emissor: usuario_atual)
-end
-```
-
-O objeto de consulta deve construir uma única base filtrada de acessos realizados, utilizando IDs validados para unidade, restaurante e catraca. Cards e exportação recebem essa base, com leitura consistente; a paginação afeta apenas a tabela visível. Autorização precisa ocorrer no servidor em cada endpoint, inclusive URLs diretas de download.
-
-## C.5 Escolhas de apresentação a confirmar no Figma
-
-1. Inventariar os frames por perfil e estado, incluindo telas vazias, mensagens e modais.
-2. Extrair cores, fontes, escalas de espaçamento, raios, sombras e larguras para variáveis CSS, utilizando os valores reais do protótipo.
-3. Definir grade responsiva e comportamento de tabelas em telas estreitas; confirmar se o protótipo prevê navegação móvel.
-4. Mapear componentes repetidos para partials e estados interativos para controllers Stimulus pequenos.
-5. Conferir labels associados a inputs, navegação por teclado, foco após erro e mensagens de estado anunciadas por tecnologias assistivas.
-6. Comparar as telas implementadas aos frames em dimensões equivalentes e revisar diferenças com a equipe.
-
-Não se propõe uma biblioteca visual específica sem conhecer os componentes do protótipo e as dependências da futura aplicação. A implementação pode começar com CSS próprio e evoluir conforme o inventário visual.
-
-## C.6 Plano de validação da próxima sprint
-
-| Experimento | Critério observável de conclusão |
-|:---|:---|
-| Formulário de cadastro | Reproduz campos do frame, mantém dados não sensíveis após erro e rejeita os três caminhos tristes de F01 no servidor. |
-| Seleção dependente | Lista apenas catracas do restaurante; troca limpa seleção; confirmação revalida cadastro e bloqueia contexto pendente. |
-| Fluxo da catraca | Simulação reproduz os quatro estados de A.4; débito aparece somente após evento de passagem válido. |
-| Recarga pendente/confirmada | A interface não aumenta saldo por solicitação ou cronômetro; notificação repetida gera um crédito único. |
-| Filtros do relatório | Cards, métodos, tabela e totais recebem o mesmo filtro, inclusive unidade e turno; restaurante sem resultado permanece zerado. |
-| Exportações | Documento completo com mais registros que uma página; período inclusivo; acesso alheio negado; falha sem arquivo parcial. |
-| Cardápio | Três grupos renderizados e ausência de itens de uma dieta sem esconder as demais; horário fora de serviço tratado. |
-| Fidelidade visual | Comparação com os frames do Figma e revisão dos estados e comportamento responsivo. |
-
-Esses experimentos são critérios futuros, não testes já executados. Testes de sistema Rails podem exercitar os fluxos de navegador, enquanto testes de serviço cobrem confirmação idempotente e corrida entre passagem/timeout. Referência: [Testing Rails Applications](https://guides.rubyonrails.org/testing.html).
-
-# Apêndice D — Divergências e decisões para revisão do grupo
-
-| Ponto identificado nas fontes | Tratamento proposto e decisão necessária |
-|:---|:---|
-| F09 declara café de R$ 2,50, mas seus exemplos calculam todos os 4.820 acessos a R$ 4,50. | Com 650 cafés a R$ 2,50, 2.980 almoços e 1.190 jantares a R$ 4,50, o total seria R$ 20.390,00, não R$ 21.690,00. O modelo usa o débito histórico. O grupo deve corrigir tarifa ou resultados de teste. |
-| F09 informa 72%/28% e R$ 15.616,80/R$ 6.073,20 para o total de R$ 21.690,00. | Esses valores dependem do total inconsistente. Se o total fosse R$ 20.390,00 e os percentuais fossem mantidos, os valores seriam R$ 14.680,80 e R$ 5.709,20. A distribuição real depende dos pagamentos/rateios. |
-| F11 e F12 usam café de R$ 4,50 em seus exemplos; F06 usa refeição de R$ 2,50 sem fixar tipo. | Preservar valores de eventos e cenários como exemplos; não adotar um valor global a partir deles. Confirmar a política tarifária antes de integrar os dados de teste. |
-| F02 permite PIX e cartão de crédito; F09 rotula crédito/débito. | Não habilitar débito sem requisito aprovado. O rótulo do painel deve ser alinhado ou F02 ampliada. |
-| F09 fala em administrador para PDF oficial; F12 exige administrador geral para exportação operacional. | Proposta conservadora: administrador consulta relatório e exporta CSV; PDF operacional detalhado exige administrador geral. O alcance do PDF consolidado oficial de F09 precisa ser definido. |
-| F07 solicita credenciais para histórico, além da autenticação de F04. | Tratar como revalidação da credencial para a consulta local; não aceitar credencial de outro funcionário que gerencie outra catraca. Confirmar a experiência de uso. |
-| Saldo monetário ou créditos separados por refeição. | O modelo adota saldo monetário porque F02, F03 e F06 descrevem valores em reais; confirmar como o pacote “Almoço/Jantar” vira itens internos. |
-| Métodos de liquidação e transações validadas em F09. | Rateio FIFO e contagem de débitos são interpretações propostas; confirmar se o painel deve representar consumo ou liquidação bancária. |
-| Online, ativo e catraca em operação. | Estados distintos; definir frequência de verificação de conectividade e se catracas desativadas compõem o denominador do indicador. |
-| Domínios institucionais, matrícula ativa, horários e sessão. | Não definidos integralmente. Fornecer lista de domínios, fonte de vínculo, agenda real e duração das sessões. |
-| Passagem no limite de cinco segundos. | A tabela de F06 admite o limite. Definir relógio, precisão e resolução do empate com timeout. |
-| “Registros auditáveis assinados digitalmente” em F11. | Definir certificado e mecanismo de assinatura; hash ou texto impresso não satisfazem assinatura criptográfica. |
-| Política de remoção com dados históricos. | Proposta de exclusão restrita e desativação; alinhar mensagens para cenários não detalhados em F08. |
-
-As divergências foram documentadas sem alterar os arquivos de aceitação dos integrantes. São pontos de revisão para tornar a especificação integrada consistente, não funcionalidades já aprovadas.
-
-# Apêndice E — Uso de inteligência artificial
-
-Este relatório, sua proposta de modelo ER, os diagramas Mermaid e a investigação das views foram elaborados com apoio do **OpenAI Codex**. A estratégia utilizada foi a leitura do enunciado e do template LaTeX fornecidos pelo usuário, análise da wiki e dos 12 arquivos BDD, extração dos relacionamentos, levantamento de restrições e comparação das regras entre funcionalidades. A investigação Rails consultou fontes oficiais e separou resultados documentais de validações práticas ainda não realizadas.
+Este relatório, sua proposta de modelo ER e os diagramas Mermaid foram elaborados com apoio do **OpenAI Codex**. A estratégia utilizada foi a leitura do enunciado e do template LaTeX fornecidos pelo usuário, análise da wiki e dos 12 arquivos BDD, extração dos relacionamentos, levantamento de restrições e comparação das regras entre funcionalidades.
 
 Foi utilizada a skill **plugin-management** para procurar uma integração com Figma após a tentativa de leitura do protótipo pela web. A integração não estava conectada durante a elaboração, portanto não se afirma ter inspecionado os frames. Não foram utilizados agentes paralelos. As entidades auxiliares e as decisões propostas estão identificadas para que o grupo possa revisá-las e explicar sua finalidade antes da entrega.
 
-A visão geral do modelo foi elaborada posteriormente com apoio do **Claude Code** (Anthropic, modelo Claude Opus 5.5), a pedido de um integrante do grupo, que definiu a tarefa e revisou o resultado. A estratégia foi a seguinte: a IA leu o dicionário de dados e as sete visões, reuniu as 23 entidades com todos os atributos do dicionário e os 30 relacionamentos correspondentes às chaves estrangeiras, e eliminou um relacionamento duplicado entre as visões 5 e 6, que representavam a mesma chave estrangeira com rótulos diferentes. As anotações da última coluna foram extraídas do dicionário e do Apêndice A, sem acrescentar regras novas. Também não foram criadas chaves estrangeiras deriváveis por outros caminhos, conforme a seção de normalização.
+A visão geral do modelo foi elaborada posteriormente com apoio do **Claude Code** (Anthropic, modelo Claude Opus 5.5), a pedido de um integrante do grupo, que definiu a tarefa e revisou o resultado. A estratégia foi a seguinte: a IA leu o dicionário de dados e as sete visões, reuniu as 23 entidades com todos os atributos do dicionário e os 30 relacionamentos correspondentes às chaves estrangeiras, e eliminou um relacionamento duplicado entre as visões 5 e 6, que representavam a mesma chave estrangeira com rótulos diferentes. As anotações da última coluna foram extraídas do dicionário e das regras de integridade do relatório, sem acrescentar regras novas. Também não foram criadas chaves estrangeiras deriváveis por outros caminhos.
 
-A verificação foi automatizada por scripts auxiliares, que não fazem parte do repositório. Um deles comparou o diagrama com o dicionário e com as sete visões: entidades, atributos, chaves, obrigatoriedade e unicidade das chaves estrangeiras e as cardinalidades resultantes. Esse script foi testado com erros inseridos de propósito. Outro mediu a legibilidade de 126 alternativas de layout do Mermaid, contando arestas sobre marcadores de cardinalidade, sobre caixas ou sobre rótulos e cruzamentos entre arestas; a alternativa adotada não apresenta os três primeiros problemas e tem quatro cruzamentos. A IA ajustou ainda o script `gerar_relatorio.py` para incluir a visão geral sem renumerar as demais figuras, ajustar o PDF do diagrama a uma página e manter a regra de quebra de identificadores longos independentemente dos pacotes LaTeX instalados. Não foram utilizados agentes paralelos.
+A verificação foi automatizada por scripts auxiliares, que não fazem parte do repositório. Um deles comparou o diagrama com o dicionário e com as sete visões: entidades, atributos, chaves, obrigatoriedade e unicidade das chaves estrangeiras e as cardinalidades resultantes. Esse script foi testado com erros inseridos de propósito. Outro mediu a legibilidade de 126 alternativas de layout do Mermaid, contando arestas sobre marcadores de cardinalidade, sobre caixas ou sobre rótulos e cruzamentos entre arestas; a alternativa adotada não apresenta os três primeiros problemas e tem quatro cruzamentos. A IA ajustou ainda o script `gerar_relatorio.py` para incluir a visão geral sem renumerar as demais figuras, ajustar o PDF do diagrama a uma página e manter a regra de quebra de identificadores longos independentemente dos pacotes LaTeX instalados.
+
+Na mesma ferramenta e a pedido do grupo, o relatório foi depois enxugado para a entrega: foram retirados a seção de normalização e os apêndices de integridade e de rastreabilidade, as considerações finais foram condensadas em um parágrafo, e os apêndices do spike de views Rails e das divergências entre cenários foram movidos, sem alteração, para o arquivo `referencia-spike-views-e-decisoes.md`. Não foram utilizados agentes paralelos.
 
 # Referências
 
 - Enunciado da Sprint 1: `sprint1.pdf`, especialmente a seção “Segunda etapa”.
 - Template fornecido: `TemplateRelatorioSprint1_1/ER-MyRottenPotatoes.tex`.
 - Wiki do projeto: `wiki/Home.md`.
-- Especificações de aceitação: os 12 arquivos em `features/`, relacionados no Apêndice B.
+- Especificações de aceitação: os 12 arquivos em `features/`.
 - Dados de cardápio: `cardapio.json`.
 - Protótipo indicado no enunciado: [UnB RU no Figma](https://www.figma.com/design/Clozp7Rj1jOBz6l7LoT44t/UnB-RU---Engenharia-de-Software?node-id=0-1). Conteúdo visual não acessado.
 - [Mermaid — Entity Relationship Diagrams](https://mermaid.js.org/syntax/entityRelationshipDiagram.html).
-- [Ruby on Rails — Layouts and Rendering](https://guides.rubyonrails.org/layouts_and_rendering.html).
-- [Ruby on Rails — Action View Form Helpers](https://guides.rubyonrails.org/form_helpers.html).
-- [Hotwire — Turbo Frames](https://turbo.hotwired.dev/handbook/frames).
-- [Hotwire — Stimulus Handbook](https://stimulus.hotwired.dev/handbook/introduction).
-- [Active Record — Pessimistic Locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Pessimistic.html).
-- [Ruby on Rails — Testing Rails Applications](https://guides.rubyonrails.org/testing.html).

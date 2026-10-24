@@ -95,6 +95,7 @@ def main():
 \usepackage{graphicx}
 \usepackage{pdflscape}
 \usepackage{etoolbox}
+\usepackage{fancyvrb}
 \fvset{fontsize=\small}
 \AtBeginEnvironment{longtable}{\footnotesize}
 \setlength{\emergencystretch}{3em}
@@ -119,7 +120,8 @@ end
             "-V", "colorlinks=true", "-V", "linkcolor=black",
             "-V", "urlcolor=blue", "-o", str(destino_tex),
         ])
-        for _ in range(2):
+        # A terceira passagem corrige os números do sumário, que ocupa mais de uma página.
+        for _ in range(3):
             executar(["pdflatex", "-interaction=nonstopmode", "-halt-on-error",
                       "-output-directory", str(temp), str(destino_tex)])
         shutil.copy2(temp / f"{NOME}.pdf", BASE / f"{NOME}.pdf")
