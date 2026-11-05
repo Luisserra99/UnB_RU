@@ -1,0 +1,17 @@
+<% content_for :title, "UnB RU" %>
+
+<h1>Restaurante Universitário da UnB</h1>
+<p>Sistema de gerenciamento do RU.</p>
+
+<div class="cartoes">
+  <section class="cartao">
+    <h2>Sou estudante</h2>
+    <p>Cadastre-se com sua matrícula e seu email institucional.</p>
+    <%= link_to "Criar minha conta", novo_cadastro_path, class: "botao" %>
+  </section>
+  <section class="cartao">
+    <h2>Sou funcionário</h2>
+    <p>Acesse a aplicação de controle das catracas.</p>
+    <%= link_to "Entrar na aplicação de controle", controle_login_path, class: "botao" %>
+  </section>
+</div>

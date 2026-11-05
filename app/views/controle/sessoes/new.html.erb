@@ -1,0 +1,29 @@
+<% content_for :title, "Login | Aplicação de controle" %>
+
+<section class="formulario">
+  <h1>Login da aplicação de controle</h1>
+  <p>Acesso restrito a funcionários do restaurante.</p>
+
+  <% if @campos_obrigatorios.present? %>
+    <div class="erros" role="alert">
+      <p>Preencha os campos obrigatórios:</p>
+      <ul>
+        <% @campos_obrigatorios.each do |campo| %>
+          <li><%= campo %> é obrigatória</li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with url: controle_login_path do |f| %>
+    <div class="campo">
+      <%= f.label :identificacao, "Identificação" %>
+      <%= f.text_field :identificacao, value: @identificacao, autocomplete: "username" %>
+    </div>
+    <div class="campo">
+      <%= f.label :senha, "Senha" %>
+      <%= f.password_field :senha, autocomplete: "current-password" %>
+    </div>
+    <%= f.submit "Entrar", class: "botao" %>
+  <% end %>
+</section>

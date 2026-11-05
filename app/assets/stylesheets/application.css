@@ -1,0 +1,71 @@
+:root {
+  --azul-unb: #003366;
+  --verde-unb: #006633;
+  --fundo: #f5f7fa;
+  --texto: #1f2933;
+  --borda: #d0d7de;
+  --erro: #b42318;
+  --erro-fundo: #fef3f2;
+  --ok-fundo: #ecfdf3;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: var(--azul-unb);
+  color: #fff;
+}
+.topo a, .topo .botao-link { color: #fff; }
+.topo nav { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+.topo form { display: inline; margin: 0; }
+.marca { font-weight: 700; font-size: 1.25rem; text-decoration: none; }
+
+.conteudo { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+.cartoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+.cartao, .formulario {
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+.formulario { max-width: 480px; }
+
+.campo { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1rem; }
+.campo input { padding: 0.5rem; border: 1px solid var(--borda); border-radius: 6px; font-size: 1rem; }
+.campo small { color: #57606a; }
+
+.botao, input[type="submit"].botao {
+  display: inline-block;
+  padding: 0.55rem 1.1rem;
+  background: var(--verde-unb);
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.botao-link { background: none; border: 0; padding: 0; font: inherit; text-decoration: underline; cursor: pointer; }
+
+.flash { padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+.flash-notice { background: var(--ok-fundo); border: 1px solid #abefc6; }
+.flash-alert { background: var(--erro-fundo); border: 1px solid #fecdca; color: var(--erro); }
+
+.erros { background: var(--erro-fundo); border: 1px solid #fecdca; color: var(--erro); border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1rem; }
+.erros p { margin: 0 0 0.25rem; font-weight: 600; }
+.erros ul { margin: 0; padding-left: 1.25rem; }

@@ -1,0 +1,13 @@
+<% content_for :title, "Painel | Aplicação de controle" %>
+
+<h1>Aplicação de controle</h1>
+<p>Sessão autenticada para <strong><%= funcionario_atual.nome %></strong>
+  (<%= funcionario_atual.identificacao %>) até <%= l sessao_atual.expira_em, format: :short %>.</p>
+
+<% if sessao_atual.ponto_acesso_pendente? %>
+  <section class="cartao" id="ponto-acesso">
+    <h2>Escolha do restaurante e da catraca</h2>
+    <p>Selecione o restaurante e a catraca do ponto de acesso para começar a operar.</p>
+    <%# F05 (Configuração do ponto de acesso) entra aqui. %>
+  </section>
+<% end %>

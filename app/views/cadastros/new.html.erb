@@ -1,0 +1,38 @@
+<% content_for :title, "Cadastro de estudante | UnB RU" %>
+
+<section class="formulario">
+  <h1>Cadastro de estudante</h1>
+  <p>Use sua matrícula da UnB (9 números) e seu email institucional.</p>
+
+  <% if @cadastro.errors.any? %>
+    <div class="erros" role="alert">
+      <p>Não foi possível criar a conta:</p>
+      <ul>
+        <% @cadastro.errors.each do |erro| %>
+          <li><%= erro.message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: @cadastro, url: cadastro_path, scope: :cadastro_estudante do |f| %>
+    <div class="campo">
+      <%= f.label :nome, "Nome completo" %>
+      <%= f.text_field :nome, autocomplete: "name" %>
+    </div>
+    <div class="campo">
+      <%= f.label :matricula, "Matrícula" %>
+      <%= f.text_field :matricula, inputmode: "numeric", maxlength: 9, placeholder: "000000000" %>
+    </div>
+    <div class="campo">
+      <%= f.label :email, "Email institucional" %>
+      <%= f.email_field :email, autocomplete: "email", placeholder: "matricula@aluno.unb.br" %>
+    </div>
+    <div class="campo">
+      <%= f.label :senha, "Senha" %>
+      <%= f.password_field :senha, autocomplete: "new-password" %>
+      <small>Mínimo de <%= Usuario::SENHA_TAMANHO_MINIMO %> caracteres.</small>
+    </div>
+    <%= f.submit "Cadastrar", class: "botao" %>
+  <% end %>
+</section>
