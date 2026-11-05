@@ -3,3 +3,17 @@
 ---
 
 Sistema de gerenciamento para o Restaurante Universitário da UnB.
+
+## Como rodar
+
+Requisitos: Ruby 3.3.4 e Bundler.
+
+```bash
+bundle install
+bin/rails db:prepare db:seed
+bin/rails server            # http://localhost:3000
+bundle exec rspec           # testes RSpec
+bundle exec cucumber        # cenários BDD (features/)
+```
+
+Usuários de teste e detalhes: [wiki/Sprint-2-Identidade-e-Acesso.md](wiki/Sprint-2-Identidade-e-Acesso.md).
