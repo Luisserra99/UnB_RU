@@ -6,7 +6,13 @@ RSpec.describe "Login de funcionário (F04)", type: :request do
   describe "GET /controle/login" do
     it "exibe a tela de login" do
       get controle_login_path
-      expect(response.body).to include("Login da aplicação de controle")
+      expect(response.body).to include("Autenticação do Operador")
+    end
+
+    it "tem link para voltar à página inicial" do
+      get controle_login_path
+      expect(response.body).to include("Voltar ao início")
+      expect(response.body).to include(%(href="#{root_path}"))
     end
 
     it "redireciona ao painel se já houver sessão" do
@@ -34,7 +40,7 @@ RSpec.describe "Login de funcionário (F04)", type: :request do
       it "não cria sessão e mantém a tela de login" do
         expect { post controle_login_path, params: params }.not_to change(SessaoAutenticacao, :count)
         expect(response).to have_http_status(:unprocessable_content)
-        expect(response.body).to include("Login da aplicação de controle")
+        expect(response.body).to include("Autenticação do Operador")
         expect(response.body).to include(mensagem)
       end
     end

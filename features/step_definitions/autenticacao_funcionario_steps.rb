@@ -10,14 +10,14 @@ end
 def preencher_login(identificacao, senha)
   @identificacao_informada = identificacao
   @senha_informada = senha
-  fill_in "Identificação", with: identificacao
-  fill_in "Senha", with: senha
+  fill_in "identificacao", with: identificacao
+  fill_in "senha", with: senha
 end
 
 def fazer_login(usuario, senha)
   visit controle_login_path
   preencher_login(usuario.identificacao, senha)
-  click_button "Entrar"
+  click_button "Entrar no Sistema"
 end
 
 # --- Dado ---
@@ -90,7 +90,7 @@ Quando("ele informa suas credenciais corretas de estudante") do
 end
 
 Quando("confirma o login") do
-  click_button "Entrar"
+  click_button "Entrar no Sistema"
 end
 
 Quando("ele solicita sair da aplicação de controle") do
@@ -109,11 +109,11 @@ end
 
 def esperar_tela_de_login
   expect(page).to have_current_path(controle_login_path)
-  expect(page).to have_content("Login da aplicação de controle")
+  expect(page).to have_content("Autenticação do Operador")
 end
 
 def esperar_funcao_de_controle_nao_executada
-  expect(page).not_to have_content("Sessão autenticada para")
+  expect(page).not_to have_content("Operador Autenticado")
   expect(page).not_to have_css("#ponto-acesso")
   esperar_tela_de_login
 end
@@ -140,8 +140,8 @@ Então("deve apresentar a tela de login") do
 end
 
 Então("deve manter a tela de login") do
-  expect(page).to have_content("Login da aplicação de controle")
-  expect(page).to have_button("Entrar")
+  expect(page).to have_content("Autenticação do Operador")
+  expect(page).to have_button("Entrar no Sistema")
 end
 
 Então("deve exigir novo login para acessar as funções de controle") do

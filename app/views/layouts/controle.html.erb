@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <title><%= content_for(:title) || "RU UnB | Aplicação de controle" %></title>
+    <%= render "shared/head" %>
+  </head>
+
+  <body class="aplicacao-controle">
+    <header class="topo">
+      <%= link_to (funcionario_autenticado? ? controle_root_path : root_path), class: "marca-controle" do %>
+        <span class="logo-quadrado"><%= icone(:qr, tamanho: 20) %></span>
+        <span class="marca-texto">
+          <span class="marca-linha"><strong>RU UnB</strong> <span class="selo selo-ok">Operacional</span></span>
+          <small>Campus Darcy Ribeiro · Posto Central</small>
+        </span>
+      <% end %>
+
+      <% if funcionario_autenticado? %>
+        <nav class="nav-topo" aria-label="Aplicação de controle">
+          <%= item_nav_controle "Configuração de Ponto", :controle_root_path %>
+          <%= item_nav_controle "Terminal de Validação", :controle_terminal_path %>
+          <%= item_nav_controle "Histórico Local", :controle_historico_path %>
+        </nav>
+
+        <div class="operador">
+          <span class="operador-texto">
+            <strong><%= funcionario_atual.nome %></strong>
+            <small><%= rotulo_papel(funcionario_atual) %> · <%= funcionario_atual.identificacao %></small>
+          </span>
+          <span class="avatar"><%= icone(:usuario, tamanho: 18) %></span>
+          <%= button_to controle_logout_path, method: :delete, class: "botao-sair", form_class: "form-sair" do %>
+            Sair
+          <% end %>
+        </div>
+      <% else %>
+        <%= link_to root_path, class: "link-voltar" do %>
+          <%= icone(:voltar, tamanho: 18) %> Voltar ao início
+        <% end %>
+      <% end %>
+    </header>
+
+    <main class="conteudo">
+      <%= render "shared/flash" %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

@@ -1,17 +1,27 @@
-<% content_for :title, "UnB RU" %>
+<% content_for :title, "RU UnB Digital" %>
 
-<h1>Restaurante Universitário da UnB</h1>
-<p>Sistema de gerenciamento do RU.</p>
+<section class="cabecalho-inicio">
+  <p class="sobretitulo">Campus Darcy Ribeiro</p>
+  <h1>Restaurante Universitário da UnB</h1>
+  <p class="subtitulo">Crie sua conta de estudante ou acesse a aplicação de controle das catracas.</p>
+</section>
 
 <div class="cartoes">
-  <section class="cartao">
+  <section class="cartao cartao-acesso">
+    <span class="icone-titulo icone-titulo-estudante"><%= icone(:usuario, tamanho: 22) %></span>
     <h2>Sou estudante</h2>
-    <p>Cadastre-se com sua matrícula e seu email institucional.</p>
-    <%= link_to "Criar minha conta", novo_cadastro_path, class: "botao" %>
+    <p class="texto-suave">Cadastre-se com sua matrícula e seu email institucional para usar o RU.</p>
+    <%= link_to novo_cadastro_path, class: "botao botao-estudante" do %>
+      <%= icone(:confirmar, tamanho: 18) %> Criar minha conta
+    <% end %>
   </section>
-  <section class="cartao">
+
+  <section class="cartao cartao-acesso">
+    <span class="icone-titulo"><%= icone(:cracha, tamanho: 22) %></span>
     <h2>Sou funcionário</h2>
-    <p>Acesse a aplicação de controle das catracas.</p>
-    <%= link_to "Entrar na aplicação de controle", controle_login_path, class: "botao" %>
+    <p class="texto-suave">Acesse a aplicação de controle para operar o ponto de acesso e as catracas.</p>
+    <%= link_to controle_login_path, class: "botao botao-primario" do %>
+      <%= icone(:entrar, tamanho: 18) %> Entrar na aplicação de controle
+    <% end %>
   </section>
 </div>

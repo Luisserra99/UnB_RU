@@ -1,5 +1,7 @@
 module Controle
   class SessoesController < ApplicationController
+    layout "controle"
+
     MSG_FALHA = "Não foi possível autenticar as credenciais.".freeze
     MSG_SOMENTE_FUNCIONARIOS = "Acesso negado: a aplicação de controle é restrita a funcionários.".freeze
 

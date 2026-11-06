@@ -1,3 +1,7 @@
 <% flash.each do |tipo, mensagem| %>
-  <div class="flash flash-<%= tipo %>" role="<%= tipo.to_s == "alert" ? "alert" : "status" %>"><%= mensagem %></div>
+  <% alerta = tipo.to_s == "alert" %>
+  <div class="flash <%= alerta ? "flash-alerta" : "flash-sucesso" %>" role="<%= alerta ? "alert" : "status" %>">
+    <%= icone(alerta ? :alerta : :confirmar, tamanho: 18) %>
+    <span><%= mensagem %></span>
+  </div>
 <% end %>
