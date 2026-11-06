@@ -1,0 +1,6 @@
+<% content_for :title, "Remover catraca | RU UnB" %>
+
+<%= render layout: "admin/shared/cabecalho", locals: { titulo: "Remover catraca" } do %><% end %>
+<%= render "admin/shared/confirmar_remocao",
+      pergunta: "Remover a catraca #{@catraca.identificacao}?",
+      url: admin_catraca_path(@catraca) %>

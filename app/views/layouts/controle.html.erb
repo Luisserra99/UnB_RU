@@ -20,6 +20,7 @@
           <%= item_nav_controle "Configuração de Ponto", :controle_root_path %>
           <%= item_nav_controle "Terminal de Validação", :controle_terminal_path %>
           <%= item_nav_controle "Histórico Local", :controle_historico_path %>
+          <%= item_nav_controle "Gestão de Restaurantes", :admin_restaurantes_path if funcionario_atual.administrador? %>
         </nav>
 
         <div class="operador">

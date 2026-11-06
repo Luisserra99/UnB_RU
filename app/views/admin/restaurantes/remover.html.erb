@@ -1,0 +1,6 @@
+<% content_for :title, "Remover restaurante | RU UnB" %>
+
+<%= render layout: "admin/shared/cabecalho", locals: { titulo: "Remover restaurante" } do %><% end %>
+<%= render "admin/shared/confirmar_remocao",
+      pergunta: "Remover o restaurante #{@restaurante.nome}?",
+      url: admin_restaurante_path(@restaurante) %>

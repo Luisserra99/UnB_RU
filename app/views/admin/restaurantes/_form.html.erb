@@ -1,0 +1,43 @@
+<section class="cartao cartao-formulario">
+  <%= render "admin/shared/erros", registro: restaurante %>
+
+  <%= form_with model: [:admin, restaurante], class: "formulario" do |f| %>
+    <% if restaurante.new_record? %>
+      <div class="campo">
+        <%= f.label :unidade_gestora_id, "Unidade gestora" %>
+        <div class="campo-entrada">
+          <%= f.collection_select :unidade_gestora_id, UnidadeGestora.ativas.order(:nome), :id, :nome %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="campo">
+      <%= f.label :nome, "Nome do restaurante" %>
+      <div class="campo-entrada"><%= f.text_field :nome %></div>
+    </div>
+
+    <% if restaurante.new_record? %>
+      <div class="campo">
+        <%= f.label :quantidade_pisos, "Quantidade de pisos" %>
+        <div class="campo-entrada"><%= f.number_field :quantidade_pisos %></div>
+      </div>
+    <% end %>
+
+    <div class="campo">
+      <%= f.label :capacidade_refeicoes_hora, "Capacidade (refeições por hora)" %>
+      <div class="campo-entrada"><%= f.number_field :capacidade_refeicoes_hora %></div>
+    </div>
+
+    <% if restaurante.persisted? %>
+      <div class="campo-marcacao">
+        <%= f.check_box :ativo %>
+        <%= f.label :ativo, "Restaurante ativo" %>
+      </div>
+    <% end %>
+
+    <div class="acoes-formulario">
+      <%= f.submit "Salvar", class: "botao botao-primario" %>
+      <%= link_to "Voltar", admin_restaurantes_path, class: "botao botao-secundario" %>
+    </div>
+  <% end %>
+</section>

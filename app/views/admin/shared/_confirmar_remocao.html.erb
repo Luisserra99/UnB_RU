@@ -1,0 +1,8 @@
+<section class="cartao cartao-formulario">
+  <h2><%= pergunta %></h2>
+  <p class="subtitulo">Esta ação não pode ser desfeita.</p>
+  <div class="acoes-formulario acoes-confirmacao">
+    <%= button_to "Confirmar remoção", url, method: :delete, class: "botao botao-perigo" %>
+    <%= link_to "Cancelar", admin_restaurantes_path, class: "botao botao-secundario" %>
+  </div>
+</section>

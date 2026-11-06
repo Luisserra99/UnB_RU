@@ -1,0 +1,10 @@
+<% if registro.errors.any? %>
+  <div class="erros" role="alert">
+    <p>Não foi possível salvar. Revise os dados informados.</p>
+    <ul>
+      <% registro.errors.each do |erro| %>
+        <li><%= erro.message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
