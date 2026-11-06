@@ -1,0 +1,44 @@
+erDiagram
+    UNIDADE_GESTORA ||--o{ RESTAURANTE : agrupa
+    RESTAURANTE ||--|{ PISO : possui
+    PISO ||--o{ CATRACA : localiza
+    RESTAURANTE ||--o{ SERVICO_REFEICAO : oferece
+    TIPO_REFEICAO ||--o{ SERVICO_REFEICAO : classifica
+    TIPO_REFEICAO ||--o{ TARIFA_REFEICAO : precifica
+    UNIDADE_GESTORA {
+        bigint id PK
+        string nome UK
+        boolean ativa
+    }
+    RESTAURANTE {
+        bigint id PK
+        bigint unidade_gestora_id FK
+        string nome UK
+        int numero
+    }
+    PISO {
+        bigint id PK
+        bigint restaurante_id FK
+        int numero
+    }
+    CATRACA {
+        bigint id PK
+        bigint piso_id FK
+        string identificacao
+        boolean online
+    }
+    TIPO_REFEICAO {
+        bigint id PK
+        string codigo UK
+    }
+    SERVICO_REFEICAO {
+        bigint id PK
+        bigint restaurante_id FK
+        bigint tipo_refeicao_id FK
+        int dia_semana
+    }
+    TARIFA_REFEICAO {
+        bigint id PK
+        bigint tipo_refeicao_id FK
+        decimal valor
+    }

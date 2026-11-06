@@ -1,0 +1,30 @@
+erDiagram
+    ESTUDANTE ||--o{ MOVIMENTACAO_SALDO : contabiliza
+    RECARGA o|--o| MOVIMENTACAO_SALDO : origina_credito
+    REGISTRO_ACESSO o|--o| MOVIMENTACAO_SALDO : origina_debito
+    MOVIMENTACAO_SALDO ||--o{ RATEIO_CONSUMO : distribui_debito
+    RECARGA ||--o{ RATEIO_CONSUMO : financia
+    ESTUDANTE {
+        bigint id PK
+    }
+    RECARGA {
+        bigint id PK
+    }
+    MOVIMENTACAO_SALDO {
+        bigint id PK
+        bigint estudante_id FK
+        bigint recarga_id FK, UK
+        bigint registro_acesso_id FK, UK
+        string natureza
+        decimal valor
+        datetime ocorrida_em
+    }
+    REGISTRO_ACESSO {
+        bigint id PK
+    }
+    RATEIO_CONSUMO {
+        bigint id PK
+        bigint movimentacao_saldo_id FK
+        bigint recarga_id FK
+        decimal valor
+    }
