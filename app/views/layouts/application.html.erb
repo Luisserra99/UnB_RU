@@ -18,6 +18,7 @@
       <nav class="nav-topo" aria-label="Principal">
         <%= link_to "Início", root_path, class: ["nav-item", ("ativo" if current_page?(root_path))] %>
         <%= link_to "Criar conta", novo_cadastro_path, class: ["nav-item", ("ativo" if current_page?(novo_cadastro_path))] %>
+        <%= link_to "Cardápio", cardapio_path, class: ["nav-item", ("ativo" if current_page?(cardapio_path))] %>
       </nav>
 
       <%= link_to controle_login_path, class: "link-area-operador" do %>

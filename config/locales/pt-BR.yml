@@ -39,7 +39,37 @@ pt-BR:
       usuario_papel: Papel do usuário
       estudante: Estudante
       sessao_autenticacao: Sessão de autenticação
+      unidade_gestora: Unidade gestora
+      restaurante: Restaurante
+      piso: Piso
+      catraca: Catraca
+      tipo_refeicao: Tipo de refeição
+      servico_refeicao: Serviço de refeição
+      cardapio: Cardápio
+      opcao_cardapio: Opção do cardápio
+      item_cardapio: Item do cardápio
     attributes:
+      unidade_gestora:
+        nome: Nome
+      restaurante:
+        numero: Número
+      piso:
+        numero: Número
+      tipo_refeicao:
+        codigo: Código
+        nome: Nome
+      servico_refeicao:
+        dia_semana: Dia da semana
+        inicio: Início
+        fim: Fim
+      cardapio:
+        data_referencia: Data de referência
+      opcao_cardapio:
+        dieta: Dieta
+      item_cardapio:
+        categoria: Categoria
+        descricao: Descrição
+        ordem: Ordem
       usuario:
         nome: Nome
         identificacao: Identificação
@@ -63,6 +93,9 @@ pt-BR:
       confirmation: "não confere com %{attribute}"
       required: "é obrigatório(a)"
       inclusion: "não está incluído na lista"
+      not_a_number: "não é um número"
+      not_an_integer: "não é um número inteiro"
+      greater_than: "deve ser maior que %{count}"
       restrict_dependent_destroy:
         has_one: "Não é possível excluir o registro pois existe um(a) %{record} dependente"
         has_many: "Não é possível excluir o registro pois existem %{record} dependentes"

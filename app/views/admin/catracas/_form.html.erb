@@ -1,0 +1,50 @@
+<section class="cartao cartao-formulario">
+  <%= render "admin/shared/erros", registro: catraca %>
+
+  <%= form_with scope: :catraca, url: (catraca.persisted? ? admin_catraca_path(catraca) : admin_catracas_path),
+                method: (catraca.persisted? ? :patch : :post), class: "formulario",
+                data: { controller: "limite-piso" } do |f| %>
+    <% restaurantes = Restaurante.ordenados.includes(:pisos).to_a %>
+    <% selecionado = restaurantes.find { |restaurante| restaurante.id == @restaurante_id.to_i } || restaurantes.first %>
+    <% maior_piso = selecionado&.pisos&.map(&:numero)&.max %>
+
+    <div class="campo">
+      <%= f.label :restaurante_id, "Restaurante" %>
+      <div class="campo-entrada">
+        <%= f.select :restaurante_id,
+              options_for_select(restaurantes.map { |restaurante| [restaurante.nome, restaurante.id, { data: { maximo_piso: restaurante.pisos.map(&:numero).max } }] }, selecionado&.id),
+              {}, data: { limite_piso_target: "restaurante", action: "change->limite-piso#atualizar" } %>
+      </div>
+    </div>
+
+    <div class="campo">
+      <div class="campo-rotulo">
+        <%= f.label :piso_numero, "Número do piso" %>
+        <span class="obrigatorio" data-limite-piso-target="aviso">
+          <%= "Maior piso deste restaurante: #{maior_piso}" if maior_piso %>
+        </span>
+      </div>
+      <div class="campo-entrada">
+        <%= f.number_field :piso_numero, value: @piso_numero, min: 1, max: maior_piso,
+              data: { limite_piso_target: "piso", action: "input->limite-piso#limitar" } %>
+      </div>
+    </div>
+
+    <div class="campo">
+      <%= f.label :identificacao, "Identificação da catraca" %>
+      <div class="campo-entrada"><%= f.text_field :identificacao, value: catraca.identificacao %></div>
+    </div>
+
+    <% if catraca.persisted? %>
+      <div class="campo-marcacao">
+        <%= f.check_box :ativa, checked: catraca.ativa? %>
+        <%= f.label :ativa, "Catraca ativa" %>
+      </div>
+    <% end %>
+
+    <div class="acoes-formulario">
+      <%= f.submit "Salvar", class: "botao botao-primario" %>
+      <%= link_to "Voltar", admin_restaurantes_path, class: "botao botao-secundario" %>
+    </div>
+  <% end %>
+</section>

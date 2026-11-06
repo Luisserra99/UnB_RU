@@ -1,0 +1,87 @@
+<% content_for :title, "Gestão de Restaurantes | RU UnB" %>
+
+<%= render layout: "admin/shared/cabecalho", locals: { titulo: "Gestão de Restaurantes e Catracas Físicas" } do %>
+  <div class="acoes-pagina">
+    <%= link_to "Cadastrar restaurante", new_admin_restaurante_path, class: "botao botao-primario" %>
+    <%= link_to "Associar catraca", new_admin_catraca_path, class: "botao botao-secundario" %>
+  </div>
+<% end %>
+
+<section class="cartao" id="lista-restaurantes">
+  <h2>Unidades cadastradas</h2>
+  <p class="total-registros" id="total-restaurantes">Total de restaurantes: <%= @restaurantes.size %></p>
+
+  <% if @restaurantes.empty? %>
+    <p class="subtitulo">Nenhum restaurante cadastrado.</p>
+  <% else %>
+    <div class="tabela-rolagem">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th scope="col">Nº</th>
+            <th scope="col">Restaurante</th>
+            <th scope="col">Unidade gestora</th>
+            <th scope="col">Pisos</th>
+            <th scope="col">Refeições por hora</th>
+            <th scope="col">Situação</th>
+            <th scope="col"><span class="sr-only">Ações</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @restaurantes.each do |restaurante| %>
+            <tr id="<%= dom_id(restaurante) %>">
+              <td><%= restaurante.numero %></td>
+              <td><%= restaurante.nome %></td>
+              <td><%= restaurante.unidade_gestora.nome %></td>
+              <td><%= restaurante.pisos.size %></td>
+              <td><%= restaurante.capacidade_refeicoes_hora %></td>
+              <td><%= restaurante.ativo? ? "Ativo" : "Inativo" %></td>
+              <td class="acoes-linha">
+                <%= link_to "Ver catracas", controle_restaurante_catracas_path(restaurante) if restaurante.ativo? %>
+                <%= link_to "Editar", edit_admin_restaurante_path(restaurante) %>
+                <%= link_to "Remover", remover_admin_restaurante_path(restaurante), class: "link-perigo" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</section>
+
+<section class="cartao" id="lista-catracas">
+  <h2>Catracas físicas</h2>
+  <p class="total-registros" id="total-catracas">Total de catracas cadastradas: <%= @catracas.size %></p>
+
+  <% if @catracas.empty? %>
+    <p class="subtitulo">Nenhuma catraca cadastrada.</p>
+  <% else %>
+    <div class="tabela-rolagem">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th scope="col">Identificação</th>
+            <th scope="col">Restaurante</th>
+            <th scope="col">Piso</th>
+            <th scope="col">Situação</th>
+            <th scope="col"><span class="sr-only">Ações</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @catracas.each do |catraca| %>
+            <tr id="<%= dom_id(catraca) %>">
+              <td><%= catraca.identificacao %></td>
+              <td><%= catraca.piso.restaurante.nome %></td>
+              <td><%= catraca.piso.nome %></td>
+              <td><%= catraca.ativa? ? "Ativa" : "Inativa" %></td>
+              <td class="acoes-linha">
+                <%= link_to "Editar", edit_admin_catraca_path(catraca) %>
+                <%= link_to "Remover", remover_admin_catraca_path(catraca), class: "link-perigo" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</section>

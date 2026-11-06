@@ -1,0 +1,70 @@
+<% content_for :title, "Cardápio | RU UnB Digital" %>
+
+<section class="cabecalho-inicio">
+  <p class="sobretitulo">Restaurante Universitário</p>
+  <h1>Cardápio</h1>
+  <p class="subtitulo">Veja a refeição servida agora ou consulte outra data e refeição.</p>
+</section>
+
+<section class="cartao">
+  <%= form_with url: cardapio_path, method: :get, class: "filtros-cardapio" do |f| %>
+    <div class="campo">
+      <%= f.label :restaurante_id, "Restaurante" %>
+      <div class="campo-entrada">
+        <%= f.select :restaurante_id, options_from_collection_for_select(@restaurantes, :id, :nome, @restaurante&.id) %>
+      </div>
+    </div>
+    <div class="campo">
+      <%= f.label :data, "Data" %>
+      <div class="campo-entrada"><%= f.date_field :data, value: @data.iso8601 %></div>
+    </div>
+    <div class="campo">
+      <%= f.label :refeicao, "Refeição" %>
+      <div class="campo-entrada">
+        <%= f.select :refeicao, options_from_collection_for_select(@tipos, :codigo, :nome, @tipo&.codigo), include_blank: "Refeição atual" %>
+      </div>
+    </div>
+    <%= f.submit "Consultar", name: nil, class: "botao botao-estudante" %>
+  <% end %>
+</section>
+
+<% if @cardapio %>
+  <p class="resumo-cardapio" id="cardapio-resumo">
+    <strong><%= @servico.tipo_refeicao.nome %></strong>
+    de <%= l @cardapio.data_referencia, format: :long %>,
+    das <%= @servico.inicio.strftime("%H:%M") %> às <%= @servico.fim.strftime("%H:%M") %>
+    em <%= @restaurante.nome %>
+  </p>
+
+  <div class="opcoes-cardapio">
+    <% OpcaoCardapio::DIETAS.each do |dieta, rotulo| %>
+      <% itens = @cardapio.opcao_de(dieta)&.itens.to_a %>
+      <section class="cartao" id="opcao-<%= dieta %>">
+        <h2><%= rotulo %></h2>
+        <% if itens.empty? %>
+          <p class="opcao-indisponivel">Esta opção não está disponível.</p>
+        <% else %>
+          <dl class="itens-cardapio">
+            <% itens.group_by(&:categoria).each do |categoria, itens_da_categoria| %>
+              <dt><%= rotulo_categoria(categoria) %></dt>
+              <% itens_da_categoria.each do |item| %>
+                <dd><%= item.descricao %></dd>
+              <% end %>
+            <% end %>
+          </dl>
+        <% end %>
+      </section>
+    <% end %>
+  </div>
+<% else %>
+  <div class="aviso-info" id="cardapio-indisponivel" role="status">
+    <%= icone(:info, tamanho: 18) %>
+    <span>
+      <% if @consulta_atual %>
+        Não há cardápio disponível no momento.
+      <% else %>
+        Não há cardápio cadastrado para esta data e refeição. Selecione uma refeição para consultar outra data.
+      <% end %>
+    </span>
+  </div>
+<% end %>

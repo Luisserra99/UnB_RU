@@ -35,3 +35,26 @@
     <%# F05 (Configuração do ponto de acesso — Daniel) entra aqui. %>
   </section>
 <% end %>
+
+<% restaurantes = Restaurante.ativos.ordenados %>
+<section class="cartao" id="restaurantes-disponiveis">
+  <h2>Restaurantes e catracas</h2>
+  <% if restaurantes.empty? %>
+    <p class="subtitulo">Nenhum restaurante disponível.</p>
+  <% else %>
+    <div class="tabela-rolagem">
+      <table class="tabela">
+        <tbody>
+          <% restaurantes.each do |restaurante| %>
+            <tr>
+              <td><%= restaurante.nome %></td>
+              <td class="acoes-linha">
+                <%= link_to "Ver catracas", controle_restaurante_catracas_path(restaurante) %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</section>

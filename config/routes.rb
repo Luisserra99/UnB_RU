@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   get "cadastro", to: "cadastros#new", as: :novo_cadastro
   post "cadastro", to: "cadastros#create", as: :cadastro
 
+  # F10 — Cardápio (consulta pública)
+  get "cardapio", to: "cardapios#show", as: :cardapio
+
   # Aplicação de controle (funcionários)
   namespace :controle do
     root "painel#show"
@@ -13,6 +16,21 @@ Rails.application.routes.draw do
     get "login", to: "sessoes#new", as: :login
     post "login", to: "sessoes#create"
     delete "logout", to: "sessoes#destroy", as: :logout
+
+    # F08 — Catracas disponíveis para seleção (reaproveitável na F05)
+    resources :restaurantes, only: [] do
+      resources :catracas, only: :index
+    end
+  end
+
+  # F08 — Gestão de restaurantes e catracas (somente administrador)
+  namespace :admin do
+    resources :restaurantes, except: :show do
+      get :remover, on: :member
+    end
+    resources :catracas, except: %i[index show] do
+      get :remover, on: :member
+    end
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

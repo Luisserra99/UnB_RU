@@ -1,0 +1,37 @@
+<% content_for :title, "Catracas disponíveis | RU UnB" %>
+
+<section class="cabecalho-pagina">
+  <div class="cabecalho-titulo">
+    <span class="icone-bloco"><%= icone(:ajustes, tamanho: 22) %></span>
+    <div>
+      <p class="sobretitulo"><%= @restaurante.nome %></p>
+      <h1>Catracas disponíveis</h1>
+    </div>
+  </div>
+  <%= link_to "Voltar ao painel", controle_root_path, class: "botao botao-secundario" %>
+</section>
+
+<section class="cartao" id="catracas-disponiveis">
+  <% if @catracas.empty? %>
+    <p class="texto-suave">Nenhuma catraca disponível neste restaurante.</p>
+  <% else %>
+    <div class="tabela-rolagem">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th scope="col">Identificação</th>
+            <th scope="col">Piso</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @catracas.each do |catraca| %>
+            <tr>
+              <td><%= catraca.identificacao %></td>
+              <td><%= catraca.piso.nome %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</section>

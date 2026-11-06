@@ -1,0 +1,4 @@
+<% content_for :title, "Editar restaurante | RU UnB" %>
+
+<%= render layout: "admin/shared/cabecalho", locals: { titulo: "Editar restaurante" } do %><% end %>
+<%= render "form", restaurante: @restaurante %>
