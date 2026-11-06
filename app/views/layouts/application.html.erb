@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <title><%= content_for(:title) || "RU UnB Digital" %></title>
+    <%= render "shared/head" %>
+  </head>
+
+  <body class="portal-estudante">
+    <header class="topo">
+      <%= link_to root_path, class: "marca-estudante" do %>
+        <span class="logo-unb">UnB</span>
+        <span class="marca-texto">
+          <strong>RU UnB Digital</strong>
+          <small>Portal do Estudante</small>
+        </span>
+      <% end %>
+
+      <nav class="nav-topo" aria-label="Principal">
+        <%= link_to "Início", root_path, class: ["nav-item", ("ativo" if current_page?(root_path))] %>
+        <%= link_to "Criar conta", novo_cadastro_path, class: ["nav-item", ("ativo" if current_page?(novo_cadastro_path))] %>
+      </nav>
+
+      <%= link_to controle_login_path, class: "link-area-operador" do %>
+        <%= icone(:cracha, tamanho: 18) %> Área do funcionário
+      <% end %>
+    </header>
+
+    <main class="conteudo">
+      <%= render "shared/flash" %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

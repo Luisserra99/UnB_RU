@@ -1,0 +1,46 @@
+<% content_for :title, "Autenticação do Operador | RU UnB" %>
+<% faltando = Array(@campos_obrigatorios) %>
+
+<section class="cartao cartao-auth">
+  <span class="icone-titulo"><%= icone(:cracha, tamanho: 22) %></span>
+  <h1>Autenticação do Operador</h1>
+  <p class="subtitulo">Informe suas credenciais funcionais para iniciar a sessão segura e liberar o terminal de catraca.</p>
+
+  <% if faltando.any? %>
+    <div class="erros" role="alert">
+      <p>Preencha os campos obrigatórios:</p>
+      <ul>
+        <% faltando.each do |campo| %>
+          <li><%= campo %> é obrigatória</li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with url: controle_login_path, class: "formulario" do |f| %>
+    <div class="campo">
+      <div class="campo-rotulo">
+        <%= f.label :identificacao, "Matrícula SIAPE ou usuário" %>
+        <span class="obrigatorio">Obrigatório</span>
+      </div>
+      <div class="campo-entrada<%= " invalido" if faltando.include?("Identificação") %>">
+        <%= icone(:usuario, tamanho: 18, classe: "icone-campo") %>
+        <%= f.text_field :identificacao, value: @identificacao, autocomplete: "username",
+              placeholder: "Ex: 1984201 ou funcionario01", "aria-invalid": faltando.include?("Identificação") %>
+      </div>
+    </div>
+
+    <div class="campo">
+      <div class="campo-rotulo">
+        <%= f.label :senha, "Senha de acesso" %>
+        <span class="obrigatorio">Obrigatório</span>
+      </div>
+      <%= render "shared/campo_senha", form: f, atributo: :senha, autocomplete: "current-password",
+            placeholder: "Digite sua senha de operador", invalido: faltando.include?("Senha") %>
+    </div>
+
+    <%= f.button type: "submit", class: "botao botao-primario botao-largo" do %>
+      <%= icone(:entrar, tamanho: 18) %> Entrar no Sistema
+    <% end %>
+  <% end %>
+</section>

@@ -1,0 +1,10 @@
+<%# locals: (form:, atributo:, autocomplete:, placeholder:, invalido: false) %>
+<div class="campo-entrada<%= " invalido" if invalido %>" data-controller="visibilidade-senha">
+  <%= icone(:cadeado, tamanho: 18, classe: "icone-campo") %>
+  <%= form.password_field atributo, autocomplete: autocomplete, placeholder: placeholder,
+        "aria-invalid": invalido, data: { visibilidade_senha_target: "campo" } %>
+  <button type="button" class="botao-olho" aria-label="Mostrar senha" aria-pressed="false"
+          data-visibilidade-senha-target="botao" data-action="visibilidade-senha#alternar">
+    <%= icone(:olho, tamanho: 18) %>
+  </button>
+</div>

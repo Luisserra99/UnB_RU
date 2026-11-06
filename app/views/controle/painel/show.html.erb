@@ -1,0 +1,37 @@
+<% content_for :title, "Configuração de Ponto | RU UnB" %>
+
+<section class="cabecalho-pagina">
+  <div class="cabecalho-titulo">
+    <span class="icone-bloco"><%= icone(:ajustes, tamanho: 22) %></span>
+    <div>
+      <p class="sobretitulo">Configuração de ponto</p>
+      <h1>Configuração de Ponto de Acesso</h1>
+    </div>
+  </div>
+  <div class="cartao-operador">
+    <span class="icone-verde"><%= icone(:cracha, tamanho: 20) %></span>
+    <span>
+      <small>Operador Autenticado</small>
+      <strong><%= funcionario_atual.nome %> · <%= funcionario_atual.identificacao %></strong>
+    </span>
+  </div>
+</section>
+
+<p class="texto-suave">Sessão válida até <strong><%= l sessao_atual.expira_em, format: :short %></strong>.</p>
+
+<% if sessao_atual.ponto_acesso_pendente? %>
+  <section class="cartao" id="ponto-acesso">
+    <div class="passo">
+      <span class="numero-passo">1</span>
+      <div>
+        <h2>Escolha do restaurante e da catraca</h2>
+        <p class="texto-suave">Selecione a unidade operacional e a catraca física que receberá os comandos desta sessão.</p>
+      </div>
+    </div>
+    <div class="aviso-info">
+      <%= icone(:info, tamanho: 18) %>
+      <span>As operações de controle ficam indisponíveis até a confirmação do ponto de acesso.</span>
+    </div>
+    <%# F05 (Configuração do ponto de acesso — Daniel) entra aqui. %>
+  </section>
+<% end %>

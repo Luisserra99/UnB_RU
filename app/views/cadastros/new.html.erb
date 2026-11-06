@@ -1,0 +1,56 @@
+<% content_for :title, "Cadastro de estudante | RU UnB Digital" %>
+<% erros = @cadastro.errors %>
+
+<section class="cartao cartao-auth">
+  <span class="icone-titulo icone-titulo-estudante"><%= icone(:usuario, tamanho: 22) %></span>
+  <h1>Cadastro de estudante</h1>
+  <p class="subtitulo">Crie sua conta do RU com a matrícula da UnB e o email institucional.</p>
+
+  <% if erros.any? %>
+    <div class="erros" role="alert">
+      <p>Não foi possível criar a conta. Revise os campos destacados.</p>
+      <% if erros[:base].any? %>
+        <ul><% erros[:base].each do |mensagem| %><li><%= mensagem %></li><% end %></ul>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= form_with model: @cadastro, url: cadastro_path, scope: :cadastro_estudante, class: "formulario" do |f| %>
+    <% campos = [
+         [:nome, "Nome completo", :usuario, :text_field, { autocomplete: "name", placeholder: "Como no seu cadastro da UnB" }],
+         [:matricula, "Matrícula", :cracha, :text_field, { inputmode: "numeric", maxlength: 9, placeholder: "9 números, ex: 221045999" }],
+         [:email, "Email institucional", :email, :email_field, { autocomplete: "email", placeholder: "matricula@aluno.unb.br" }]
+       ] %>
+    <% campos.each do |atributo, rotulo, nome_icone, tipo, opcoes| %>
+      <div class="campo">
+        <div class="campo-rotulo">
+          <%= f.label atributo, rotulo %>
+          <span class="obrigatorio">Obrigatório</span>
+        </div>
+        <div class="campo-entrada<%= " invalido" if erros[atributo].any? %>">
+          <%= icone(nome_icone, tamanho: 18, classe: "icone-campo") %>
+          <%= f.public_send tipo, atributo, **opcoes, "aria-invalid": erros[atributo].any? %>
+        </div>
+        <% erros[atributo].each do |mensagem| %>
+          <p class="erro-campo"><%= mensagem %></p>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="campo">
+      <div class="campo-rotulo">
+        <%= f.label :senha, "Senha" %>
+        <span class="obrigatorio">Mínimo de <%= Usuario::SENHA_TAMANHO_MINIMO %> caracteres</span>
+      </div>
+      <%= render "shared/campo_senha", form: f, atributo: :senha, autocomplete: "new-password",
+            placeholder: "Crie uma senha", invalido: erros[:senha].any? %>
+      <% erros[:senha].each do |mensagem| %>
+        <p class="erro-campo"><%= mensagem %></p>
+      <% end %>
+    </div>
+
+    <%= f.button type: "submit", class: "botao botao-estudante botao-largo" do %>
+      <%= icone(:confirmar, tamanho: 18) %> Cadastrar
+    <% end %>
+  <% end %>
+</section>
