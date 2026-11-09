@@ -179,7 +179,20 @@ bundle exec rspec           # testes RSpec
 bundle exec cucumber        # cenários BDD (features/)
 ```
 
-Os usuários de teste e detalhes da base de identidade estão em [Identidade e Acesso](Sprint-2-Identidade-e-Acesso.md#usuários-de-teste-binrails-dbseed). Cada página de funcionalidade tem a sua seção "Como testar".
+### Usuários de exemplo
+
+Criados por `bin/rails db:seed`:
+
+| Perfil | Entrada | Identificação | Senha |
+|---|---|---|---|
+| Estudante | `/entrar` (Portal do Estudante: recarga e extrato) | `251033574` | `Estudante@123` |
+| Estudante sem saldo | `/entrar` | `222014133` | `Estudante@123` |
+| Funcionário | `/controle/login` | `funcionario01` | `senhaCorreta` |
+| Administrador | `/controle/login` (inclui "Gestão de Restaurantes") | `admin` | `Admin@1234` |
+
+O estudante `251033574` começa com R$ 22,50 de saldo, e o `222014133` com R$ 0,00. No PIX, use o botão "Simular pagamento" (só em desenvolvimento). No cartão, `4111 1111 1111 1111` é aprovado e `4000 0000 0000 0002` é recusado (qualquer validade futura e CVV de 3 dígitos).
+
+A lista completa de usuários de teste e detalhes da base de identidade estão em [Identidade e Acesso](Sprint-2-Identidade-e-Acesso.md#usuários-de-teste-binrails-dbseed). Cada página de funcionalidade tem a sua seção "Como testar".
 
 ---
 
