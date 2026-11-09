@@ -1,0 +1,48 @@
+<% content_for :title, "Entrar | RU UnB Digital" %>
+<% faltando = Array(@campos_obrigatorios) %>
+
+<section class="cartao cartao-auth">
+  <span class="icone-titulo icone-titulo-estudante"><%= icone(:usuario, tamanho: 22) %></span>
+  <h1>Entrar no Portal do Estudante</h1>
+  <p class="subtitulo">Use sua matrícula e a senha cadastrada para recarregar o saldo do RU.</p>
+
+  <% if faltando.any? %>
+    <div class="erros" role="alert">
+      <p>Preencha os campos obrigatórios:</p>
+      <ul>
+        <% faltando.each do |campo| %>
+          <li><%= campo %> é obrigatória</li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with url: login_estudante_path, class: "formulario" do |f| %>
+    <div class="campo">
+      <div class="campo-rotulo">
+        <%= f.label :matricula, "Matrícula" %>
+        <span class="obrigatorio">Obrigatório</span>
+      </div>
+      <div class="campo-entrada<%= " invalido" if faltando.include?("Matrícula") %>">
+        <%= icone(:cracha, tamanho: 18, classe: "icone-campo") %>
+        <%= f.text_field :matricula, value: @matricula, autocomplete: "username", inputmode: "numeric",
+              maxlength: 9, placeholder: "9 números, ex: 221045999", "aria-invalid": faltando.include?("Matrícula") %>
+      </div>
+    </div>
+
+    <div class="campo">
+      <div class="campo-rotulo">
+        <%= f.label :senha, "Senha" %>
+        <span class="obrigatorio">Obrigatório</span>
+      </div>
+      <%= render "shared/campo_senha", form: f, atributo: :senha, autocomplete: "current-password",
+            placeholder: "Digite sua senha", invalido: faltando.include?("Senha") %>
+    </div>
+
+    <%= f.button type: "submit", class: "botao botao-estudante botao-largo" do %>
+      <%= icone(:entrar, tamanho: 18) %> Entrar
+    <% end %>
+  <% end %>
+
+  <p class="texto-suave rodape-auth">Ainda não tem conta? <%= link_to "Criar conta", novo_cadastro_path %></p>
+</section>
