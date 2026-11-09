@@ -75,9 +75,11 @@ Dado("que eu removi a catraca {string}") do |identificacao|
   expect(page).to have_content("Catraca removida com sucesso")
 end
 
-# A F05 ainda não existe, então a seleção é simulada: `Catraca#em_operacao?` é o ponto que a F05 deve implementar.
+# Configuração persistida, usando a integração real da F05.
 Dado("que a catraca {string} está selecionada por um funcionário na aplicação de controle") do |identificacao|
-  allow_any_instance_of(Catraca).to receive(:em_operacao?) { |catraca| catraca.identificacao == identificacao }
+  catraca = Catraca.find_by!(identificacao: identificacao)
+  sessao, = SessaoAutenticacao.iniciar!(create(:funcionario))
+  PontosAcesso::Configurar.call(sessao: sessao, restaurante_id: catraca.restaurante.id, catraca_id: catraca.id)
 end
 
 # --- Quando ---

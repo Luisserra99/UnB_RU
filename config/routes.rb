@@ -30,6 +30,11 @@ Rails.application.routes.draw do
     post "login", to: "sessoes#create"
     delete "logout", to: "sessoes#destroy", as: :logout
 
+    # F05 — Configuração do ponto de acesso
+    resource :ponto_acesso, only: [:create], controller: "pontos_acesso" do
+      post :reconfigurar, to: "pontos_acesso#edit"
+    end
+
     # F08 — Catracas disponíveis para seleção (reaproveitável na F05)
     resources :restaurantes, only: [] do
       resources :catracas, only: :index

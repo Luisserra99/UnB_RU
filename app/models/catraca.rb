@@ -4,12 +4,14 @@ class Catraca < ApplicationRecord
   MSG_PISO_INEXISTENTE = "Piso inexistente para este restaurante".freeze
   MSG_EM_OPERACAO = "Não é possível remover uma catraca em operação".freeze
 
+  has_many :configuracoes_ponto_acesso, class_name: "ConfiguracaoPontoAcesso", dependent: :restrict_with_error
+
   belongs_to :piso, optional: true
   has_one :restaurante, through: :piso
 
   normalizes :identificacao, with: ->(valor) { valor.squish }
 
-  before_destroy :impedir_remocao_em_operacao
+  before_destroy :impedir_remocao_em_operacao, prepend: true
 
   validates :identificacao, presence: { message: MSG_IDENTIFICACAO_OBRIGATORIA }
   validates :piso, presence: { message: MSG_PISO_INEXISTENTE }
@@ -17,11 +19,9 @@ class Catraca < ApplicationRecord
 
   scope :disponiveis, -> { where(ativa: true) }
 
-  # Ponto preparado para a F05: deve retornar true quando houver uma
-  # ConfiguracaoPontoAcesso vigente (finalizada_em nula) de uma sessão válida com esta catraca.
-  # Enquanto a F05 não existir, nenhuma catraca é considerada em operação.
+  # Mesmo durante reconfiguração, o ponto antigo é preservado até nova confirmação.
   def em_operacao?
-    false
+    configuracoes_ponto_acesso.em_sessoes_validas.exists?
   end
 
   private

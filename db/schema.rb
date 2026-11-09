@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_09_000005) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_10_000001) do
   create_table "cardapios", force: :cascade do |t|
     t.integer "servico_refeicao_id", null: false
     t.date "data_referencia", null: false
@@ -29,6 +29,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_000005) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["piso_id"], name: "index_catracas_on_piso_id"
+  end
+
+  create_table "configuracao_ponto_acessos", force: :cascade do |t|
+    t.integer "sessao_autenticacao_id", null: false
+    t.integer "catraca_id", null: false
+    t.integer "restaurante_id", null: false
+    t.datetime "confirmada_em", null: false
+    t.datetime "finalizada_em"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["catraca_id"], name: "index_configuracao_ponto_acessos_on_catraca_id"
+    t.index ["restaurante_id"], name: "index_configuracao_ponto_acessos_on_restaurante_id"
+    t.index ["sessao_autenticacao_id"], name: "index_configuracao_ponto_acessos_on_sessao_autenticacao_id"
+    t.index ["sessao_autenticacao_id"], name: "uma_configuracao_aberta_por_sessao", unique: true, where: "finalizada_em IS NULL"
+    t.check_constraint "finalizada_em IS NULL OR finalizada_em >= confirmada_em", name: "configuracao_vigencia_valida"
   end
 
   create_table "estudantes", force: :cascade do |t|
@@ -242,6 +257,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_000005) do
 
   add_foreign_key "cardapios", "servico_refeicoes"
   add_foreign_key "catracas", "pisos"
+  add_foreign_key "configuracao_ponto_acessos", "catracas"
+  add_foreign_key "configuracao_ponto_acessos", "restaurantes"
+  add_foreign_key "configuracao_ponto_acessos", "sessao_autenticacoes"
   add_foreign_key "estudantes", "usuarios"
   add_foreign_key "item_cardapios", "opcao_cardapios"
   add_foreign_key "item_recargas", "recargas"
