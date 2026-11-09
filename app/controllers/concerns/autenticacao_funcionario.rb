@@ -32,12 +32,22 @@ module AutenticacaoFuncionario
   def exigir_funcionario!
     return if funcionario_autenticado?
 
-    expirada = SessaoAutenticacao.localizar(session[CHAVE_SESSAO])&.expirada?
+    anterior = SessaoAutenticacao.localizar(session[CHAVE_SESSAO])
+    expirada = anterior&.expirada?
+    anterior&.encerrar!
     reset_session
     redirect_to controle_login_path, alert: (expirada ? MSG_SESSAO_EXPIRADA : MSG_LOGIN_OBRIGATORIO)
   end
 
+  # reset_session remove cookies, mas também é necessário encerrar a configuração no banco.
+  def encerrar_sessoes_anteriores
+    [:token_sessao_controle, :token_sessao_estudante].each do |chave|
+      SessaoAutenticacao.localizar(session[chave])&.encerrar!
+    end
+  end
+
   def iniciar_sessao_controle(usuario)
+    encerrar_sessoes_anteriores
     reset_session # evita fixação de sessão
     @sessao_atual, token = SessaoAutenticacao.iniciar!(usuario)
     session[CHAVE_SESSAO] = token

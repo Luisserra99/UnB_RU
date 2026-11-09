@@ -44,8 +44,8 @@ As histórias de usuário, as regras de negócio (RN) e os cenários BDD de cada
 | F02 — Compra de créditos (PIX/cartão) | [#2](https://github.com/neatzzy/UnB_RU/issues/2) | [recarga_saldo.feature](../features/recarga_saldo.feature) | Luis | [F02](F02.md) | Implementada |
 | F03 — Extrato e histórico de refeições | [#3](https://github.com/neatzzy/UnB_RU/issues/3) | [extrato_historico.feature](../features/extrato_historico.feature) | Luis | [F03](F03.md) | Implementada (tipo de refeição aguarda F06) |
 | F04 — Login de funcionário | [#4](https://github.com/neatzzy/UnB_RU/issues/4) | [autenticacao_funcionario.feature](../features/autenticacao_funcionario.feature) | Weldo | [F04](F04.md) | Implementada |
-| F05 — Configuração do ponto de acesso | [#5](https://github.com/neatzzy/UnB_RU/issues/5) | [configuracao_ponto_acesso.feature](../features/configuracao_ponto_acesso.feature) | Daniel | A criar | Pendente |
-| F06 — Leitura e autorização na catraca | [#6](https://github.com/neatzzy/UnB_RU/issues/6) | [validacao_entrada.feature](../features/validacao_entrada.feature) | Daniel | A criar | Pendente |
+| F05 — Configuração do ponto de acesso | [#26](https://github.com/Luisserra99/UnB_RU/issues/26) | [configuracao_ponto_acesso.feature](../features/configuracao_ponto_acesso.feature) | Daniel | [F05](F05.md) | Implementada; aguardando revisão |
+| F06 — Leitura e autorização na catraca | [#27](https://github.com/Luisserra99/UnB_RU/issues/27) | [validacao_entrada.feature](../features/validacao_entrada.feature) | Daniel | [F06](F06.md) | Implementada; aguardando revisão |
 | F07 — Histórico da catraca | [#7](https://github.com/neatzzy/UnB_RU/issues/7) | [historico_local_catraca.feature](../features/historico_local_catraca.feature) | Weldo | [F07](F07.md) | Aguardando F05 e F06 |
 | F08 — Cadastro de restaurante, pisos e catracas | [#8](https://github.com/neatzzy/UnB_RU/issues/8) | [gestao_restaurante_catracas.feature](../features/gestao_restaurante_catracas.feature) | Leonardo | [F08](F08.md) | Implementada |
 | F09 — Relatório administrativo/global | [#9](https://github.com/neatzzy/UnB_RU/issues/9) | [relatorio_global_acesso.feature](../features/relatorio_global_acesso.feature) | Tarsila | A criar | Pendente |
@@ -206,6 +206,8 @@ A lista completa de usuários de teste e detalhes da base de identidade estão e
 - [F02 — Recarga de Saldo](F02.md)
 - [F03 — Extrato e Histórico de Refeições](F03.md)
 - [F04 — Autenticação do Funcionário](F04.md)
+- [F05 — Configuração do Ponto de Acesso](F05.md)
+- [F06 — Leitura e Autorização na Catraca](F06.md)
 - [F07 — Histórico Local da Catraca](F07.md)
 - [F08 — Gestão de Restaurantes e Catracas](F08.md)
 - [F10 — Cardápio da Refeição Atual](F10.md)

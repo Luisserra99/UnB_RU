@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_09_000005) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_10_000003) do
   create_table "cardapios", force: :cascade do |t|
     t.integer "servico_refeicao_id", null: false
     t.date "data_referencia", null: false
@@ -29,6 +29,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_000005) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["piso_id"], name: "index_catracas_on_piso_id"
+  end
+
+  create_table "configuracao_ponto_acessos", force: :cascade do |t|
+    t.integer "sessao_autenticacao_id", null: false
+    t.integer "catraca_id", null: false
+    t.integer "restaurante_id", null: false
+    t.datetime "confirmada_em", null: false
+    t.datetime "finalizada_em"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["catraca_id"], name: "index_configuracao_ponto_acessos_on_catraca_id"
+    t.index ["restaurante_id"], name: "index_configuracao_ponto_acessos_on_restaurante_id"
+    t.index ["sessao_autenticacao_id"], name: "index_configuracao_ponto_acessos_on_sessao_autenticacao_id"
+    t.index ["sessao_autenticacao_id"], name: "uma_configuracao_aberta_por_sessao", unique: true, where: "finalizada_em IS NULL"
+    t.check_constraint "finalizada_em IS NULL OR finalizada_em >= confirmada_em", name: "configuracao_vigencia_valida"
   end
 
   create_table "estudantes", force: :cascade do |t|
@@ -80,7 +95,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_000005) do
     t.index ["estudante_id", "ocorrida_em"], name: "index_movimentacao_saldos_on_estudante_id_and_ocorrida_em"
     t.index ["recarga_id"], name: "index_movimentacao_saldos_on_recarga_id", unique: true
     t.index ["registro_acesso_id"], name: "index_movimentacao_saldos_on_registro_acesso_id", unique: true
-    t.check_constraint "(natureza = 'credito_recarga' AND valor > 0 AND recarga_id IS NOT NULL AND registro_acesso_id IS NULL) OR (natureza = 'debito_refeicao' AND valor < 0 AND recarga_id IS NULL)", name: "movimentacao_saldos_origem_coerente"
+    t.check_constraint "(natureza = 'credito_recarga' AND valor > 0 AND recarga_id IS NOT NULL AND registro_acesso_id IS NULL) OR (natureza = 'debito_refeicao' AND valor < 0 AND recarga_id IS NULL AND registro_acesso_id IS NOT NULL)", name: "movimentacao_saldos_origem_coerente"
     t.check_constraint "natureza IN ('credito_recarga', 'debito_refeicao')", name: "movimentacao_saldos_natureza_valida"
   end
 
@@ -133,6 +148,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_000005) do
     t.check_constraint "numero > 0", name: "pisos_numero_positivo"
   end
 
+  create_table "rateio_consumos", force: :cascade do |t|
+    t.integer "movimentacao_saldo_id", null: false
+    t.integer "recarga_id", null: false
+    t.decimal "valor", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["movimentacao_saldo_id", "recarga_id"], name: "rateio_origem_unica", unique: true
+    t.index ["movimentacao_saldo_id"], name: "index_rateio_consumos_on_movimentacao_saldo_id"
+    t.index ["recarga_id"], name: "index_rateio_consumos_on_recarga_id"
+    t.check_constraint "valor > 0", name: "rateio_valor_positivo"
+  end
+
   create_table "recargas", force: :cascade do |t|
     t.integer "estudante_id", null: false
     t.datetime "solicitada_em", null: false
@@ -145,6 +172,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_000005) do
     t.check_constraint "status <> 'confirmada' OR confirmada_em IS NOT NULL", name: "recargas_confirmada_com_data"
     t.check_constraint "status IN ('pendente', 'confirmada', 'expirada', 'cancelada')", name: "recargas_status_valido"
     t.check_constraint "valor_total > 0", name: "recargas_valor_total_positivo"
+  end
+
+  create_table "registro_acessos", force: :cascade do |t|
+    t.integer "configuracao_ponto_acesso_id", null: false
+    t.integer "estudante_id"
+    t.integer "servico_refeicao_id"
+    t.integer "tarifa_refeicao_id"
+    t.string "referencia_evento", null: false
+    t.string "identificacao_lida", null: false
+    t.decimal "saldo_lido", precision: 10, scale: 2
+    t.decimal "valor_previsto", precision: 10, scale: 2
+    t.string "estado", null: false
+    t.string "mensagem", null: false
+    t.datetime "lido_em", null: false
+    t.datetime "liberado_em"
+    t.datetime "passagem_em"
+    t.datetime "bloqueado_em"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["configuracao_ponto_acesso_id"], name: "index_registro_acessos_on_configuracao_ponto_acesso_id"
+    t.index ["estudante_id"], name: "index_registro_acessos_on_estudante_id"
+    t.index ["referencia_evento"], name: "index_registro_acessos_on_referencia_evento", unique: true
+    t.index ["servico_refeicao_id"], name: "index_registro_acessos_on_servico_refeicao_id"
+    t.index ["tarifa_refeicao_id"], name: "index_registro_acessos_on_tarifa_refeicao_id"
+    t.check_constraint "estado != 'realizado' OR (estudante_id IS NOT NULL AND liberado_em IS NOT NULL AND passagem_em IS NOT NULL AND bloqueado_em IS NOT NULL)", name: "registro_passagem_completa"
+    t.check_constraint "estado IN ('recusado', 'liberado', 'realizado', 'cancelado')", name: "registro_estado_valido"
+    t.check_constraint "valor_previsto IS NULL OR valor_previsto > 0", name: "registro_valor_positivo"
   end
 
   create_table "restaurantes", force: :cascade do |t|
@@ -242,6 +296,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_000005) do
 
   add_foreign_key "cardapios", "servico_refeicoes"
   add_foreign_key "catracas", "pisos"
+  add_foreign_key "configuracao_ponto_acessos", "catracas"
+  add_foreign_key "configuracao_ponto_acessos", "restaurantes"
+  add_foreign_key "configuracao_ponto_acessos", "sessao_autenticacoes"
   add_foreign_key "estudantes", "usuarios"
   add_foreign_key "item_cardapios", "opcao_cardapios"
   add_foreign_key "item_recargas", "recargas"
@@ -249,10 +306,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_000005) do
   add_foreign_key "item_recargas", "tipo_refeicoes"
   add_foreign_key "movimentacao_saldos", "estudantes"
   add_foreign_key "movimentacao_saldos", "recargas"
+  add_foreign_key "movimentacao_saldos", "registro_acessos"
   add_foreign_key "opcao_cardapios", "cardapios"
   add_foreign_key "pagamentos", "recargas"
   add_foreign_key "pisos", "restaurantes"
+  add_foreign_key "rateio_consumos", "movimentacao_saldos"
+  add_foreign_key "rateio_consumos", "recargas"
   add_foreign_key "recargas", "estudantes"
+  add_foreign_key "registro_acessos", "configuracao_ponto_acessos"
+  add_foreign_key "registro_acessos", "estudantes"
+  add_foreign_key "registro_acessos", "servico_refeicoes"
+  add_foreign_key "registro_acessos", "tarifa_refeicoes"
   add_foreign_key "restaurantes", "unidade_gestoras"
   add_foreign_key "servico_refeicoes", "restaurantes"
   add_foreign_key "servico_refeicoes", "tipo_refeicoes"

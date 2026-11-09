@@ -36,6 +36,7 @@ Funcionalidade: Configuração de ponto de acesso
       | funcionario | restaurante      | catraca | data       | hora     |
       | 100200300   | RU Darcy Ribeiro | CAT-01  | 15/10/2026 | 11:00:00 |
 
+  @integracao_f06
   Cenário: Associar os registros de operação ao ponto de acesso da sessão
     Dado que o funcionário "100200300" possui uma sessão autenticada ativa
     E configurou o restaurante "RU Darcy Ribeiro" e a catraca "CAT-01" como ponto de acesso
@@ -44,6 +45,7 @@ Funcionalidade: Configuração de ponto de acesso
     E deve identificar o restaurante "RU Darcy Ribeiro" e a catraca "CAT-01"
     E deve identificar a data "15/10/2026" e a hora "11:30:00"
 
+  @integracao_f06
   Cenário: Trocar de restaurante e configurar uma nova catraca
     Dado que o funcionário "100200300" possui uma sessão autenticada ativa
     E configurou o restaurante "RU Darcy Ribeiro" e a catraca "CAT-01" como ponto de acesso

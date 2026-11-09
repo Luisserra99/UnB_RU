@@ -3,6 +3,8 @@
 class SessaoAutenticacao < ApplicationRecord
   DURACAO = 8.hours
 
+  has_many :configuracoes_ponto_acesso, class_name: "ConfiguracaoPontoAcesso", dependent: :restrict_with_error
+
   belongs_to :usuario
 
   validates :token_digest, presence: true, uniqueness: true
@@ -46,7 +48,17 @@ class SessaoAutenticacao < ApplicationRecord
     !encerrada? && !expirada? && usuario.ativo?
   end
 
+  def ponto_acesso_atual
+    return nil unless ativa?
+    configuracoes_ponto_acesso.abertas.order(confirmada_em: :desc).first
+  end
+
   def encerrar!
-    update!(encerrada_em: Time.current) unless encerrada?
+    with_lock do
+      agora = Time.current
+      configuracoes_ponto_acesso.abertas.each(&:cancelar_liberacoes!)
+      configuracoes_ponto_acesso.abertas.update_all(finalizada_em: agora, updated_at: agora)
+      update!(encerrada_em: agora, ponto_acesso_pendente: true) unless encerrada?
+    end
   end
 end

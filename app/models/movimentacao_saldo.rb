@@ -1,12 +1,14 @@
 # Lançamento no saldo do estudante. O saldo é a soma dos valores (Estudante#saldo).
 # - credito_recarga (F02): valor positivo, gerado pela confirmação de uma recarga.
-# - debito_refeicao (F06, Daniel): valor negativo, gerado pela passagem na catraca. Hoje o débito
-#   ainda não exige registro_acesso_id, porque RegistroAcesso ainda não existe.
+# - debito_refeicao (F06, Daniel): valor negativo, gerado pela passagem na catraca. O débito
+#   exige registro de passagem realizada do mesmo estudante.
 class MovimentacaoSaldo < ApplicationRecord
   enum :natureza, { credito_recarga: "credito_recarga", debito_refeicao: "debito_refeicao" }, validate: true
 
   belongs_to :estudante
   belongs_to :recarga, optional: true
+  belongs_to :registro_acesso, optional: true
+  has_many :rateios_consumo, class_name: "RateioConsumo", dependent: :restrict_with_error
 
   validates :valor, presence: true
   validates :ocorrida_em, presence: true
@@ -27,9 +29,9 @@ class MovimentacaoSaldo < ApplicationRecord
     end
   end
 
-  # Ponto de extensão para a F06: o tipo virá de RegistroAcesso -> ServicoRefeicao -> TipoRefeicao.
+  # O extrato usa o tipo real do serviço consumido na passagem.
   def tipo_refeicao
-    nil
+    registro_acesso&.servico_refeicao&.tipo_refeicao
   end
 
   private
@@ -52,6 +54,10 @@ class MovimentacaoSaldo < ApplicationRecord
   end
 
   def validar_debito
+    errors.add(:registro_acesso, "é obrigatório para débito") unless registro_acesso
+    if registro_acesso && (!registro_acesso.realizado? || registro_acesso.estudante_id != estudante_id)
+      errors.add(:registro_acesso, "deve ser uma passagem realizada pelo mesmo estudante")
+    end
     errors.add(:valor, "do débito deve ser negativo") unless valor.negative?
     errors.add(:recarga, "não se aplica a débito") if recarga_id.present?
   end

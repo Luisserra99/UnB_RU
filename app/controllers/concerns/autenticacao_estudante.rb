@@ -43,6 +43,7 @@ module AutenticacaoEstudante
   end
 
   def iniciar_sessao_estudante(usuario)
+    encerrar_sessoes_anteriores
     retorno = session[:retorno_estudante]
     reset_session # evita fixação de sessão
     @sessao_estudante, token = SessaoAutenticacao.iniciar!(usuario)
