@@ -9,6 +9,7 @@
 | **Período** | A definir |
 | **Repositório** | [Luisserra99/UnB_RU](https://github.com/Luisserra99/UnB_RU) (fork de trabalho) · [neatzzy/UnB_RU](https://github.com/neatzzy/UnB_RU) (upstream) |
 | **Branch de integração** | `sprint-2` |
+| **Kanban** | [GitHub Project](https://github.com/users/Luisserra99/projects/1) (lanes: Backlog, Doing, Done, Accepted) |
 
 ### Integrantes
 
@@ -192,6 +193,7 @@ Os usuários de teste e detalhes da base de identidade estão em [Identidade e A
 
 **Repositório**
 
+- [Kanban da Sprint 2 (GitHub Project)](https://github.com/users/Luisserra99/projects/1)
 - [README](../README.MD)
 - [Issues](https://github.com/neatzzy/UnB_RU/issues)
 - [Pull requests do fork](https://github.com/Luisserra99/UnB_RU/pulls)
