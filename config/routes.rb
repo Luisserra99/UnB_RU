@@ -18,6 +18,8 @@ Rails.application.routes.draw do
       post :simular_confirmacao # só existe em desenvolvimento e teste
     end
   end
+  get "extrato", to: "extratos#show", as: :extrato
+  get "estudantes/:estudante_id/extrato", to: "extratos#show", as: :extrato_estudante
 
   # Aplicação de controle (funcionários)
   namespace :controle do

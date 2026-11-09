@@ -1,0 +1,88 @@
+<% content_for :title, "Extrato e Histórico de Refeições | RU UnB Digital" %>
+<% c = @consulta %>
+
+<div class="cabecalho-pagina">
+  <div class="cabecalho-titulo">
+    <span class="icone-bloco icone-bloco-estudante"><%= icone(:info, tamanho: 22) %></span>
+    <div>
+      <p class="sobretitulo">Portal do Estudante</p>
+      <h1>Extrato e Histórico de Refeições</h1>
+    </div>
+  </div>
+  <%= render "recargas/saldo" %>
+</div>
+
+<% if c.vazio? %>
+  <section class="cartao extrato-vazio" id="extrato-vazio">
+    <p><strong>Não há histórico disponível. Você ainda não possui lançamentos.</strong></p>
+    <p class="texto-suave">Suas recargas e refeições aparecerão aqui.</p>
+    <%= link_to "Fazer uma recarga", new_recarga_path, class: "botao botao-estudante" %>
+  </section>
+<% else %>
+  <section class="cartao" id="ultimas-recargas">
+    <h2>Últimas recargas</h2>
+    <% if c.ultimas_recargas.any? %>
+      <div class="tabela-rolagem">
+        <table class="tabela">
+          <thead><tr><th>Data</th><th>Horário</th><th>Método</th><th>Valor</th></tr></thead>
+          <tbody>
+            <% c.ultimas_recargas.each do |recarga| %>
+              <% momento = recarga.confirmada_em.in_time_zone %>
+              <tr>
+                <td><%= l(momento.to_date) %></td>
+                <td><%= momento.strftime("%H:%M") %></td>
+                <td><%= recarga.pagamentos.find(&:confirmado?)&.nome_metodo || "—" %></td>
+                <td><%= moeda(recarga.valor_total) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="texto-suave">Nenhuma recarga confirmada.</p>
+    <% end %>
+  </section>
+
+  <section class="cartao" id="movimentacoes">
+    <h2>Movimentações</h2>
+    <div class="tabela-rolagem">
+      <table class="tabela">
+        <thead><tr><th>Data</th><th>Horário</th><th>Descrição</th><th>Valor</th></tr></thead>
+        <tbody>
+          <% c.movimentacoes.each do |mov| %>
+            <% momento = mov.ocorrida_em.in_time_zone %>
+            <tr class="<%= mov.credito_recarga? ? "movimentacao-credito" : "movimentacao-debito" %>">
+              <td><%= l(momento.to_date) %></td>
+              <td><%= momento.strftime("%H:%M") %></td>
+              <td><%= mov.descricao %></td>
+              <td><%= mov.credito_recarga? ? "+ " : "− " %><%= moeda(mov.valor.abs) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="cartao" id="historico-refeicoes">
+    <h2>Histórico de refeições</h2>
+    <% if c.refeicoes.any? %>
+      <div class="tabela-rolagem">
+        <table class="tabela">
+          <thead><tr><th>Data</th><th>Horário</th><th>Refeição</th><th>Valor</th></tr></thead>
+          <tbody>
+            <% c.refeicoes.each do |refeicao| %>
+              <tr>
+                <td><%= l(refeicao.data) %></td>
+                <td><%= refeicao.horario %></td>
+                <td><%= refeicao.tipo %></td>
+                <td><%= moeda(refeicao.valor) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="texto-suave">Nenhuma refeição registrada.</p>
+    <% end %>
+  </section>
+<% end %>

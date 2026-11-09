@@ -19,6 +19,7 @@
         <%= link_to "Início", root_path, class: ["nav-item", ("ativo" if current_page?(root_path))] %>
         <% if estudante_autenticado? %>
           <%= link_to "Recarga de Saldo", new_recarga_path, class: ["nav-item", ("ativo" if controller_name == "recargas")] %>
+          <%= link_to "Extrato", extrato_path, class: ["nav-item", ("ativo" if controller_name == "extratos")] %>
         <% else %>
           <%= link_to "Criar conta", novo_cadastro_path, class: ["nav-item", ("ativo" if current_page?(novo_cadastro_path))] %>
         <% end %>
