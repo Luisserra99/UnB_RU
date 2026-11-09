@@ -3,6 +3,7 @@ class Recarga < ApplicationRecord
   enum :status, { pendente: "pendente", confirmada: "confirmada", expirada: "expirada", cancelada: "cancelada" },
        validate: true
 
+  has_many :rateios_consumo, class_name: "RateioConsumo", dependent: :restrict_with_error
   belongs_to :estudante
   has_many :itens, -> { order(:id) }, class_name: "ItemRecarga", dependent: :destroy, inverse_of: :recarga
   has_many :pagamentos, -> { order(:created_at, :id) }, dependent: :destroy, inverse_of: :recarga

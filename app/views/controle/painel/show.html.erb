@@ -32,18 +32,18 @@
       <%= icone(:info, tamanho: 18) %>
       <span>As operações de controle ficam indisponíveis até a confirmação do ponto de acesso.</span>
     </div>
-    <%= form_with url: controle_root_path, method: :get do |f| %>
-      <%= f.label :restaurante_id, "Restaurante" %>
-      <%= f.select :restaurante_id, @restaurantes.map { |r| [r.nome, r.id] }, { include_blank: "Selecione um restaurante", selected: @restaurante&.id } %>
+    <%= form_with url: controle_root_path, method: :get, class: "formulario" do |f| %>
+      <div class="campo"><%= f.label :restaurante_id, "Restaurante" %><div class="campo-entrada">
+      <%= f.select :restaurante_id, @restaurantes.map { |r| [r.nome, r.id] }, { include_blank: "Selecione um restaurante", selected: @restaurante&.id } %></div></div>
       <%= f.submit "Selecionar restaurante", class: "botao botao-secundario" %>
     <% end %>
     <% if @restaurantes.empty? %><p>Nenhum restaurante disponível</p><% end %>
     <% if @restaurante %>
       <div id="catracas-disponiveis">
-        <%= form_with url: controle_ponto_acesso_path do |f| %>
+        <%= form_with url: controle_ponto_acesso_path, class: "formulario" do |f| %>
           <%= f.hidden_field :restaurante_id, value: @restaurante.id %>
-          <%= f.label :catraca_id, "Catraca" %>
-          <%= f.select :catraca_id, @catracas.map { |c| ["#{c.identificacao} · #{c.piso.nome}", c.id] }, include_blank: "Selecione uma catraca" %>
+          <div class="campo"><%= f.label :catraca_id, "Catraca" %><div class="campo-entrada">
+          <%= f.select :catraca_id, @catracas.map { |c| ["#{c.identificacao} · #{c.piso.nome}", c.id] }, include_blank: "Selecione uma catraca" %></div></div>
           <%= f.submit "Confirmar ponto de acesso", disabled: @catracas.empty?, class: "botao botao-primario" %>
         <% end %>
         <% if @catracas.empty? %><p>Nenhuma catraca disponível neste restaurante</p><% end %>

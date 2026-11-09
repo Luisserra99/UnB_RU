@@ -76,9 +76,12 @@ Dado("configurou o restaurante {string} e a catraca {string} como ponto de acess
   enviar_ponto(nome, identificacao)
   @ponto_anterior = sessao_ponto.ponto_acesso_atual
 end
-Dado("iniciou a alteração do ponto de acesso") { click_button "Alterar ponto de acesso" }
+Dado("iniciou a alteração do ponto de acesso") do
+  @registro_anterior = Catracas::Operar.new(sessao_ponto.ponto_acesso_atual).ler(identificacao: "desconhecido", referencia: SecureRandom.uuid)
+  click_button "Alterar ponto de acesso"
+end
 Então("a seleção da catraca {string} deve ser removida do formulário de alteração") do |identificacao|
-  expect(page).not_to have_select("Catraca", selected: /#{identificacao}/)
+  expect(find("#catraca_id").value).to eq("")
 end
 Então("o ponto de acesso confirmado deve continuar sendo o restaurante {string} e a catraca {string} até uma nova confirmação válida") do |nome, identificacao|
   step "a sessão deve ter como ponto de acesso o restaurante \"#{nome}\" e a catraca \"#{identificacao}\""

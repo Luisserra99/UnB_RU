@@ -29,7 +29,7 @@ FactoryBot.define do
 
     transient do
       quantidade { 1 }
-      tarifa { association :tarifa_refeicao, :almoco }
+      tarifa { TarifaRefeicao.vigente_para(TipoRefeicao::ALMOCO) || association(:tarifa_refeicao, :almoco) }
       # Permite valores arbitrários (ex.: saldo de R$ 2,00 nos testes da F06).
       valor_unitario { tarifa.valor }
     end
@@ -80,13 +80,19 @@ FactoryBot.define do
     end
   end
 
-  # Por padrão, um débito de refeição (o que a F03 lista no histórico). Quando a F06 existir,
-  # este é o ponto a trocar para criar também o RegistroAcesso.
+  # Débito com origem real em RegistroAcesso; sem serviço, mantém o fallback histórico da F03.
   factory :movimentacao_saldo do
     estudante
     natureza { "debito_refeicao" }
     valor { BigDecimal("-4.50") }
     ocorrida_em { Time.current }
+
+    registro_acesso do
+      if natureza.to_s == "debito_refeicao"
+        association :registro_acesso, estudante: estudante, lido_em: ocorrida_em - 2.seconds,
+          liberado_em: ocorrida_em - 2.seconds, passagem_em: ocorrida_em, bloqueado_em: ocorrida_em
+      end
+    end
 
     trait :debito_refeicao
 

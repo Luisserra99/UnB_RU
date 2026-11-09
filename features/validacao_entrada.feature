@@ -1,4 +1,5 @@
 # language: pt
+@operacao_catraca
 Funcionalidade: Validação de entrada na catraca do RU
   Como aplicação de controle
   Eu quero ler a identificação do aluno, verificar se há saldo, liberar a catraca e debitar a refeição na passagem

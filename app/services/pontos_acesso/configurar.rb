@@ -14,6 +14,7 @@ module PontosAcesso
         raise Invalido, "A catraca não pertence ao restaurante selecionado" unless catraca.restaurante == restaurante
 
         agora = Time.current
+        sessao.configuracoes_ponto_acesso.abertas.each(&:cancelar_liberacoes!)
         sessao.configuracoes_ponto_acesso.abertas.update_all(finalizada_em: agora, updated_at: agora)
         configuracao = sessao.configuracoes_ponto_acesso.create!(restaurante: restaurante, catraca: catraca, confirmada_em: agora)
         sessao.update!(ponto_acesso_pendente: false)

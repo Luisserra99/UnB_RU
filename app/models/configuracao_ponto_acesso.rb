@@ -1,5 +1,6 @@
 # Cada confirmação é um registro novo: os eventos antigos preservam o ponto de origem.
 class ConfiguracaoPontoAcesso < ApplicationRecord
+  has_many :registros_acesso, class_name: "RegistroAcesso", dependent: :restrict_with_error
   belongs_to :sessao_autenticacao
   belongs_to :catraca
   belongs_to :restaurante
@@ -11,8 +12,9 @@ class ConfiguracaoPontoAcesso < ApplicationRecord
 
   scope :abertas, -> { where(finalizada_em: nil) }
   scope :em_sessoes_validas, -> {
-    abertas.joins(sessao_autenticacao: :usuario)
+    abertas.joins(sessao_autenticacao: { usuario: :papeis })
       .merge(SessaoAutenticacao.ativas).where(usuarios: { ativo: true })
+      .where(papeis: { codigo: Papel::CODIGOS_CONTROLE }).distinct
   }
 
   def disponivel?
@@ -20,6 +22,13 @@ class ConfiguracaoPontoAcesso < ApplicationRecord
       !sessao_autenticacao.ponto_acesso_pendente? &&
       sessao_autenticacao.usuario.pode_acessar_controle? &&
       restaurante.ativo? && catraca.ativa? && catraca.restaurante == restaurante
+  end
+
+  # Reconfiguração/logout cancelam liberações que ainda não tiveram passagem.
+  def cancelar_liberacoes!
+    registros_acesso.liberado.find_each do |registro|
+      registro.update!(estado: :cancelado, bloqueado_em: [Time.current, registro.limite_em].min, mensagem: "Acesso cancelado")
+    end
   end
 
   private
