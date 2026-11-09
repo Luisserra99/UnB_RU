@@ -1,5 +1,7 @@
 # Sprint 2 — Identidade e Acesso
 
+> Páginas por funcionalidade: [F01 — Cadastro de Estudante](F01.md), [F04 — Autenticação do Funcionário](F04.md) e [F07 — Histórico Local da Catraca](F07.md). Esta página reúne as orientações gerais, os usuários de teste e como rodar.
+
 **Responsável:** Weldo Gonçalves da Silva Junior (222014133)
 
 | Feature | Cenários BDD | Status |
