@@ -1,0 +1,83 @@
+<% content_for :title, "Recarga de Saldo | RU UnB Digital" %>
+<% pagamento = @pagamento %>
+<% ids = { TipoRefeicao::CAFE_DA_MANHA => "subtotal-cafe", TipoRefeicao::ALMOCO => "subtotal-almoco" } %>
+
+<div class="cabecalho-pagina">
+  <div class="cabecalho-titulo">
+    <span class="icone-bloco icone-bloco-estudante"><%= icone(:qr, tamanho: 22) %></span>
+    <div>
+      <p class="sobretitulo">Recarga de Saldo</p>
+      <h1>Cobrança de <%= moeda(@recarga.valor_total) %></h1>
+    </div>
+  </div>
+  <%= render "saldo" %>
+</div>
+
+<section class="cartao">
+  <div class="linha-status">
+    <h2>Resumo da recarga</h2>
+    <span id="status-recarga" class="selo-status selo-<%= @recarga.status %>"><%= rotulo_status_recarga(@recarga, pagamento) %></span>
+  </div>
+  <p class="texto-suave">Solicitada em <%= l(@recarga.solicitada_em, format: :short) %> · <%= pagamento&.nome_metodo %></p>
+
+  <%= render "resumo", total: @recarga.valor_total, linhas: SolicitacaoRecarga::CATEGORIAS.values.map { |config|
+        item = @recarga.item_do_tipo(config[:codigo])
+        [config[:rotulo], item&.quantidade || 0, item&.valor_unitario, @recarga.subtotal_do_tipo(config[:codigo]), ids[config[:codigo]]]
+      } %>
+</section>
+
+<section class="cartao cartao-pagamento">
+  <% if @recarga.confirmada? %>
+    <h2>Pagamento confirmado</h2>
+    <p>O valor de <%= moeda(@recarga.valor_total) %> foi creditado em <%= l(@recarga.confirmada_em, format: :short) %>.</p>
+  <% elsif pagamento.pix? && pagamento.expirado? %>
+    <h2>Código PIX expirado</h2>
+    <p id="pix-expirado">O prazo de <%= pagamento.minutos_de_validade %> minutos para pagamento acabou. O saldo não foi alterado.</p>
+    <%= link_to "Gerar nova cobrança", new_recarga_path, class: "botao botao-estudante" %>
+  <% elsif pagamento.pix? %>
+    <h2>Pague com PIX</h2>
+    <p class="texto-suave">Prazo de validade para pagamento: <strong><%= pagamento.minutos_de_validade %> minutos</strong> (expira às <%= l(pagamento.expira_em, format: "%H:%M") %>).</p>
+    <div class="pix">
+      <figure class="pix-qr">
+        <%= qr_code_pix_svg(pagamento.pix_copia_cola) %>
+        <figcaption class="texto-suave">QR Code simulado (ambiente acadêmico)</figcaption>
+      </figure>
+      <div class="campo pix-copia-cola">
+        <div class="campo-rotulo"><label for="pix_copia_cola">Código PIX Copia e Cola</label></div>
+        <textarea id="pix_copia_cola" class="codigo-pix" readonly rows="4"><%= pagamento.pix_copia_cola %></textarea>
+        <% if Rails.env.local? %>
+          <%= button_to "Simular pagamento (ambiente de testes)", simular_confirmacao_recarga_path(@recarga),
+                class: "botao botao-secundario" %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <h2>Pague com Cartão de Crédito</h2>
+    <% if pagamento.recusado? %>
+      <p class="erro-campo"><%= RecargasController::MSG_PAGAMENTO_RECUSADO %></p>
+    <% end %>
+    <% erros = @dados_cartao.errors %>
+    <%= form_with model: @dados_cartao, scope: :dados_cartao, url: pagar_cartao_recarga_path(@recarga), method: :post,
+          class: "formulario formulario-cartao" do |f| %>
+      <% [[:numero, "Número do cartão", { autocomplete: "cc-number", inputmode: "numeric", placeholder: "0000 0000 0000 0000" }],
+          [:nome, "Nome impresso no cartão", { autocomplete: "cc-name" }],
+          [:validade, "Validade (MM/AA)", { autocomplete: "cc-exp", placeholder: "MM/AA" }],
+          [:cvv, "CVV", { autocomplete: "cc-csc", inputmode: "numeric", maxlength: 3 }]].each do |atributo, rotulo, opcoes| %>
+        <div class="campo">
+          <div class="campo-rotulo"><%= f.label atributo, rotulo %></div>
+          <div class="campo-entrada<%= " invalido" if erros[atributo].any? %>">
+            <%= f.text_field atributo, value: (atributo == :nome ? @dados_cartao.nome : nil), **opcoes,
+                  "aria-invalid": erros[atributo].any? %>
+          </div>
+          <% erros[atributo].each do |mensagem| %>
+            <p class="erro-campo"><%= mensagem %></p>
+          <% end %>
+        </div>
+      <% end %>
+      <%= f.button type: "submit", class: "botao botao-estudante" do %>
+        <%= icone(:confirmar, tamanho: 18) %> Finalizar pagamento
+      <% end %>
+    <% end %>
+    <p class="texto-suave">Os dados do cartão não são armazenados.</p>
+  <% end %>
+</section>

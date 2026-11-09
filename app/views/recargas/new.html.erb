@@ -1,0 +1,72 @@
+<% content_for :title, "Recarga de Saldo | RU UnB Digital" %>
+<% s = @solicitacao %>
+<% ids = { cafes: "subtotal-cafe", almocos: "subtotal-almoco" } %>
+
+<div class="cabecalho-pagina">
+  <div class="cabecalho-titulo">
+    <span class="icone-bloco icone-bloco-estudante"><%= icone(:qr, tamanho: 22) %></span>
+    <div>
+      <p class="sobretitulo">Portal do Estudante</p>
+      <h1>Recarga de Saldo</h1>
+    </div>
+  </div>
+  <%= render "saldo" %>
+</div>
+
+<section class="cartao cartao-formulario">
+  <h2>Escolha as refeições</h2>
+  <p class="texto-suave">O valor é calculado pelo preço de cada refeição. O saldo só é atualizado depois da confirmação do pagamento.</p>
+
+  <% unless s.tarifas_cadastradas? %>
+    <div class="erros" role="alert"><p>As tarifas das refeições não estão cadastradas. Tente novamente mais tarde.</p></div>
+  <% end %>
+
+  <%= form_with url: recargas_path, scope: :solicitacao_recarga, class: "formulario" do |f| %>
+    <div class="quantidades-recarga">
+      <% SolicitacaoRecarga::CATEGORIAS.each do |categoria, config| %>
+        <% campo = :"quantidade_#{categoria}" %>
+        <div class="campo">
+          <div class="campo-rotulo">
+            <%= f.label campo, config[:rotulo] %>
+            <span class="obrigatorio"><%= s.preco(categoria) ? "#{moeda(s.preco(categoria))} cada" : "Sem tarifa" %></span>
+          </div>
+          <div class="campo-entrada<%= " invalido" if s.errors[campo].any? %>">
+            <%= icone(:talheres, tamanho: 18, classe: "icone-campo") %>
+            <%= f.number_field campo, value: s.public_send(campo).presence || 0, min: 0,
+                  max: SolicitacaoRecarga::QUANTIDADE_MAXIMA, step: 1, inputmode: "numeric",
+                  "aria-invalid": s.errors[campo].any? %>
+          </div>
+          <% s.errors[campo].each do |mensagem| %>
+            <p class="erro-campo"><%= mensagem %></p>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <%= render "resumo", total: s.valor_total, linhas: SolicitacaoRecarga::CATEGORIAS.map { |categoria, config|
+          [config[:rotulo], s.quantidade(categoria) || 0, s.preco(categoria), s.subtotal(categoria), ids[categoria]]
+        } %>
+
+    <fieldset class="metodos-pagamento">
+      <legend>Método de pagamento</legend>
+      <% Pagamento::NOMES_METODOS.each do |valor, nome| %>
+        <label class="opcao-metodo">
+          <%= f.radio_button :metodo, valor, checked: s.metodo == valor %>
+          <span><%= nome %></span>
+        </label>
+      <% end %>
+    </fieldset>
+
+    <% if s.zerada? %>
+      <p id="aviso-cobranca-zerada" class="aviso-info" role="status">
+        <%= icone(:info, tamanho: 18) %> <span><%= SolicitacaoRecarga::MSG_COBRANCA_ZERADA %>: escolha ao menos uma refeição.</span>
+      </p>
+    <% end %>
+
+    <div class="acoes-formulario">
+      <%= f.button "Calcular total", type: "submit", name: "acao", value: "calcular", class: "botao botao-secundario" %>
+      <%= f.button "Confirmar", type: "submit", name: "acao", value: "confirmar", class: "botao botao-estudante",
+            disabled: s.zerada? || !s.tarifas_cadastradas? %>
+    </div>
+  <% end %>
+</section>

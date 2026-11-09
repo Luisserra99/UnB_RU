@@ -8,6 +8,17 @@ Rails.application.routes.draw do
   # F10 — Cardápio (consulta pública)
   get "cardapio", to: "cardapios#show", as: :cardapio
 
+  # F02/F03 — Portal do estudante (Luis)
+  get "entrar", to: "sessoes_estudante#new", as: :login_estudante
+  post "entrar", to: "sessoes_estudante#create"
+  delete "sair", to: "sessoes_estudante#destroy", as: :logout_estudante
+  resources :recargas, only: %i[new create show] do
+    member do
+      post :pagar_cartao
+      post :simular_confirmacao # só existe em desenvolvimento e teste
+    end
+  end
+
   # Aplicação de controle (funcionários)
   namespace :controle do
     root "painel#show"
