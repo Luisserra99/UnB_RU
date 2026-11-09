@@ -77,3 +77,7 @@
 .rodape-auth { margin-top: 1.25rem; text-align: center; }
 .rodape-auth a { font-weight: 600; color: var(--azul-estudante); }
 .cartao-acesso .botao + .botao { margin-top: 0.6rem; }
+
+/* O atributo hidden precisa vencer o display dos componentes (prévia ao vivo da recarga). */
+.aviso-info[hidden] { display: none; }
+.dica-metodo { margin: 0; font-size: 0.9rem; }

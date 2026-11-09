@@ -21,7 +21,8 @@
     <div class="erros" role="alert"><p>As tarifas das refeições não estão cadastradas. Tente novamente mais tarde.</p></div>
   <% end %>
 
-  <%= form_with url: recargas_path, scope: :solicitacao_recarga, class: "formulario" do |f| %>
+  <%= form_with url: recargas_path, scope: :solicitacao_recarga, class: "formulario",
+        data: { controller: "recarga", action: "input->recarga#atualizar" } do |f| %>
     <div class="quantidades-recarga">
       <% SolicitacaoRecarga::CATEGORIAS.each do |categoria, config| %>
         <% campo = :"quantidade_#{categoria}" %>
@@ -34,7 +35,8 @@
             <%= icone(:talheres, tamanho: 18, classe: "icone-campo") %>
             <%= f.number_field campo, value: s.public_send(campo).presence || 0, min: 0,
                   max: SolicitacaoRecarga::QUANTIDADE_MAXIMA, step: 1, inputmode: "numeric",
-                  "aria-invalid": s.errors[campo].any? %>
+                  "aria-invalid": s.errors[campo].any?,
+                  data: { recarga_target: "quantidade", linha: ids[categoria], preco_centavos: ((s.preco(categoria) || 0) * 100).to_i } %>
           </div>
           <% s.errors[campo].each do |mensagem| %>
             <p class="erro-campo"><%= mensagem %></p>
@@ -57,16 +59,19 @@
       <% end %>
     </fieldset>
 
-    <% if s.zerada? %>
-      <p id="aviso-cobranca-zerada" class="aviso-info" role="status">
-        <%= icone(:info, tamanho: 18) %> <span><%= SolicitacaoRecarga::MSG_COBRANCA_ZERADA %>: escolha ao menos uma refeição.</span>
-      </p>
-    <% end %>
+    <p class="texto-suave dica-metodo">
+      Ao confirmar, você segue para o pagamento: no PIX, vê o QR Code e o código Copia e Cola; no cartão, informa o número, o nome, a validade e o CVV.
+    </p>
+
+    <p id="aviso-cobranca-zerada" class="aviso-info" role="status" data-recarga-target="aviso"<%= " hidden".html_safe unless s.zerada? %>>
+      <%= icone(:info, tamanho: 18) %> <span><%= SolicitacaoRecarga::MSG_COBRANCA_ZERADA %>: escolha ao menos uma refeição.</span>
+    </p>
 
     <div class="acoes-formulario">
       <%= f.button "Calcular total", type: "submit", name: "acao", value: "calcular", class: "botao botao-secundario" %>
       <%= f.button "Confirmar", type: "submit", name: "acao", value: "confirmar", class: "botao botao-estudante",
-            disabled: s.zerada? || !s.tarifas_cadastradas? %>
+            disabled: s.zerada? || !s.tarifas_cadastradas?,
+            data: { recarga_target: "confirmar" } %>
     </div>
   <% end %>
 </section>
