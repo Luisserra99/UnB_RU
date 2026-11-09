@@ -56,6 +56,7 @@ class SessaoAutenticacao < ApplicationRecord
   def encerrar!
     with_lock do
       agora = Time.current
+      configuracoes_ponto_acesso.abertas.each(&:cancelar_liberacoes!)
       configuracoes_ponto_acesso.abertas.update_all(finalizada_em: agora, updated_at: agora)
       update!(encerrada_em: agora, ponto_acesso_pendente: true) unless encerrada?
     end

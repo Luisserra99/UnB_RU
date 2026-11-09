@@ -1,0 +1,32 @@
+<% content_for :title, "Terminal de Validação | RU UnB" %>
+<section class="cabecalho-pagina">
+  <div><p class="sobretitulo">Operação da catraca</p><h1>Terminal de Validação</h1></div>
+  <%= link_to "Configuração de Ponto", controle_root_path, class: "botao botao-secundario" %>
+</section>
+<section class="cartao">
+  <h2><%= ponto_acesso_atual.restaurante.nome %> · <%= ponto_acesso_atual.catraca.identificacao %></h2>
+  <p class="texto-suave">Operador: <%= funcionario_atual.nome %>. Terminal de simulação: informe a matrícula e confirme a passagem.</p>
+  <% if @registro %>
+    <div id="resultado-acesso" role="status" aria-live="polite">
+      <h2><%= @registro.mensagem %></h2>
+      <p>Identificação: <%= @registro.identificacao_lida.presence || "Não informada" %></p>
+      <% if @registro.saldo_lido %><p>Saldo lido: <%= number_to_currency(@registro.saldo_lido) %></p><% end %>
+      <% if @registro.valor_previsto %><p>Refeição: <%= number_to_currency(@registro.valor_previsto) %></p><% end %>
+      <p>Estado: <%= @registro.estado.humanize %></p>
+    </div>
+  <% end %>
+  <% if @pendente %>
+    <div data-controller="terminal" data-terminal-limite-value="<%= @pendente.limite_em.iso8601(3) %>">
+      <p>A catraca está liberada por até 5 segundos. Sem passagem, o acesso será cancelado sem cobrança.</p>
+      <%= button_to "Simular passagem", controle_passagem_terminal_path(@pendente), class: "botao botao-primario" %>
+      <%= button_to "Verificar tempo limite", controle_expirar_terminal_path(@pendente), form: { data: { terminal_target: "expiracao" } }, class: "botao botao-secundario" %>
+    </div>
+  <% else %>
+    <%= form_with url: controle_leitura_terminal_path, class: "formulario" do |f| %>
+      <%= f.hidden_field :referencia_evento, value: @referencia %>
+      <div class="campo"><%= f.label :identificacao, "Matrícula do estudante" %><div class="campo-entrada">
+      <%= f.text_field :identificacao, inputmode: "numeric", maxlength: 100, autofocus: true, autocomplete: "off" %></div></div>
+      <%= f.submit "Ler identificação", class: "botao botao-primario" %>
+    <% end %>
+  <% end %>
+</section>
