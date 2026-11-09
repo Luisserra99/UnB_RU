@@ -16,7 +16,16 @@ bundle exec rspec           # testes RSpec
 bundle exec cucumber        # cenários BDD (features/)
 ```
 
-Usuários de teste e detalhes: [wiki/Sprint-2-Identidade-e-Acesso.md](wiki/Sprint-2-Identidade-e-Acesso.md).
+Usuários de exemplo (criados pelo seed):
+
+| Perfil | Entrada | Identificação | Senha |
+|---|---|---|---|
+| Estudante | `/entrar` | `251033574` | `Estudante@123` |
+| Funcionário | `/controle/login` | `funcionario01` | `senhaCorreta` |
+| Administrador | `/controle/login` | `admin` | `Admin@1234` |
+
+Lista completa e detalhes: [wiki/Sprint-2-Identidade-e-Acesso.md](wiki/Sprint-2-Identidade-e-Acesso.md).
+
 ## Sprint 2
 
 - [Home da wiki: divisão, status e links](wiki/Home.md)

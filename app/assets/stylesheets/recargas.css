@@ -1,0 +1,83 @@
+/* F02 — Recarga de Saldo e login do estudante (Luis). Reaproveita as variáveis de application.css. */
+
+.icone-bloco-estudante { background: var(--azul-estudante); }
+
+.cartao-saldo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+}
+.cartao-saldo > span:last-child { display: flex; flex-direction: column; line-height: 1.25; }
+.cartao-saldo small { font-size: 0.75rem; color: var(--texto-suave); }
+.cartao-saldo strong { font-size: 1.15rem; font-weight: 700; }
+
+.quantidades-recarga {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 1rem;
+}
+
+.tabela-recarga tfoot th, .tabela-recarga tfoot td { border-bottom: 0; font-size: 1rem; }
+.tabela-recarga tbody th { font-weight: 600; }
+
+.metodos-pagamento { margin: 0; padding: 0; border: 0; display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.metodos-pagamento legend { margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+.opcao-metodo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-campo);
+  background: var(--campo);
+  font-weight: 600;
+  cursor: pointer;
+}
+.opcao-metodo:has(input:checked) { border-color: var(--azul-estudante); background: var(--azul-claro); }
+
+.botao:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.linha-status { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.selo-status {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--azul-claro);
+  color: var(--azul-marinho-escuro);
+}
+.selo-confirmada { background: var(--verde-fundo); color: var(--verde-escuro); }
+.selo-expirada, .selo-cancelada { background: var(--erro-fundo); color: var(--erro); }
+
+.cartao-pagamento h2 { margin-bottom: 0.6rem; }
+.cartao-pagamento > p + .botao { margin-top: 1rem; }
+.pix { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1rem; align-items: flex-start; }
+.pix-qr { margin: 0; text-align: center; }
+.qr-code { width: 200px; height: 200px; border: 1px solid var(--borda); border-radius: 8px; }
+.pix-copia-cola { flex: 1; min-width: min(100%, 260px); }
+.codigo-pix {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-campo);
+  background: var(--campo);
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+  word-break: break-all;
+  resize: vertical;
+}
+.pix-copia-cola .botao { margin-top: 0.75rem; }
+.formulario-cartao { max-width: 480px; }
+
+.link-entrar-estudante { margin-left: auto; }
+.rodape-auth { margin-top: 1.25rem; text-align: center; }
+.rodape-auth a { font-weight: 600; color: var(--azul-estudante); }
+.cartao-acesso .botao + .botao { margin-top: 0.6rem; }
+
+/* O atributo hidden precisa vencer o display dos componentes (prévia ao vivo da recarga). */
+.aviso-info[hidden] { display: none; }
+.dica-metodo { margin: 0; font-size: 0.9rem; }

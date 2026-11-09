@@ -1,0 +1,25 @@
+<%# locals: (linhas:, total:) %>
+<%# linhas: [[rotulo, quantidade, preco, subtotal, id_subtotal], ...] %>
+<div class="tabela-rolagem">
+  <table class="tabela tabela-recarga">
+    <thead>
+      <tr><th scope="col">Refeição</th><th scope="col">Quantidade</th><th scope="col">Preço unitário</th><th scope="col">Subtotal</th></tr>
+    </thead>
+    <tbody>
+      <% linhas.each do |rotulo, quantidade, preco, subtotal, id_subtotal| %>
+        <tr>
+          <th scope="row"><%= rotulo %></th>
+          <td id="quantidade-<%= id_subtotal %>"><%= quantidade %></td>
+          <td><%= preco ? moeda(preco) : "—" %></td>
+          <td id="<%= id_subtotal %>"><%= moeda(subtotal) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th scope="row" colspan="3">Valor total</th>
+        <td id="valor-total" data-recarga-target="total"><strong><%= moeda(total) %></strong></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>

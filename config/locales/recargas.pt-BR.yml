@@ -1,0 +1,32 @@
+pt-BR:
+  activerecord:
+    models:
+      tarifa_refeicao: Tarifa de refeição
+      recarga: Recarga
+      item_recarga: Item da recarga
+      pagamento: Pagamento
+      movimentacao_saldo: Movimentação de saldo
+    attributes:
+      tarifa_refeicao:
+        valor: Valor
+        vigente_desde: Início da vigência
+        vigente_ate: Fim da vigência
+      recarga:
+        valor_total: Valor total
+        solicitada_em: Data da solicitação
+        confirmada_em: Data da confirmação
+        itens: Refeições
+      item_recarga:
+        quantidade: Quantidade
+        valor_unitario: Valor unitário
+        tarifa_refeicao: Tarifa
+      pagamento:
+        metodo: Método de pagamento
+        valor_solicitado: Valor solicitado
+        expira_em: Validade
+        pix_copia_cola: Código PIX Copia e Cola
+      movimentacao_saldo:
+        valor: Valor
+        natureza: Natureza
+        recarga: Recarga
+        ocorrida_em: Data

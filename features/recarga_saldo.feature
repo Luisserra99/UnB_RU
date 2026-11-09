@@ -1,3 +1,4 @@
+# language: pt
 Funcionalidade: Recarga de Saldo
   Como estudante da UnB
   Quero comprar créditos para Café da Manhã e Almoço/Jantar

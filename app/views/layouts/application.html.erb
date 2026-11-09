@@ -17,9 +17,26 @@
 
       <nav class="nav-topo" aria-label="Principal">
         <%= link_to "Início", root_path, class: ["nav-item", ("ativo" if current_page?(root_path))] %>
-        <%= link_to "Criar conta", novo_cadastro_path, class: ["nav-item", ("ativo" if current_page?(novo_cadastro_path))] %>
+        <% if estudante_autenticado? %>
+          <%= link_to "Recarga de Saldo", new_recarga_path, class: ["nav-item", ("ativo" if controller_name == "recargas")] %>
+          <%= link_to "Extrato", extrato_path, class: ["nav-item", ("ativo" if controller_name == "extratos")] %>
+        <% else %>
+          <%= link_to "Criar conta", novo_cadastro_path, class: ["nav-item", ("ativo" if current_page?(novo_cadastro_path))] %>
+        <% end %>
         <%= link_to "Cardápio", cardapio_path, class: ["nav-item", ("ativo" if current_page?(cardapio_path))] %>
       </nav>
+
+      <% if estudante_autenticado? %>
+        <div class="operador">
+          <span class="operador-texto">
+            <strong><%= estudante_atual.nome %></strong>
+            <small>Matrícula <%= estudante_atual.matricula %></small>
+          </span>
+          <%= button_to "Sair", logout_estudante_path, method: :delete, class: "botao-sair", form_class: "form-sair" %>
+        </div>
+      <% else %>
+        <%= link_to "Entrar", login_estudante_path, class: ["nav-item", "link-entrar-estudante", ("ativo" if current_page?(login_estudante_path))] %>
+      <% end %>
 
       <%= link_to controle_login_path, class: "link-area-operador" do %>
         <%= icone(:cracha, tamanho: 18) %> Área do funcionário

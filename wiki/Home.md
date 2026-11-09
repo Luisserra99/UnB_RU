@@ -40,20 +40,20 @@ As histórias de usuário, as regras de negócio (RN) e os cenários BDD de cada
 
 | Funcionalidade | Issue | Cenários BDD | Responsável | Página na wiki | Status |
 |---|---|---|---|---|---|
-| F01 — Cadastro de estudante | [#1](https://github.com/neatzzy/UnB_RU/issues/1) | [cadastro_usuario.feature](../features/cadastro_usuario.feature) | Weldo | [Identidade e Acesso](Sprint-2-Identidade-e-Acesso.md) | Implementada |
-| F02 — Compra de créditos (PIX/cartão) | [#2](https://github.com/neatzzy/UnB_RU/issues/2) | [recarga_saldo.feature](../features/recarga_saldo.feature) | Luis | A criar | Pendente |
-| F03 — Confirmação da recarga e saldo | [#3](https://github.com/neatzzy/UnB_RU/issues/3) | [extrato_historico.feature](../features/extrato_historico.feature) | Luis | A criar | Pendente |
-| F04 — Login de funcionário | [#4](https://github.com/neatzzy/UnB_RU/issues/4) | [autenticacao_funcionario.feature](../features/autenticacao_funcionario.feature) | Weldo | [Identidade e Acesso](Sprint-2-Identidade-e-Acesso.md) | Implementada |
+| F01 — Cadastro de estudante | [#1](https://github.com/neatzzy/UnB_RU/issues/1) | [cadastro_usuario.feature](../features/cadastro_usuario.feature) | Weldo | [F01](F01.md) | Implementada |
+| F02 — Compra de créditos (PIX/cartão) | [#2](https://github.com/neatzzy/UnB_RU/issues/2) | [recarga_saldo.feature](../features/recarga_saldo.feature) | Luis | [F02](F02.md) | Implementada |
+| F03 — Extrato e histórico de refeições | [#3](https://github.com/neatzzy/UnB_RU/issues/3) | [extrato_historico.feature](../features/extrato_historico.feature) | Luis | [F03](F03.md) | Implementada (tipo de refeição aguarda F06) |
+| F04 — Login de funcionário | [#4](https://github.com/neatzzy/UnB_RU/issues/4) | [autenticacao_funcionario.feature](../features/autenticacao_funcionario.feature) | Weldo | [F04](F04.md) | Implementada |
 | F05 — Configuração do ponto de acesso | [#5](https://github.com/neatzzy/UnB_RU/issues/5) | [configuracao_ponto_acesso.feature](../features/configuracao_ponto_acesso.feature) | Daniel | A criar | Pendente |
 | F06 — Leitura e autorização na catraca | [#6](https://github.com/neatzzy/UnB_RU/issues/6) | [validacao_entrada.feature](../features/validacao_entrada.feature) | Daniel | A criar | Pendente |
-| F07 — Histórico da catraca | [#7](https://github.com/neatzzy/UnB_RU/issues/7) | [historico_local_catraca.feature](../features/historico_local_catraca.feature) | Weldo | [Identidade e Acesso](Sprint-2-Identidade-e-Acesso.md#f07--histórico-local-da-catraca) | Aguardando F05, F06 e F08 |
+| F07 — Histórico da catraca | [#7](https://github.com/neatzzy/UnB_RU/issues/7) | [historico_local_catraca.feature](../features/historico_local_catraca.feature) | Weldo | [F07](F07.md) | Aguardando F05 e F06 |
 | F08 — Cadastro de restaurante, pisos e catracas | [#8](https://github.com/neatzzy/UnB_RU/issues/8) | [gestao_restaurante_catracas.feature](../features/gestao_restaurante_catracas.feature) | Leonardo | [F08](F08.md) | Implementada |
 | F09 — Relatório administrativo/global | [#9](https://github.com/neatzzy/UnB_RU/issues/9) | [relatorio_global_acesso.feature](../features/relatorio_global_acesso.feature) | Tarsila | A criar | Pendente |
 | F10 — Consulta de cardápio | [#10](https://github.com/neatzzy/UnB_RU/issues/10) | [cardapio_atual.feature](../features/cardapio_atual.feature) | Leonardo | [F10](F10.md) | Implementada |
 | F11 — Extrato do estudante (PDF/CSV) | [#11](https://github.com/neatzzy/UnB_RU/issues/11) | [exportacao_PDF_historico_estudante.feature](../features/exportacao_PDF_historico_estudante.feature) | Tarsila | A criar | Pendente |
 | F12 — Relatório do administrador geral | [#12](https://github.com/neatzzy/UnB_RU/issues/12) | [exportacao_pdf_relatorio_operacao.feature](../features/exportacao_pdf_relatorio_operacao.feature) | Tarsila | A criar | Pendente |
 
-> O status reflete o que está mergeado na `sprint-2`. Uma issue só vai para Done com os testes verdes. A PO a move para Accepted.
+> O status reflete o que está mergeado na `sprint-2` ou no PR da branch `sprint-2-feature-luis/f02-f03` (F02 e F03). Uma issue só vai para Done com os testes verdes. A PO a move para Accepted.
 
 ---
 
@@ -77,8 +77,9 @@ O model `TipoRefeicao` já foi criado por Leonardo na F10, junto com os models d
 
 1. Weldo (`Usuario`/`Estudante`) e Leonardo (`Restaurante`/`Catraca`) sobem os models base nos primeiros dias, porque o resto depende deles. Os dois já estão na `sprint-2`.
 2. Luis cria a `MovimentacaoSaldo` antes de Daniel implementar o débito (F06).
-3. A F07 (Weldo) depende de `Catraca` (F08), de `ConfiguracaoPontoAcesso` (F05) e de `RegistroAcesso` (F06).
-4. Os pontos de pendência entre as funcionalidades estão nas páginas [F08](F08.md#pendências) e [F10](F10.md#pendências).
+3. A F07 (Weldo) depende de `Catraca` (F08, pronta), de `ConfiguracaoPontoAcesso` (F05) e de `RegistroAcesso` (F06). Ver [F07](F07.md#dependências).
+4. O histórico de refeições da F03 mostra o tipo "Refeição" até a F06 ligar o débito ao `RegistroAcesso`. Ver [F03](F03.md#pendências) e o que a F06 precisa em [F02](F02.md#para-os-outros-integrantes).
+5. As demais pendências estão nas páginas [F01](F01.md#pendências), [F02](F02.md#pendências), [F04](F04.md#pendências), [F08](F08.md#pendências) e [F10](F10.md#pendências).
 
 ### 3.2 Pull requests já mergeados na `sprint-2`
 
@@ -178,7 +179,20 @@ bundle exec rspec           # testes RSpec
 bundle exec cucumber        # cenários BDD (features/)
 ```
 
-Os usuários de teste e detalhes da base de identidade estão em [Identidade e Acesso](Sprint-2-Identidade-e-Acesso.md#usuários-de-teste-binrails-dbseed). Cada página de funcionalidade tem a sua seção "Como testar".
+### Usuários de exemplo
+
+Criados por `bin/rails db:seed`:
+
+| Perfil | Entrada | Identificação | Senha |
+|---|---|---|---|
+| Estudante | `/entrar` (Portal do Estudante: recarga e extrato) | `251033574` | `Estudante@123` |
+| Estudante sem saldo | `/entrar` | `222014133` | `Estudante@123` |
+| Funcionário | `/controle/login` | `funcionario01` | `senhaCorreta` |
+| Administrador | `/controle/login` (inclui "Gestão de Restaurantes") | `admin` | `Admin@1234` |
+
+O estudante `251033574` começa com R$ 22,50 de saldo, e o `222014133` com R$ 0,00. No PIX, use o botão "Simular pagamento" (só em desenvolvimento). No cartão, `4111 1111 1111 1111` é aprovado e `4000 0000 0000 0002` é recusado (qualquer validade futura e CVV de 3 dígitos).
+
+A lista completa de usuários de teste e detalhes da base de identidade estão em [Identidade e Acesso](Sprint-2-Identidade-e-Acesso.md#usuários-de-teste-binrails-dbseed). Cada página de funcionalidade tem a sua seção "Como testar".
 
 ---
 
@@ -187,7 +201,12 @@ Os usuários de teste e detalhes da base de identidade estão em [Identidade e A
 **Wiki**
 
 - [Sprint 1 — especificação das funcionalidades](Sprint-1.md)
-- [Identidade e Acesso (F01, F04, F07)](Sprint-2-Identidade-e-Acesso.md)
+- [Identidade e Acesso: base comum, usuários de teste e orientações](Sprint-2-Identidade-e-Acesso.md)
+- [F01 — Cadastro de Estudante](F01.md)
+- [F02 — Recarga de Saldo](F02.md)
+- [F03 — Extrato e Histórico de Refeições](F03.md)
+- [F04 — Autenticação do Funcionário](F04.md)
+- [F07 — Histórico Local da Catraca](F07.md)
 - [F08 — Gestão de Restaurantes e Catracas](F08.md)
 - [F10 — Cardápio da Refeição Atual](F10.md)
 
@@ -206,5 +225,6 @@ Os usuários de teste e detalhes da base de identidade estão em [Identidade e A
 
 - A implementação de F01 e F04 (estrutura do app Rails, models, controllers, views, specs RSpec e steps do Cucumber) e a página [Identidade e Acesso](Sprint-2-Identidade-e-Acesso.md) foram feitas com apoio do **Claude Code (Claude Opus 5.5)**, a partir dos cenários BDD da Sprint 1 e do diagrama ER do grupo. Revisadas pelo responsável.
 - A implementação de F08 e F10 e as páginas [F08](F08.md) e [F10](F10.md) foram feitas com apoio do **Claude Code (Claude Opus 5.5)**, a partir dos cenários BDD, do `cardapio.json` e do diagrama ER do grupo. Revisadas pelo responsável.
+- A implementação de F02 e F03 (models, login do Portal do Estudante, controllers, views, steps e specs), os testes adicionais de QA e as páginas [F01](F01.md), [F02](F02.md), [F03](F03.md), [F04](F04.md) e [F07](F07.md) foram feitos com apoio do **Claude Code (Claude Opus 5.5)**, com agentes separados para análise de requisitos, implementação de cada feature, testes e documentação. Revisados pelo responsável.
 - Esta Home da Sprint 2 foi montada com apoio do **Claude Code (Claude Sonnet 5.5)**, a partir da divisão de tarefas do grupo e das páginas da wiki já existentes. Deve ser revisada pela PO.
 - O uso de IA na Sprint 1 está registrado na [wiki da Sprint 1](Sprint-1.md#6-uso-de-ia-na-sprint).

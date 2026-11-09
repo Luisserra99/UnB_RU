@@ -1,0 +1,7 @@
+/* F03 — Extrato e Histórico de Refeições (Luis). Reaproveita as variáveis de application.css. */
+
+#ultimas-recargas, #movimentacoes, #historico-refeicoes { margin-bottom: 1.25rem; }
+.extrato-vazio { text-align: center; }
+.extrato-vazio .botao { margin-top: 0.75rem; display: inline-flex; }
+.movimentacao-credito td:last-child { color: var(--verde, #1a7f37); font-weight: 600; }
+.movimentacao-debito td:last-child { color: var(--vermelho, #b42318); font-weight: 600; }
