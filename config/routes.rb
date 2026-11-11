@@ -36,6 +36,11 @@ Rails.application.routes.draw do
     post "terminal/:id/passagem", to: "terminal#passagem", as: :passagem_terminal
     post "terminal/:id/expirar", to: "terminal#expirar", as: :expirar_terminal
 
+    # F07 — Histórico local da catraca
+    get "historico", to: "historico#show", as: :historico
+    post "historico", to: "historico#create"
+    delete "historico", to: "historico#destroy"
+
     # F05 — Configuração do ponto de acesso
     resource :ponto_acesso, only: [:create], controller: "pontos_acesso" do
       post :reconfigurar, to: "pontos_acesso#edit"
