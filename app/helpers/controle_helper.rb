@@ -8,7 +8,7 @@ module ControleHelper
     end
 
     caminho = public_send(rota)
-    ativo = current_page?(caminho)
+    ativo = request.path == caminho # também marca a página re-renderizada após POST (ex.: credencial inválida)
     link_to rotulo, caminho, class: ["nav-item", ("ativo" if ativo)], "aria-current": (ativo ? "page" : nil)
   end
 

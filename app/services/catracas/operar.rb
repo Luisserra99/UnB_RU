@@ -70,6 +70,21 @@ module Catracas
       end
     end
 
+    # F07: confirmação física da liberação, que a catraca pode enviar alguns instantes após a leitura.
+    # O prazo de 5 segundos para a passagem passa a contar a partir dessa confirmação.
+    # Opcional: sem ela, vale a liberação registrada no momento da leitura.
+    def confirmar_liberacao(registro)
+      @configuracao.sessao_autenticacao.with_lock do
+        exigir_ponto!
+        registro.lock!
+        return registro unless registro.liberado? && registro.passagem_em.nil?
+        agora = Time.current
+        return cancelar(registro, em: registro.limite_em) if agora > registro.limite_em
+        registro.update!(liberado_em: agora)
+        registro
+      end
+    end
+
     def expirar(registro)
       @configuracao.sessao_autenticacao.with_lock do
         registro.lock!

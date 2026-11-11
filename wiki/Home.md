@@ -46,7 +46,7 @@ As histórias de usuário, as regras de negócio (RN) e os cenários BDD de cada
 | F04 — Login de funcionário | [#4](https://github.com/neatzzy/UnB_RU/issues/4) | [autenticacao_funcionario.feature](../features/autenticacao_funcionario.feature) | Weldo | [F04](F04.md) | Implementada |
 | F05 — Configuração do ponto de acesso | [#26](https://github.com/Luisserra99/UnB_RU/issues/26) | [configuracao_ponto_acesso.feature](../features/configuracao_ponto_acesso.feature) | Daniel | [F05](F05.md) | Implementada; aguardando revisão |
 | F06 — Leitura e autorização na catraca | [#27](https://github.com/Luisserra99/UnB_RU/issues/27) | [validacao_entrada.feature](../features/validacao_entrada.feature) | Daniel | [F06](F06.md) | Implementada; aguardando revisão |
-| F07 — Histórico da catraca | [#7](https://github.com/neatzzy/UnB_RU/issues/7) | [historico_local_catraca.feature](../features/historico_local_catraca.feature) | Weldo | [F07](F07.md) | Aguardando F05 e F06 |
+| F07 — Histórico da catraca | [#7](https://github.com/neatzzy/UnB_RU/issues/7) | [historico_local_catraca.feature](../features/historico_local_catraca.feature) | Weldo | [F07](F07.md) | Implementada; aguardando revisão |
 | F08 — Cadastro de restaurante, pisos e catracas | [#8](https://github.com/neatzzy/UnB_RU/issues/8) | [gestao_restaurante_catracas.feature](../features/gestao_restaurante_catracas.feature) | Leonardo | [F08](F08.md) | Implementada |
 | F09 — Relatório administrativo/global | [#9](https://github.com/neatzzy/UnB_RU/issues/9) | [relatorio_global_acesso.feature](../features/relatorio_global_acesso.feature) | Tarsila | A criar | Pendente |
 | F10 — Consulta de cardápio | [#10](https://github.com/neatzzy/UnB_RU/issues/10) | [cardapio_atual.feature](../features/cardapio_atual.feature) | Leonardo | [F10](F10.md) | Implementada |
@@ -77,7 +77,7 @@ O model `TipoRefeicao` já foi criado por Leonardo na F10, junto com os models d
 
 1. Weldo (`Usuario`/`Estudante`) e Leonardo (`Restaurante`/`Catraca`) sobem os models base nos primeiros dias, porque o resto depende deles. Os dois já estão na `sprint-2`.
 2. Luis cria a `MovimentacaoSaldo` antes de Daniel implementar o débito (F06).
-3. A F07 (Weldo) depende de `Catraca` (F08, pronta), de `ConfiguracaoPontoAcesso` (F05) e de `RegistroAcesso` (F06). Ver [F07](F07.md#dependências).
+3. A F07 (Weldo) usa `Catraca` (F08), `ConfiguracaoPontoAcesso` (F05) e `RegistroAcesso` (F06), já integradas. Ver [F07](F07.md).
 4. O histórico de refeições da F03 mostra o tipo "Refeição" até a F06 ligar o débito ao `RegistroAcesso`. Ver [F03](F03.md#pendências) e o que a F06 precisa em [F02](F02.md#para-os-outros-integrantes).
 5. As demais pendências estão nas páginas [F01](F01.md#pendências), [F02](F02.md#pendências), [F04](F04.md#pendências), [F08](F08.md#pendências) e [F10](F10.md#pendências).
 

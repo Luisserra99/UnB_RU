@@ -471,3 +471,100 @@ a.nav-item:hover { background: var(--campo); }
   .operador-texto { display: none; }
   .cabecalho-pagina { padding: 1rem; }
 }
+
+/* ---------- F07: Histórico local da catraca ---------- */
+
+.cabecalho-historico {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.cabecalho-historico h1 { color: var(--azul-marinho); }
+.chips-ponto {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  border-radius: 10px;
+  background: #f5f1ef;
+}
+.chip {
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  background: var(--superficie);
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+.chip strong { color: var(--azul-marinho); font-weight: 600; }
+
+.metricas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.metricas .cartao + .cartao { margin-top: 0; }
+.metrica { display: flex; flex-direction: column; justify-content: space-between; gap: 1.25rem; }
+.metrica-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.metrica-topo > span:first-child { display: flex; flex-direction: column; gap: 0.15rem; }
+.metrica-topo small { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--texto-suave); }
+.metrica-topo strong { font-size: 1.05rem; font-weight: 600; }
+.metrica-icone {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 10px;
+  background: var(--campo);
+  color: var(--azul-marinho);
+}
+.metrica-valor { font-size: 2rem; font-weight: 700; color: var(--azul-marinho); line-height: 1; }
+.metrica-valor small { font-size: 0.9rem; font-weight: 500; color: var(--texto-suave); }
+
+.barra-historico { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.barra-historico .botao { padding: 0.55rem 1rem; }
+.barra-historico form { margin: 0; }
+
+.tabela-historico th, .tabela-historico td { padding: 0.6rem 0.5rem; vertical-align: middle; }
+.tabela-historico th { white-space: normal; line-height: 1.25; }
+.tabela-historico td { white-space: nowrap; }
+.tabela-historico td:last-child { white-space: normal; min-width: 9.5rem; }
+.tabela-historico .situacao { line-height: 1.3; }
+.tabela-historico .celula-hora { font-weight: 600; color: var(--azul-marinho); font-variant-numeric: tabular-nums; }
+.tabela-historico .celula-matricula { font-weight: 700; font-variant-numeric: tabular-nums; }
+.tabela-historico tr.linha-bloqueada { background: #fff6f5; }
+.tabela-historico tr.linha-bloqueada .celula-hora { color: var(--erro); }
+.sim-nao { font-weight: 700; }
+
+.situacao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.situacao::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: currentColor; }
+.situacao-ok { background: var(--verde-claro); color: var(--verde-escuro); }
+.situacao-erro { background: #fde2df; color: var(--erro); }
+.situacao-aviso { background: #fff1c7; color: #7a5300; }
+.situacao-info { background: var(--azul-claro); color: var(--azul-marinho); }
+
+.estado-vazio {
+  margin-top: 1rem;
+  padding: 2rem 1rem;
+  border-radius: 10px;
+  background: var(--campo);
+  text-align: center;
+  color: var(--texto-suave);
+  font-weight: 500;
+}
+
+.paginacao { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-top: 1rem; color: var(--texto-suave); font-size: 0.9rem; }
+.paginacao .botao { padding: 0.45rem 0.9rem; }
+
+.cartao-credencial { max-width: 576px; margin: 0 auto; }

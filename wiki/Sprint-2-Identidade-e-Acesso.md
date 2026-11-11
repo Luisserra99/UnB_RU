@@ -8,7 +8,7 @@
 |---|---|---|
 | F01 — Cadastro de estudante | [features/cadastro_usuario.feature](../features/cadastro_usuario.feature) | Implementada, 4/4 cenários passando |
 | F04 — Login de funcionário | [features/autenticacao_funcionario.feature](../features/autenticacao_funcionario.feature) | Implementada, 11/11 cenários passando |
-| F07 — Histórico local da catraca | [features/historico_local_catraca.feature](../features/historico_local_catraca.feature) | Aguardando `Catraca` (F08) e `RegistroAcesso` (F06) |
+| F07 — Histórico local da catraca | [features/historico_local_catraca.feature](../features/historico_local_catraca.feature) | Implementada, 14/14 cenários passando |
 
 Models: `Usuario`, `Papel`, `UsuarioPapel`, `Estudante`, `SessaoAutenticacao`, mais os seeds de papéis e usuários de teste.
 
@@ -47,7 +47,9 @@ Mensagens de erro: "Matrícula inválida: informe exatamente 9 números", "Email
 
 ## F07 — Histórico local da catraca
 
-Ainda não implementada: depende de `Catraca` (Luis, F08), `ConfiguracaoPontoAcesso` e `RegistroAcesso` (Daniel, F05/F06). Assim que esses models forem mergeados, a consulta entra como `Controle::HistoricoController < Controle::BaseController`, filtrando `RegistroAcesso` pela catraca configurada na sessão atual.
+**Rotas:** `GET/POST/DELETE /controle/historico`, em `Controle::HistoricoController < Controle::BaseController`.
+
+O histórico pede de novo a matrícula e a senha do funcionário que gerencia a catraca (RN07.1) e mostra só os registros da catraca do ponto de acesso atual (RN07.2). Detalhes em [F07 — Histórico Local da Catraca](F07.md).
 
 ---
 

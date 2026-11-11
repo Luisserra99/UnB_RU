@@ -1,0 +1,144 @@
+<% content_for :title, "Histórico Local | RU UnB" %>
+
+<section class="cartao cabecalho-historico">
+  <div class="cabecalho-titulo">
+    <span class="icone-bloco"><%= icone(:historico, tamanho: 22) %></span>
+    <div>
+      <p class="sobretitulo">Histórico local</p>
+      <h1>Histórico Local da <%= @catraca.identificacao %></h1>
+    </div>
+  </div>
+  <div class="chips-ponto">
+    <span class="chip">Unidade: <strong><%= ponto_acesso_atual.restaurante.nome %></strong></span>
+    <span class="chip">Posto: <strong><%= @catraca.identificacao %> (<%= @catraca.piso.nome %>)</strong></span>
+  </div>
+</section>
+
+<% if @consulta %>
+  <div class="metricas">
+    <section class="cartao metrica">
+      <div class="metrica-topo">
+        <span><small>Leituras na catraca</small><strong>Acessos registrados</strong></span>
+        <span class="metrica-icone"><%= icone(:qr, tamanho: 20) %></span>
+      </div>
+      <p class="metrica-valor"><%= @consulta.total %> <small>leituras</small></p>
+    </section>
+    <section class="cartao metrica">
+      <div class="metrica-topo">
+        <span><small>Métrica operacional</small><strong>Passagens confirmadas</strong></span>
+        <span class="metrica-icone"><%= icone(:passagem, tamanho: 20) %></span>
+      </div>
+      <p class="metrica-valor"><%= @consulta.passagens %> <small>giros confirmados</small></p>
+    </section>
+    <section class="cartao metrica">
+      <div class="metrica-topo">
+        <span><small>Arrecadação local</small><strong>Total debitado</strong></span>
+        <span class="metrica-icone"><%= icone(:dinheiro, tamanho: 20) %></span>
+      </div>
+      <p class="metrica-valor"><%= number_to_currency(@consulta.total_debitado) %></p>
+    </section>
+  </div>
+
+  <section class="cartao" id="historico">
+    <div class="barra-historico">
+      <p class="texto-suave">
+        <% if @consulta.vazio? %>
+          Sem acessos para exibir
+        <% else %>
+          Exibindo <%= @consulta.registros.size %> de <%= @consulta.total %> acessos, dos mais recentes aos mais antigos
+        <% end %>
+      </p>
+      <div class="acoes-pagina">
+        <%= link_to controle_historico_path(pagina: @consulta.pagina), class: "botao botao-secundario" do %>
+          <%= icone(:atualizar, tamanho: 18) %> Atualizar lista
+        <% end %>
+        <%= button_to controle_historico_path, method: :delete, class: "botao botao-secundario" do %>
+          <%= icone(:cadeado, tamanho: 18) %> Bloquear histórico
+        <% end %>
+      </div>
+    </div>
+
+    <% if @consulta.vazio? %>
+      <p class="estado-vazio">Nenhum acesso registrado nesta catraca</p>
+    <% else %>
+      <div class="tabela-rolagem">
+        <table class="tabela tabela-historico" id="historico-acessos">
+          <thead>
+            <tr>
+              <th scope="col">Data</th>
+              <th scope="col">Hora</th>
+              <th scope="col">Identificação</th>
+              <th scope="col">Saldo lido (R$)</th>
+              <th scope="col">Catraca liberada</th>
+              <th scope="col">Acesso realizado</th>
+              <th scope="col">Liberação</th>
+              <th scope="col">Bloqueio</th>
+              <th scope="col">Situação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @consulta.registros.each do |registro| %>
+              <% texto_situacao, classe_situacao = situacao_registro(registro) %>
+              <tr class="<%= "linha-bloqueada" if linha_bloqueada?(registro) %>">
+                <td data-coluna="data"><%= data_registro(registro.lido_em) %></td>
+                <td data-coluna="hora" class="celula-hora"><%= hora_registro(registro.lido_em) %></td>
+                <td data-coluna="identificacao" class="celula-matricula"><%= registro.identificacao_lida.presence || "—" %></td>
+                <td data-coluna="saldo_lido"><%= saldo_registro(registro.saldo_lido) %></td>
+                <td data-coluna="catraca_liberada"><span class="sim-nao" title="<%= registro.catraca_liberada? ? "Sim" : "Não" %>"><%= sim_nao(registro.catraca_liberada?) %></span></td>
+                <td data-coluna="acesso_realizado"><span class="sim-nao" title="<%= registro.acesso_realizado? ? "Sim" : "Não" %>"><%= sim_nao(registro.acesso_realizado?) %></span></td>
+                <td data-coluna="timestamp_liberacao"><%= hora_registro(registro.liberado_em) %></td>
+                <td data-coluna="timestamp_bloqueio"><%= hora_registro(registro.bloqueado_em) %></td>
+                <td><span class="situacao <%= classe_situacao %>"><%= texto_situacao %></span></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <nav class="paginacao" aria-label="Páginas do histórico">
+        <span>Página <%= @consulta.pagina %> de <%= @consulta.total_paginas %></span>
+        <% if @consulta.pagina > 1 %>
+          <%= link_to "Anterior", controle_historico_path(pagina: @consulta.pagina - 1), class: "botao botao-secundario" %>
+        <% end %>
+        <% if @consulta.pagina < @consulta.total_paginas %>
+          <%= link_to "Próxima", controle_historico_path(pagina: @consulta.pagina + 1), class: "botao botao-secundario" %>
+        <% end %>
+      </nav>
+    <% end %>
+  </section>
+<% else %>
+  <section class="cartao cartao-credencial" id="credencial-historico">
+    <span class="icone-titulo"><%= icone(:cadeado, tamanho: 22) %></span>
+    <h2>Confirme sua credencial</h2>
+    <p class="subtitulo">
+      Para consultar os acessos da <%= @catraca.identificacao %>, informe sua matrícula e senha.
+      Somente o funcionário que gerencia esta catraca pode ver o histórico.
+    </p>
+
+    <%= form_with url: controle_historico_path, class: "formulario" do |f| %>
+      <div class="campo">
+        <div class="campo-rotulo">
+          <%= f.label :matricula, "Matrícula do funcionário" %>
+          <span class="obrigatorio">Obrigatório</span>
+        </div>
+        <div class="campo-entrada">
+          <%= icone(:usuario, tamanho: 18, classe: "icone-campo") %>
+          <%= f.text_field :matricula, value: @matricula, autocomplete: "username", placeholder: "Ex: 100200300" %>
+        </div>
+      </div>
+
+      <div class="campo">
+        <div class="campo-rotulo">
+          <%= f.label :senha, "Senha" %>
+          <span class="obrigatorio">Obrigatório</span>
+        </div>
+        <%= render "shared/campo_senha", form: f, atributo: :senha, autocomplete: "current-password",
+              placeholder: "Digite sua senha de operador" %>
+      </div>
+
+      <%= f.button type: "submit", class: "botao botao-primario botao-largo" do %>
+        <%= icone(:historico, tamanho: 18) %> Ver histórico
+      <% end %>
+    <% end %>
+  </section>
+<% end %>
