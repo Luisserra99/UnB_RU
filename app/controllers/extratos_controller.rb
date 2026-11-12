@@ -11,5 +11,7 @@ class ExtratosController < PortalEstudanteController
     end
 
     @consulta = Extratos::Consulta.new(estudante_atual)
+    # F11 (Tarsila): lançamentos filtrados, totais e exportação.
+    @relatorio = Extratos::Relatorio.new(estudante_atual, params.permit(:tipo, :periodo, :catraca_id))
   end
 end
