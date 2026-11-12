@@ -64,5 +64,10 @@ Rails.application.routes.draw do
     end
   end
 
+  # F09 — Relatório Global de Operação (somente administrador; Tarsila)
+  get "admin/relatorio-global", to: "admin/relatorios_globais#show", as: :admin_relatorio_global
+  post "admin/relatorio-global/exportacoes", to: "admin/relatorios_globais#exportar",
+                                             as: :exportar_admin_relatorio_global
+
   get "up" => "rails/health#show", as: :rails_health_check
 end

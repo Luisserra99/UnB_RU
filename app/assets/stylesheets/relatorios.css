@@ -1,0 +1,31 @@
+/* F09 — Relatório Global de Operação (Tarsila). Reaproveita as variáveis de application.css. */
+.relatorio-filtros { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-start; }
+.relatorio-filtros > .botao { margin-top: 1.6rem; }
+.relatorio-filtros .campo { min-width: 12rem; flex: 1; }
+.relatorio-seletor {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--borda, #d9d4cf);
+  border-radius: var(--raio-campo, 10px);
+  background: var(--campo, #f4f1ef);
+  font: inherit;
+}
+.relatorio-form-exportar { display: inline; }
+.relatorio-aviso {
+  margin: 1.25rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio-campo, 10px);
+  background: var(--campo, #f4f1ef);
+  font-weight: 600;
+}
+.relatorio-indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1.25rem; margin: 1.25rem 0; }
+.relatorio-indicadores .cartao + .cartao { margin-top: 0; }
+.relatorio-indicador h2 { font-size: 0.85rem; font-weight: 600; color: var(--texto-suave, #666); margin: 0 0 0.35rem; }
+.relatorio-indicador strong { font-size: 1.6rem; font-weight: 800; }
+.relatorio-colunas { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: 1.25rem; margin-top: 1.25rem; }
+.relatorio-colunas .cartao + .cartao { margin-top: 0; }
+.tabela .numero { text-align: right; font-variant-numeric: tabular-nums; }
+.tabela tfoot th, .tabela tfoot td { font-weight: 700; border-bottom: 0; }
+.relatorio-resumo { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0 0; }
+.relatorio-resumo div { flex: 1; min-width: 9rem; padding: 0.65rem 0.85rem; border-radius: var(--raio-campo, 10px); background: var(--campo, #f4f1ef); }
+.relatorio-resumo dt { font-size: 0.78rem; }
+.relatorio-resumo dd { margin: 0.2rem 0 0; font-weight: 700; }
