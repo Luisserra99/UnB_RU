@@ -1,4 +1,5 @@
 # language: pt
+# Issue: https://github.com/neatzzy/UnB_RU/issues/9
 Funcionalidade: Relatório Global de Operação
   Como administrador
   Eu quero visualizar o relatório global de operação dos restaurantes do campus, filtrando por data, turno e unidade
@@ -20,10 +21,11 @@ Funcionalidade: Relatório Global de Operação
       | Café da Manhã | 650     |
       | Almoço        | 2980    |
       | Jantar        | 1190    |
+    E que em "24/10/2025" todos os acessos de "Café da Manhã" e de "Jantar" ocorreram no "Restaurante 1"
     E que a arrecadação de "24/10/2025" foi liquidada nos seguintes métodos:
       | metodo                        | valor       |
-      | PIX Institucional Instantâneo | R$ 15616,80 |
-      | Cartão de Crédito / Débito    | R$ 6073,20  |
+      | PIX Institucional Instantâneo | R$ 14680,80 |
+      | Cartão de Crédito / Débito    | R$ 5709,20  |
 
   # --- Caminho feliz ---
   Cenário: Administrador abre o relatório com os filtros padrão
@@ -42,14 +44,14 @@ Funcionalidade: Relatório Global de Operação
   Cenário: Card de arrecadação global exibe a soma de todos os restaurantes
     Dado que sou um administrador autenticado
     Quando acesso o Relatório Global de Operação
-    Então o card "Arrecadação Global" deve exibir "R$ 21.690,00"
+    Então o card "Arrecadação Global" deve exibir "R$ 20.390,00"
 
   Cenário: Tabela de consolidação exibe uma linha por restaurante
     Dado que sou um administrador autenticado
     Quando acesso o Relatório Global de Operação
     Então a tabela de consolidação deve exibir as seguintes linhas, nesta ordem:
       | restaurante   | acessos | arrecadacao_bruta |
-      | Restaurante 1 | 2.100   | R$ 9.450,00       |
+      | Restaurante 1 | 2.100   | R$ 8.150,00       |
       | Restaurante 2 | 720     | R$ 3.240,00       |
       | Restaurante 3 | 710     | R$ 3.195,00       |
       | Restaurante 4 | 480     | R$ 2.160,00       |
@@ -60,14 +62,14 @@ Funcionalidade: Relatório Global de Operação
     Dado que sou um administrador autenticado
     Quando acesso o Relatório Global de Operação
     Então a linha "Total Consolidado" deve exibir 4.820 acessos
-    E a linha "Total Consolidado" deve exibir arrecadação de "R$ 21.690,00"
+    E a linha "Total Consolidado" deve exibir arrecadação de "R$ 20.390,00"
 
   Cenário: Painel de métodos de liquidação
     Dado que sou um administrador autenticado
     Quando acesso o Relatório Global de Operação
-    Então o método "PIX Institucional Instantâneo" deve exibir "72%" e "R$ 15.616,80"
-    E o método "Cartão de Crédito / Débito" deve exibir "28%" e "R$ 6.073,20"
-    E a soma dos métodos de liquidação deve ser igual a "R$ 21.690,00"
+    Então o método "PIX Institucional Instantâneo" deve exibir "72%" e "R$ 14.680,80"
+    E o método "Cartão de Crédito / Débito" deve exibir "28%" e "R$ 5.709,20"
+    E a soma dos métodos de liquidação deve ser igual a "R$ 20.390,00"
 
   Cenário: Filtrar por janela de serviço recalcula todo o relatório
     Dado que sou um administrador autenticado
@@ -159,7 +161,7 @@ Funcionalidade: Relatório Global de Operação
 
     Exemplos:
       | restaurante   | acessos | arrecadacao |
-      | Restaurante 1 | 2.100   | 9.450,00    |
+      | Restaurante 1 | 2.100   | 8.150,00    |
       | Restaurante 2 | 720     | 3.240,00    |
       | Restaurante 3 | 710     | 3.195,00    |
       | Restaurante 4 | 480     | 2.160,00    |
@@ -175,7 +177,7 @@ Funcionalidade: Relatório Global de Operação
 
     Exemplos:
       | turno                                  | acessos | arrecadacao |
-      | Todos os Turnos (Café, Almoço, Jantar) | 4.820   | 21.690,00   |
-      | Café da Manhã                          | 650     | 2.925,00    |
+      | Todos os Turnos (Café, Almoço, Jantar) | 4.820   | 20.390,00   |
+      | Café da Manhã                          | 650     | 1.625,00    |
       | Almoço                                 | 2.980   | 13.410,00   |
       | Jantar                                 | 1.190   | 5.355,00    |
