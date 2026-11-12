@@ -1,4 +1,3 @@
-
 class CreateExportacaoRelatorios < ActiveRecord::Migration[8.1]
   def change
     create_table :exportacao_relatorios do |t|
