@@ -4,6 +4,7 @@
 
 <%= render layout: "admin/shared/cabecalho", locals: { titulo: "Relatório Global de Operação" } do %>
   <div class="acoes-pagina" id="relatorio-exportar">
+    <%= link_to "Acessos detalhados", admin_acessos_relatorio_global_path, class: "botao botao-secundario" %>
     <% [["Exportar CSV", "csv", "botao-secundario"], ["Exportar PDF Oficial", "pdf", "botao-primario"]].each do |rotulo, formato, estilo| %>
       <%= button_to rotulo, exportar_admin_relatorio_global_path,
             params: r.filtros.compact.merge("formato" => formato), class: "botao #{estilo}",

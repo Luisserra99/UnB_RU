@@ -29,3 +29,8 @@
 .relatorio-resumo div { flex: 1; min-width: 9rem; padding: 0.65rem 0.85rem; border-radius: var(--raio-campo, 10px); background: var(--campo, #f4f1ef); }
 .relatorio-resumo dt { font-size: 0.78rem; }
 .relatorio-resumo dd { margin: 0.2rem 0 0; font-weight: 700; }
+
+/* F12 — Acessos do relatório de operação (Tarsila). */
+.relatorio-campo-marcar { flex-direction: row; align-items: center; gap: 0.5rem; margin-top: 1.9rem; }
+.linha-subtotal th, .linha-subtotal td { font-weight: 700; background: var(--campo, #f4f1ef); }
+#acessos-filtros h2 { margin-bottom: 0.75rem; }
