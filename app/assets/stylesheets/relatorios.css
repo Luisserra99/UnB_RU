@@ -34,3 +34,56 @@
 .relatorio-campo-marcar { flex-direction: row; align-items: center; gap: 0.5rem; margin-top: 1.9rem; }
 .linha-subtotal th, .linha-subtotal td { font-weight: 700; background: var(--campo, #f4f1ef); }
 #acessos-filtros h2 { margin-bottom: 0.75rem; }
+
+/* F09 — Elementos do quadro US16 do Figma: abas, selos, pílula de catracas, selo numerado e barras. */
+.relatorio-abas { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: -0.5rem 0 1.25rem; padding: 0.45rem 0.6rem; border-radius: var(--raio-campo, 10px); background: var(--campo, #f4f1ef); }
+.relatorio-aba { padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--texto-suave, #5f5e5e); text-decoration: none; }
+.relatorio-aba:hover { color: var(--azul-marinho, #003a8c); }
+.relatorio-aba.ativa { background: var(--azul-marinho, #003a8c); color: #fff; }
+.relatorio-topo { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+.relatorio-topo h1 { margin: 0.35rem 0 0; font-size: 1.9rem; color: var(--azul-marinho, #003a8c); }
+.relatorio-etiquetas { display: flex; gap: 0.4rem; margin: 0; }
+.relatorio-selo { background: var(--azul-claro, #dde8fb); color: var(--azul-marinho, #003a8c); border-radius: 6px; }
+.relatorio-selo-neutro { background: var(--campo, #f4f1ef); color: var(--texto-suave, #5f5e5e); border-radius: 6px; }
+.relatorio-topo .botao .icone, .relatorio-indicador h2 .icone { vertical-align: -3px; }
+.relatorio-catracas { display: inline-flex; align-items: center; gap: 0.45rem; margin: 1.6rem 0 0 auto; padding: 0.6rem 0.9rem; border-radius: var(--raio-campo, 10px); background: var(--campo, #f4f1ef); font-size: 0.85rem; white-space: nowrap; }
+.relatorio-ponto { display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--verde, #18803a); }
+.relatorio-catracas.com-offline .relatorio-ponto { background: var(--erro, #c3221a); }
+.relatorio-indicador h2 { display: flex; align-items: center; justify-content: space-between; color: var(--texto, #1b1b1c); }
+.relatorio-indicador h2 .icone { color: var(--azul-marinho, #003a8c); }
+.relatorio-numero { margin: 0.2rem 0 0.75rem; color: var(--texto-suave, #5f5e5e); font-size: 0.85rem; }
+.relatorio-numero strong { color: var(--azul-marinho, #003a8c); }
+.relatorio-indicador.destaque .relatorio-numero strong, .relatorio-indicador.destaque h2 .icone { color: var(--verde, #18803a); }
+.relatorio-apoio { display: flex; justify-content: space-between; gap: 0.75rem; margin: 0; padding: 0.4rem 0.65rem; border-radius: 8px; background: var(--campo, #f4f1ef); font-size: 0.78rem; }
+.relatorio-grade { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(18rem, 1fr); gap: 1.25rem; align-items: start; }
+.relatorio-grade .cartao + .cartao { margin-top: 0; }
+.relatorio-lateral { display: grid; gap: 1.25rem; }
+@media (max-width: 60rem) { .relatorio-grade { grid-template-columns: 1fr; } }
+.relatorio-restaurante { display: flex; align-items: center; gap: 0.75rem; }
+.relatorio-restaurante > span:last-child { display: grid; }
+.restaurante-nome { font-weight: 600; }
+.relatorio-ordem { display: inline-grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 6px; background: var(--azul-claro, #dde8fb); color: var(--azul-marinho, #003a8c); font-size: 0.75rem; font-weight: 700; }
+.relatorio-valor { color: var(--azul-marinho, #003a8c); font-weight: 700; }
+.relatorio-total { color: var(--verde, #18803a); }
+#total-consolidado th, #total-consolidado td { background: var(--campo, #f4f1ef); }
+.tabela-liquidacao { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.tabela-liquidacao td, .tabela-liquidacao th { padding: 0.5rem 0; text-align: left; vertical-align: top; }
+.tabela-liquidacao .numero { text-align: right; padding-left: 0.6rem; white-space: nowrap; }
+.tabela-liquidacao tfoot th, .tabela-liquidacao tfoot td { border-top: 1px solid var(--borda, #e7e2df); font-weight: 700; }
+.metodo-nome { margin-left: 0.4rem; font-weight: 600; }
+.relatorio-barra { display: block; height: 0.5rem; margin-top: 0.4rem; border-radius: 999px; background: var(--campo, #f4f1ef); overflow: hidden; }
+.relatorio-barra span { display: block; height: 100%; border-radius: 999px; background: var(--verde, #18803a); }
+.metodo-cartao-credito .relatorio-barra span, .metodo-cartao-credito .relatorio-ponto { background: var(--azul-estudante, #1351b4); }
+.somente-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.relatorio-resumo { display: grid; gap: 0.3rem; padding: 0.75rem 0.85rem; border-radius: var(--raio-campo, 10px); background: var(--campo, #f4f1ef); }
+.relatorio-resumo div { display: flex; justify-content: space-between; gap: 0.75rem; min-width: 0; padding: 0; background: none; }
+.relatorio-resumo dt { font-size: 0.8rem; color: var(--texto-suave, #5f5e5e); }
+.relatorio-resumo dd { margin: 0; font-size: 0.85rem; }
+.sem-divergencia { color: var(--verde, #18803a); }
+.com-divergencia { color: var(--erro, #c3221a); }
+.relatorio-legenda { margin: 0.2rem 0 0.75rem; font-size: 0.8rem; }
+.relatorio-refeicoes { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.relatorio-refeicoes li { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.6rem 0.8rem; border-radius: var(--raio-campo, 10px); background: var(--campo, #f4f1ef); }
+.relatorio-refeicoes li > span { display: grid; gap: 0.1rem; }
+.relatorio-refeicoes .numero { text-align: right; }
+.relatorio-refeicoes small { font-size: 0.78rem; }

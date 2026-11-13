@@ -16,6 +16,13 @@ RSpec.describe "Relatório Global de Operação (F09)", type: :request do
       expect(response).to redirect_to(controle_login_path)
     end
 
+    it "não mostra o item de menu para funcionário comum" do
+      entrar_no_controle(create(:funcionario, password: "senhaCorreta"))
+      get controle_root_path
+
+      expect(response.body).not_to include(admin_relatorio_global_path)
+    end
+
     it "nega o funcionário que não é administrador, sem mostrar dados" do
       entrar_no_controle(create(:funcionario, password: "senhaCorreta"))
       get admin_relatorio_global_path
@@ -63,6 +70,12 @@ RSpec.describe "Relatório Global de Operação (F09)", type: :request do
 
       expect(response.body).to include("R$ 4,50", "Exportar CSV", "Exportar PDF Oficial", "1/1")
       expect(response.body).not_to include("Nenhum acesso encontrado")
+    end
+
+    it "aparece no menu da aplicação de controle" do
+      get controle_root_path
+
+      expect(response.body).to include(%(href="#{admin_relatorio_global_path}"), "Relatório Global")
     end
 
     it "não oferece rotas de alteração (RN09.2)" do

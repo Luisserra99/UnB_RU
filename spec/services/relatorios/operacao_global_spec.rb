@@ -65,6 +65,12 @@ RSpec.describe Relatorios::OperacaoGlobal do
                                  "Jantar" => [0, 0])
     end
 
+    it "informa o horário de cada refeição a partir dos serviços cadastrados" do
+      horarios = relatorio.distribuicao_por_refeicao.to_h { |item| [item.nome, item.horario] }
+
+      expect(horarios).to eq("Café da Manhã" => "06:30 – 09:00", "Almoço" => "11:00 – 14:30", "Jantar" => "17:00 – 20:00")
+    end
+
     it "aplica o filtro de turno a todos os números (RN09.4)" do
       resultado = relatorio(turno: TipoRefeicao::ALMOCO)
 
@@ -124,6 +130,10 @@ RSpec.describe Relatorios::OperacaoGlobal do
       expect(resultado.liquidacoes.map(&:percentual)).to eq([0, 0])
       expect(resultado.ticket_medio).to eq(0)
       expect(resultado.linhas.size).to eq(2)
+    end
+
+    it "deixa sem horário a refeição que não tem serviço cadastrado" do
+      expect(relatorio.distribuicao_por_refeicao.map(&:horario)).to eq([nil, nil, nil])
     end
   end
 

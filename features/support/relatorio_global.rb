@@ -115,11 +115,15 @@ module RelatorioGlobal
   end
 
   def rg_linha_restaurante(nome)
-    find("#tabela-consolidacao tbody tr", text: /\A#{Regexp.escape(nome)}\b/)
+    find("#tabela-consolidacao tbody tr") { |linha| linha.has_css?(".restaurante-nome", text: nome, exact_text: true) }
   end
 
+  # Textos das células de uma linha. Nas células com selo, barra ou legenda, vale só o nome.
   def rg_celulas(linha)
-    linha.all("th, td").map { |celula| celula.text.squish }
+    linha.all("th, td").map do |celula|
+      nome = celula.first(".restaurante-nome, .metodo-nome", minimum: 0)
+      (nome || celula).text.squish
+    end
   end
 
   def rg_texto_pdf
