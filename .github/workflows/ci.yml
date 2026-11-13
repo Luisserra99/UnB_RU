@@ -9,11 +9,11 @@ jobs:
     name: Lint (RuboCop)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: "3.3"
           bundler-cache: true
 
       - name: RuboCop
@@ -25,11 +25,11 @@ jobs:
     env:
       RAILS_ENV: test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: "3.3"
           bundler-cache: true
 
       - name: Banco de teste
@@ -44,11 +44,11 @@ jobs:
     env:
       RAILS_ENV: test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: "3.3"
           bundler-cache: true
 
       - name: Banco de teste

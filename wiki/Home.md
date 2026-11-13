@@ -61,13 +61,11 @@ Na coluna Issue, o primeiro link é a issue do Kanban do grupo e o segundo é a 
 
 ### Velocity
 
-Pontos estimados na [Sprint 1](Sprint-1.md#3-responsáveis-por-funcionalidade-e-velocity). Todas as histórias foram concluídas na Sprint 2.
+Pontos estimados na [Sprint 1](Sprint-1.md#3-responsáveis-por-funcionalidade-e-velocity). As histórias que estavam sem estimativa (F02, F08, F09 e F11) foram pontuadas pelo responsável na Sprint 2. Todas as histórias foram concluídas.
 
 | F01 | F02 | F03 | F04 | F05 | F06 | F07 | F08 | F09 | F10 | F11 | F12 | **Total** |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 3 | — | 5 | 3 | 3 | 5 | 5 | — | — | 5 | — | 5 | **34** |
-
-As histórias marcadas com "—" não receberam estimativa na Sprint 1.
+| 3 | 8 | 5 | 3 | 3 | 5 | 5 | 5 | 8 | 5 | 5 | 5 | **60** |
 
 ---
 
@@ -209,11 +207,11 @@ O grupo usou o **Claude Code** (Anthropic) como apoio. O código gerado foi revi
 
 | Uso | Funcionalidades |
 |---|---|
-| Implementação a partir dos cenários BDD, do diagrama ER e do Figma: migrations, models, controllers, views, specs e steps | F01–F08, F10 |
+| Implementação a partir dos cenários BDD, do diagrama ER e do Figma: migrations, models, controllers, views, specs e steps | F01–F12 |
 | Testes adicionais de regra e de segurança, escritos por um agente separado do que implementou | F02, F03 |
-| Documentação das páginas | F01–F08, F10 e esta Home |
+| Documentação das páginas | F01–F12 e esta Home |
 
-O detalhamento está na seção "Uso de IA" de cada uma dessas páginas. O uso na Sprint 1 está registrado na [wiki da Sprint 1](Sprint-1.md#6-uso-de-ia-na-sprint).
+F01–F08 e F10 usaram o Claude Code (Claude Opus 5.5); F09, F11 e F12 usaram o Claude (Claude Fable 5.2). O detalhamento está na seção "Uso de IA" das páginas. O uso na Sprint 1 está registrado na [wiki da Sprint 1](Sprint-1.md#6-uso-de-ia-na-sprint).
 
 ---
 
