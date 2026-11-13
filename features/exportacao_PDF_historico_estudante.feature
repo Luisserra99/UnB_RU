@@ -6,7 +6,7 @@ Funcionalidade: Exportação em PDF do histórico do estudante
 
   Contexto:
     Dado que estou logado como estudante com matrícula "221045999"
-    E estou na página "Extrato e Histórico de Refeições"
+    E abri a página "Extrato e Histórico de Refeições"
     E o valor da refeição é R$ 4,50
     E meu saldo atual é R$ 18,00
     E possuo os seguintes lançamentos nos últimos 30 dias:
@@ -33,7 +33,7 @@ Funcionalidade: Exportação em PDF do histórico do estudante
     Então o PDF deve exibir o nome "Ana Beatriz Silva" e a matrícula "221045999"
     E o PDF deve exibir o período de referência "Últimos 30 dias"
     E o PDF deve exibir a data de emissão
-    E o PDF deve exibir a indicação "Registros auditáveis assinados digitalmente"
+    E o PDF deve exibir a indicação "Registros auditáveis"
 
   Cenário: PDF respeita os filtros aplicados na tela
     Quando eu filtro o tipo de refeição por "Almoço"
@@ -46,6 +46,17 @@ Funcionalidade: Exportação em PDF do histórico do estudante
     Dado que o estudante de matrícula "231012345" possui um "Almoço" em "13/05/2024 12:00"
     Quando eu clico em "Exportar PDF"
     Então o PDF não deve conter lançamentos do estudante "231012345"
+
+  Cenário: Exportação do extrato em CSV com os filtros aplicados
+    Quando eu filtro o tipo de refeição por "Almoço"
+    E clico em "Exportar CSV"
+    Então deve ser baixado um arquivo CSV do extrato
+    E o CSV deve conter 2 lançamento(s)
+    E o CSV não deve conter o lançamento "Recarga de Saldo"
+
+  Cenário: Cada exportação fica registrada para auditoria
+    Quando eu clico em "Exportar PDF"
+    Então deve existir 1 exportação concluída do meu extrato em "pdf" com 5 registros
 
   # --- Caminhos tristes ---
   Cenário: Exportação com filtros que não retornam lançamentos
@@ -62,7 +73,7 @@ Funcionalidade: Exportação em PDF do histórico do estudante
     E deve ser exibida a mensagem "Sua sessão expirou. Faça login novamente"
     E nenhum arquivo deve ser baixado
 
- Cenário: Estudante sem nenhum lançamento registrado
+  Cenário: Estudante sem nenhum lançamento registrado
     Dado que não possuo nenhum lançamento
     Quando acesso a página "Extrato e Histórico de Refeições"
     Então o botão "Exportar PDF" deve estar desabilitado

@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   end
   get "extrato", to: "extratos#show", as: :extrato
   get "estudantes/:estudante_id/extrato", to: "extratos#show", as: :extrato_estudante
+  # F11 — Exportação do extrato em PDF/CSV (Tarsila)
+  post "extrato/exportacoes", to: "exportacoes_extrato#create", as: :exportacoes_extrato
 
   # Aplicação de controle (funcionários)
   namespace :controle do

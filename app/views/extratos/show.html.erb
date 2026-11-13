@@ -17,8 +17,15 @@
     <p><strong>Não há histórico disponível. Você ainda não possui lançamentos.</strong></p>
     <p class="texto-suave">Suas recargas e refeições aparecerão aqui.</p>
     <%= link_to "Fazer uma recarga", new_recarga_path, class: "botao botao-estudante" %>
+    <%# F11 (Tarsila): sem lançamentos, a exportação aparece desabilitada. %>
+    <div class="extrato-exportar">
+      <%= render "extratos/botoes_exportacao", relatorio: @relatorio, habilitado: false %>
+    </div>
   </section>
 <% else %>
+  <%# F11 (Tarsila): filtros, totais e exportação em PDF/CSV. %>
+  <%= render "extratos/exportacao", relatorio: @relatorio %>
+
   <section class="cartao" id="ultimas-recargas">
     <h2>Últimas recargas</h2>
     <% if c.ultimas_recargas.any? %>

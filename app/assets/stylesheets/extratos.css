@@ -5,3 +5,23 @@
 .extrato-vazio .botao { margin-top: 0.75rem; display: inline-flex; }
 .movimentacao-credito td:last-child { color: var(--verde, #1a7f37); font-weight: 600; }
 .movimentacao-debito td:last-child { color: var(--vermelho, #b42318); font-weight: 600; }
+
+/* F11 — Filtros, totais e exportação do extrato (Tarsila). */
+#extrato-exportacao { margin-bottom: 1.25rem; }
+.extrato-filtros { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; margin: 0.75rem 0 1rem; }
+.extrato-filtros .campo { min-width: 12rem; flex: 1; }
+.extrato-seletor {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--borda, #d9d4cf);
+  border-radius: var(--raio-campo, 10px);
+  background: var(--campo, #f4f1ef);
+  font: inherit;
+}
+.extrato-totais { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0 0 1rem; }
+.extrato-totais div { flex: 1; min-width: 10rem; padding: 0.75rem 1rem; border-radius: var(--raio-campo, 10px); background: var(--campo, #f4f1ef); }
+.extrato-totais dt { font-size: 0.8rem; }
+.extrato-totais dd { margin: 0.2rem 0 0; font-size: 1.15rem; font-weight: 700; }
+.extrato-exportar { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; }
+.extrato-vazio .extrato-exportar { justify-content: center; }
+.extrato-form-exportar { display: inline; }
+.botao[disabled] { opacity: 0.5; cursor: not-allowed; }

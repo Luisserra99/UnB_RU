@@ -18,6 +18,11 @@ gem "stimulus-rails"
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
 
+# F09/F11/F12 — exportação de relatórios (Tarsila): PDF em Ruby puro, sem binário externo, e CSV.
+gem "prawn"
+gem "prawn-table"
+gem "csv"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
@@ -38,4 +43,5 @@ group :test do
   gem "capybara"
   gem "cucumber-rails", require: false
   gem "database_cleaner-active_record"
+  gem "pdf-reader" # lê o texto dos PDFs exportados nos testes
 end
