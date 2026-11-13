@@ -13,8 +13,8 @@ RECARGA_PAGINAS = { "Recarga de Saldo" => :new_recarga_path }.freeze
 
 # "Almoço/Jantar" vale para almoço e jantar (a interface agrupa os dois).
 RECARGA_TIPOS_POR_PRECO = {
-  "Almoço/Jantar" => [TipoRefeicao::ALMOCO, TipoRefeicao::JANTAR],
-  "Café da Manhã" => [TipoRefeicao::CAFE_DA_MANHA]
+  "Almoço/Jantar" => [ TipoRefeicao::ALMOCO, TipoRefeicao::JANTAR ],
+  "Café da Manhã" => [ TipoRefeicao::CAFE_DA_MANHA ]
 }.freeze
 
 RECARGA_IDS_SUBTOTAL = { "Cafés da Manhã" => "#subtotal-cafe", "Almoços/Jantares" => "#subtotal-almoco" }.freeze

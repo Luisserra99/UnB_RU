@@ -33,7 +33,7 @@ RSpec.describe Extratos::Relatorio do
     end
 
     it "lista todos os lançamentos, do mais recente para o mais antigo" do
-      expect(relatorio.lancamentos.map(&:evento)).to eq(["Almoço", "Jantar", "Recarga de Saldo", "Almoço"])
+      expect(relatorio.lancamentos.map(&:evento)).to eq([ "Almoço", "Jantar", "Recarga de Saldo", "Almoço" ])
     end
 
     it "calcula os totais" do
@@ -64,7 +64,7 @@ RSpec.describe Extratos::Relatorio do
     it "mantém só as recargas" do
       resultado = relatorio(tipo: "recarga")
 
-      expect(resultado.lancamentos.map(&:evento)).to eq(["Recarga de Saldo"])
+      expect(resultado.lancamentos.map(&:evento)).to eq([ "Recarga de Saldo" ])
       expect(resultado.total_gasto).to eq(0)
       expect(resultado.refeicoes_realizadas).to eq(0)
     end
@@ -78,7 +78,7 @@ RSpec.describe Extratos::Relatorio do
     it "mantém só as refeições da catraca, sem as recargas" do
       resultado = relatorio(catraca_id: catraca_um.id.to_s)
 
-      expect(resultado.lancamentos.map(&:catraca)).to eq(["Catraca 01"])
+      expect(resultado.lancamentos.map(&:catraca)).to eq([ "Catraca 01" ])
       expect(resultado.catraca_nome).to eq("Catraca 01 · RU Darcy Ribeiro")
     end
 
@@ -140,9 +140,9 @@ RSpec.describe Extratos::Relatorio do
       expect(primeira.lancamentos.size).to eq(16)
       expect(primeira.total_paginas).to eq(2)
       expect(primeira.lancamentos_da_pagina.size).to eq(10)
-      expect(primeira.intervalo_da_pagina).to eq([1, 10])
+      expect(primeira.intervalo_da_pagina).to eq([ 1, 10 ])
       expect(segunda.lancamentos_da_pagina.size).to eq(6)
-      expect(segunda.intervalo_da_pagina).to eq([11, 16])
+      expect(segunda.intervalo_da_pagina).to eq([ 11, 16 ])
       expect(segunda.total_recarregado).to eq(primeira.total_recarregado)
     end
 
@@ -154,9 +154,9 @@ RSpec.describe Extratos::Relatorio do
     it "mostra só as páginas próximas quando há muitas" do
       60.times { |indice| recarga_do_extrato(estudante, em: Time.zone.local(2024, 5, 11, 8, indice), valor: "1.00") }
 
-      expect(relatorio.paginas_visiveis).to eq([1, 2, nil, 8])
-      expect(relatorio(pagina: "5").paginas_visiveis).to eq([1, nil, 4, 5, 6, nil, 8])
-      expect(relatorio(pagina: "8").paginas_visiveis).to eq([1, nil, 7, 8])
+      expect(relatorio.paginas_visiveis).to eq([ 1, 2, nil, 8 ])
+      expect(relatorio(pagina: "5").paginas_visiveis).to eq([ 1, nil, 4, 5, 6, nil, 8 ])
+      expect(relatorio(pagina: "8").paginas_visiveis).to eq([ 1, nil, 7, 8 ])
     end
 
     it "não inclui a página nos filtros gravados na exportação" do

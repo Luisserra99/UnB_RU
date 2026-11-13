@@ -5,12 +5,12 @@ require "pdf-reader"
 module ExtratoExportacao
   RESTAURANTE = "RU Darcy Ribeiro".freeze
   # Duas catracas por piso, como nos cenários: Catraca 01 e 02 no Piso 1, 03 e 04 no Piso 2, 05 e 06 no Piso 3.
-  CATRACAS_POR_PISO = { 1 => ["Catraca 01", "Catraca 02"], 2 => ["Catraca 03", "Catraca 04"],
-                        3 => ["Catraca 05", "Catraca 06"] }.freeze
+  CATRACAS_POR_PISO = { 1 => [ "Catraca 01", "Catraca 02" ], 2 => [ "Catraca 03", "Catraca 04" ],
+                        3 => [ "Catraca 05", "Catraca 06" ] }.freeze
   SERVICOS = {
-    "Café da Manhã" => [TipoRefeicao::CAFE_DA_MANHA, "06:30", "09:00"],
-    "Almoço" => [TipoRefeicao::ALMOCO, "11:00", "14:30"],
-    "Jantar" => [TipoRefeicao::JANTAR, "17:00", "20:00"]
+    "Café da Manhã" => [ TipoRefeicao::CAFE_DA_MANHA, "06:30", "09:00" ],
+    "Almoço" => [ TipoRefeicao::ALMOCO, "11:00", "14:30" ],
+    "Jantar" => [ TipoRefeicao::JANTAR, "17:00", "20:00" ]
   }.freeze
   # Páginas abertas pelo passo "abri a página {string}" (F11 e F12).
   PAGINAS = { "Extrato e Histórico de Refeições" => :extrato_path,

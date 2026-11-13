@@ -36,7 +36,7 @@ RSpec.describe Extratos::Consulta do
     end
 
     it "lista só as movimentações do próprio estudante, mais recentes primeiro (RN03.1)" do
-      expect(consulta.movimentacoes.map(&:id)).to eq([jantar.id, almoco.id, credito.id])
+      expect(consulta.movimentacoes.map(&:id)).to eq([ jantar.id, almoco.id, credito.id ])
     end
 
     it "lista as refeições com data, horário e tipo (RN03.2)" do
@@ -55,7 +55,7 @@ RSpec.describe Extratos::Consulta do
     end
 
     it "traz as últimas recargas confirmadas (RN03.3)" do
-      expect(consulta.ultimas_recargas).to eq([credito.recarga])
+      expect(consulta.ultimas_recargas).to eq([ credito.recarga ])
       expect(consulta).not_to be_vazio
     end
   end

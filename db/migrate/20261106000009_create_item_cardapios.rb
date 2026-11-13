@@ -10,6 +10,6 @@ class CreateItemCardapios < ActiveRecord::Migration[8.1]
 
       t.check_constraint "ordem > 0", name: "item_cardapios_ordem_positiva"
     end
-    add_index :item_cardapios, [:opcao_cardapio_id, :ordem], unique: true
+    add_index :item_cardapios, [ :opcao_cardapio_id, :ordem ], unique: true
   end
 end

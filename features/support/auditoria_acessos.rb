@@ -2,9 +2,9 @@ require "pdf-reader"
 
 # Apoio aos cenários de features/exportacao_pdf_relatorio_operacao.feature (F12) — responsável: Tarsila.
 module AuditoriaAcessos
-  HORARIOS = { "Café da Manhã" => [TipoRefeicao::CAFE_DA_MANHA, "06:30", "09:00"],
-               "Almoço" => [TipoRefeicao::ALMOCO, "11:00", "14:30"],
-               "Jantar" => [TipoRefeicao::JANTAR, "17:00", "20:00"] }.freeze
+  HORARIOS = { "Café da Manhã" => [ TipoRefeicao::CAFE_DA_MANHA, "06:30", "09:00" ],
+               "Almoço" => [ TipoRefeicao::ALMOCO, "11:00", "14:30" ],
+               "Jantar" => [ TipoRefeicao::JANTAR, "17:00", "20:00" ] }.freeze
   LINHA_ACESSO = /\AA\d{3} /
 
   def aud_momento(texto)
@@ -89,7 +89,7 @@ module AuditoriaAcessos
 
   def aud_retrato_dos_acessos
     RegistroAcesso.order(:id).map do |registro|
-      [registro.referencia_evento, registro.estado, registro.passagem_em, registro.movimentacao_saldo&.valor]
+      [ registro.referencia_evento, registro.estado, registro.passagem_em, registro.movimentacao_saldo&.valor ]
     end
   end
 end

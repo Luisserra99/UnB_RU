@@ -17,6 +17,6 @@ class CadastrosController < ApplicationController
   private
 
   def cadastro_params
-    params.expect(cadastro_estudante: [:nome, :matricula, :email, :senha])
+    params.expect(cadastro_estudante: [ :nome, :matricula, :email, :senha ])
   end
 end

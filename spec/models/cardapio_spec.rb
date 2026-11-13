@@ -9,7 +9,7 @@ RSpec.describe TipoRefeicao, type: :model do
   end
 
   it "ordena na sequência do dia" do
-    [TipoRefeicao::JANTAR, TipoRefeicao::CAFE_DA_MANHA, TipoRefeicao::ALMOCO].each { |codigo| create(:tipo_refeicao, codigo: codigo) }
+    [ TipoRefeicao::JANTAR, TipoRefeicao::CAFE_DA_MANHA, TipoRefeicao::ALMOCO ].each { |codigo| create(:tipo_refeicao, codigo: codigo) }
     expect(TipoRefeicao.ordenados.pluck(:codigo)).to eq(TipoRefeicao::CODIGOS)
   end
 end
@@ -116,6 +116,6 @@ RSpec.describe ItemCardapio, type: :model do
   it "é listado pela ordem" do
     segundo = ItemCardapio.create!(opcao_cardapio: opcao, categoria: "salada", descricao: "Tomate", ordem: 2)
     primeiro = ItemCardapio.create!(opcao_cardapio: opcao, categoria: "salada", descricao: "Alface", ordem: 1)
-    expect(opcao.itens.to_a).to eq([primeiro, segundo])
+    expect(opcao.itens.to_a).to eq([ primeiro, segundo ])
   end
 end

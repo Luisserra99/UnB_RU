@@ -5,8 +5,8 @@ World(ActiveSupport::Testing::TimeHelpers)
 After { travel_back }
 
 # 04/11/2026 é uma quarta-feira, dia_semana 3 do serviço criado abaixo.
-QUARTA_FEIRA_AO_MEIO_DIA = [2026, 11, 4, 12, 0].freeze
-QUARTA_FEIRA_FORA_DE_REFEICAO = [2026, 11, 4, 16, 0].freeze
+QUARTA_FEIRA_AO_MEIO_DIA = [ 2026, 11, 4, 12, 0 ].freeze
+QUARTA_FEIRA_FORA_DE_REFEICAO = [ 2026, 11, 4, 16, 0 ].freeze
 
 PRATOS_POR_DIETA = {
   OpcaoCardapio::PADRAO => "Frango assado",

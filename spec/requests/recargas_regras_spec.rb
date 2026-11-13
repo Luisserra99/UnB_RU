@@ -55,7 +55,7 @@ RSpec.describe "Recarga de Saldo (F02) — regras e segurança", type: :request 
       end
 
       it "rejeita quantidades em branco, negativas ou fracionadas" do
-        [["", ""], ["-5", "2"], ["0", "-1"], ["1.5", "0"]].each do |cafes, almocos|
+        [ [ "", "" ], [ "-5", "2" ], [ "0", "-1" ], [ "1.5", "0" ] ].each do |cafes, almocos|
           solicitar(cafes: cafes, almocos: almocos)
           expect(response).to have_http_status(:unprocessable_content), "esperava 422 para #{cafes.inspect}/#{almocos.inspect}"
         end
@@ -77,7 +77,6 @@ RSpec.describe "Recarga de Saldo (F02) — regras e segurança", type: :request 
       end
 
       it "responde 4xx (não 500) quando os parâmetros vêm malformados" do
-        pending "BUG: params[:solicitacao_recarga] como string causa NoMethodError (permit em String) e 500"
         post recargas_path, params: { acao: "confirmar", solicitacao_recarga: "abc" }
         expect(response.status).to be_between(400, 499)
       end
@@ -191,7 +190,6 @@ RSpec.describe "Recarga de Saldo (F02) — regras e segurança", type: :request 
       end
 
       it "são filtrados do log de parâmetros" do
-        pending "BUG: config.filter_parameters só filtra :cvv; número, nome e validade do cartão vão em texto puro para o log"
         filtro = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
         filtrado = filtro.filter("dados_cartao" => { "numero" => numero, "nome" => nome, "validade" => "12/30",
                                                      "cvv" => "987" })

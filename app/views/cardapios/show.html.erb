@@ -62,8 +62,10 @@
     <span>
       <% if @consulta_atual %>
         Não há cardápio disponível no momento.
+      <% elsif @tipo.nil? %>
+        Selecione uma refeição para consultar outra data.
       <% else %>
-        Não há cardápio cadastrado para esta data e refeição. Selecione uma refeição para consultar outra data.
+        Não há cardápio cadastrado para esta data e refeição. Escolha outra data ou refeição e clique em Consultar.
       <% end %>
     </span>
   </div>

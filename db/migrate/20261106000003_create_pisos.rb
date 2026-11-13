@@ -8,6 +8,6 @@ class CreatePisos < ActiveRecord::Migration[8.1]
 
       t.check_constraint "numero > 0", name: "pisos_numero_positivo"
     end
-    add_index :pisos, [:restaurante_id, :numero], unique: true
+    add_index :pisos, [ :restaurante_id, :numero ], unique: true
   end
 end

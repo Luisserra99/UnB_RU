@@ -13,6 +13,6 @@ class CreateRestaurantes < ActiveRecord::Migration[8.1]
       t.check_constraint "capacidade_refeicoes_hora > 0", name: "restaurantes_capacidade_positiva"
     end
     add_index :restaurantes, :nome, unique: true
-    add_index :restaurantes, [:unidade_gestora_id, :numero], unique: true
+    add_index :restaurantes, [ :unidade_gestora_id, :numero ], unique: true
   end
 end

@@ -15,15 +15,15 @@ module Relatorios
     def render
       BOM + CSV.generate(col_sep: ";") do |csv|
         csv << CABECALHO
-        @relatorio.linhas.each { |linha| csv << contexto + [linha.restaurante.nome, linha.acessos, decimal(linha.arrecadacao)] }
-        csv << contexto + [TOTAL, @relatorio.total_acessos, decimal(@relatorio.arrecadacao_global)]
+        @relatorio.linhas.each { |linha| csv << contexto + [ linha.restaurante.nome, linha.acessos, decimal(linha.arrecadacao) ] }
+        csv << contexto + [ TOTAL, @relatorio.total_acessos, decimal(@relatorio.arrecadacao_global) ]
       end
     end
 
     private
 
     def contexto
-      [@relatorio.data.strftime(OperacaoGlobal::FORMATO_DATA), @relatorio.turno_nome, @relatorio.unidade_nome]
+      [ @relatorio.data.strftime(OperacaoGlobal::FORMATO_DATA), @relatorio.turno_nome, @relatorio.unidade_nome ]
     end
 
     def decimal(valor)

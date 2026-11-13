@@ -72,7 +72,10 @@
                 <b><%= momento_do_lancamento(lancamento.momento, hoje: hoje) %></b>
                 <% if lancamento.momento.to_date >= hoje - 1 %><small class="texto-suave"><%= lancamento.momento.strftime("%d/%m/%Y") %></small><% end %>
               </td>
-              <td><span class="selo evento <%= classe_do_evento(lancamento) %>"><%= lancamento.evento %></span></td>
+              <td>
+                <span class="selo evento <%= classe_do_evento(lancamento) %>"><%= lancamento.evento %></span>
+                <% if lancamento.metodo %><small class="texto-suave">Pagamento via <%= lancamento.metodo %></small><% end %>
+              </td>
               <td>
                 <b><%= lancamento.local || "—" %></b>
                 <% if lancamento.catraca %><small class="texto-suave"><%= lancamento.catraca %></small><% end %>

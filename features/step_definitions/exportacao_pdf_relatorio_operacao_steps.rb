@@ -4,7 +4,7 @@
 # "deve ser exibida a mensagem {string}" (F08).
 require "cucumber/rspec/doubles"
 
-AUD_AGORA_PADRAO = [2026, 10, 16, 20, 0].freeze
+AUD_AGORA_PADRAO = [ 2026, 10, 16, 20, 0 ].freeze
 AUD_SENHA = "senhaCorreta".freeze
 
 # --- Contexto ---

@@ -57,8 +57,8 @@ RSpec.describe SolicitacaoRecarga do
     recarga = s.recarga.reload
     expect(recarga).to be_pendente
     expect(recarga.valor_total).to eq(BigDecimal("57.50"))
-    expect(recarga.itens.map { |i| [i.tipo_refeicao.codigo, i.quantidade] })
-      .to contain_exactly([TipoRefeicao::CAFE_DA_MANHA, 5], [TipoRefeicao::ALMOCO, 10])
+    expect(recarga.itens.map { |i| [ i.tipo_refeicao.codigo, i.quantidade ] })
+      .to contain_exactly([ TipoRefeicao::CAFE_DA_MANHA, 5 ], [ TipoRefeicao::ALMOCO, 10 ])
     expect(recarga.pagamento_atual).to be_pix
     expect(recarga.pagamento_atual).to be_pendente
     expect(s.mensagem_sucesso).to eq("Código PIX gerado. Válido por 10 minutos.")

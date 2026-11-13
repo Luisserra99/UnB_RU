@@ -8,7 +8,7 @@ module ExtratosHelper
   }.freeze
 
   PLURAIS = {
-    "Café da Manhã" => ["café da manhã", "cafés da manhã"],
+    "Café da Manhã" => [ "café da manhã", "cafés da manhã" ],
     "Almoço" => %w[almoço almoços],
     "Jantar" => %w[jantar jantares],
     "Refeição" => %w[refeição refeições]
@@ -17,10 +17,10 @@ module ExtratosHelper
   # "Hoje, 12:20", "Ontem, 19:10" ou "10/05/2024, 14:00".
   def momento_do_lancamento(momento, hoje: Date.current)
     dia = case momento.to_date
-          when hoje then "Hoje"
-          when hoje - 1 then "Ontem"
-          else momento.strftime("%d/%m/%Y")
-          end
+    when hoje then "Hoje"
+    when hoje - 1 then "Ontem"
+    else momento.strftime("%d/%m/%Y")
+    end
     "#{dia}, #{momento.strftime('%H:%M')}"
   end
 
@@ -33,7 +33,7 @@ module ExtratosHelper
     return "Nenhuma refeição no período" if por_tipo.empty?
 
     por_tipo.map do |nome, quantidade|
-      singular, plural = PLURAIS.fetch(nome, [nome.downcase, nome.downcase])
+      singular, plural = PLURAIS.fetch(nome, [ nome.downcase, nome.downcase ])
       "#{quantidade} #{quantidade == 1 ? singular : plural}"
     end.join(" · ")
   end

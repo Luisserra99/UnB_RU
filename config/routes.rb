@@ -44,7 +44,7 @@ Rails.application.routes.draw do
     delete "historico", to: "historico#destroy"
 
     # F05 — Configuração do ponto de acesso
-    resource :ponto_acesso, only: [:create], controller: "pontos_acesso" do
+    resource :ponto_acesso, only: [ :create ], controller: "pontos_acesso" do
       post :reconfigurar, to: "pontos_acesso#edit"
     end
 

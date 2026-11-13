@@ -25,7 +25,7 @@ class MovimentacaoSaldo < ApplicationRecord
       metodo = recarga&.pagamentos&.find(&:confirmado?)&.nome_metodo
       metodo ? "Recarga de Saldo (#{metodo})" : "Recarga de Saldo"
     else
-      ["Refeição", tipo_refeicao&.nome].compact.join(": ")
+      [ "Refeição", tipo_refeicao&.nome ].compact.join(": ")
     end
   end
 

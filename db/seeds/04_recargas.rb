@@ -5,9 +5,9 @@
 vigencia_inicial = Time.zone.local(2026, 1, 1)
 
 {
-  TipoRefeicao::CAFE_DA_MANHA => ["Café da manhã", "2.50"],
-  TipoRefeicao::ALMOCO => ["Almoço", "4.50"],
-  TipoRefeicao::JANTAR => ["Jantar", "4.50"]
+  TipoRefeicao::CAFE_DA_MANHA => [ "Café da manhã", "2.50" ],
+  TipoRefeicao::ALMOCO => [ "Almoço", "4.50" ],
+  TipoRefeicao::JANTAR => [ "Jantar", "4.50" ]
 }.each do |codigo, (nome, valor)|
   tipo = TipoRefeicao.find_or_create_by!(codigo: codigo) { |t| t.nome = nome }
   TarifaRefeicao.find_or_create_by!(tipo_refeicao: tipo, vigente_desde: vigencia_inicial) do |tarifa|

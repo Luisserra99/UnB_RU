@@ -44,7 +44,7 @@ RSpec.describe Catraca, type: :model do
   it "lista como disponíveis somente as ativas" do
     ativa = create(:catraca, piso: piso_1)
     create(:catraca, piso: piso_1, ativa: false)
-    expect(Catraca.disponiveis).to eq([ativa])
+    expect(Catraca.disponiveis).to eq([ ativa ])
   end
 
   describe "remoção" do

@@ -19,6 +19,8 @@ development:
 test:
   <<: *default
   database: storage/test.sqlite3
+  # Os testes criam seus próprios dados; db:prepare não deve carregar os seeds de demonstração.
+  seeds: false
 
 # SQLite3 write its data on the local filesystem, as such it requires
 # persistent disks. If you are deploying to a managed service, you should

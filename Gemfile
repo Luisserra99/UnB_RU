@@ -1,5 +1,9 @@
 source "https://rubygems.org"
 
+# No Windows com terminal em português (codepage 850), o Cucumber não detecta a codificação e
+# quebra qualquer comando bin/rails ou cucumber com "invalid byte sequence in UTF-8".
+ENV["CUCUMBER_OUTPUT_ENCODING"] ||= "UTF-8" if Gem.win_platform?
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.1.3", ">= 8.1.3.1"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
@@ -37,6 +41,9 @@ end
 group :development, :test do
   gem "rspec-rails", "~> 8.0"
   gem "factory_bot_rails"
+
+  # Lint com o estilo padrão do Rails [https://github.com/rails/rubocop-rails-omakase/]
+  gem "rubocop-rails-omakase", require: false
 end
 
 group :test do

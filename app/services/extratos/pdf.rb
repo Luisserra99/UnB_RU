@@ -11,7 +11,7 @@ module Extratos
     include Formatacao
 
     TITULO = "Extrato e Histórico de Refeições".freeze
-    CABECALHO_TABELA = ["Data e hora", "Evento", "Local", "Catraca", "Valor"].freeze
+    CABECALHO_TABELA = [ "Data e hora", "Evento", "Local", "Catraca", "Valor" ].freeze
     INDICACAO_AUDITORIA = "Registros auditáveis".freeze
     COR_TITULO = "003366".freeze
     COR_CABECALHO = "E8EEF4".freeze
@@ -64,10 +64,10 @@ module Extratos
 
     def tabela(documento)
       linhas = relatorio.lancamentos.map do |lancamento|
-        [data_hora(lancamento.momento), lancamento.evento, lancamento.local.to_s,
-         lancamento.catraca.to_s, valor_com_sinal(lancamento.valor)]
+        [ data_hora(lancamento.momento), lancamento.descricao, lancamento.local.to_s,
+         lancamento.catraca.to_s, valor_com_sinal(lancamento.valor) ]
       end
-      documento.table([CABECALHO_TABELA] + linhas, header: true, width: documento.bounds.width,
+      documento.table([ CABECALHO_TABELA ] + linhas, header: true, width: documento.bounds.width,
                                                    cell_style: { size: 9, border_color: "CCCCCC" }) do
         row(0).font_style = :bold
         row(0).background_color = COR_CABECALHO

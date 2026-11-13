@@ -41,9 +41,9 @@ module Relatorios
         totais = acessos.group("configuracao_ponto_acessos.restaurante_id")
                         .pluck(Arel.sql("configuracao_ponto_acessos.restaurante_id"), Arel.sql("COUNT(*)"),
                                Arel.sql("SUM(-movimentacao_saldos.valor)"))
-                        .to_h { |id, quantidade, valor| [id, [quantidade, valor.to_d]] }
+                        .to_h { |id, quantidade, valor| [ id, [ quantidade, valor.to_d ] ] }
         restaurantes.map do |restaurante|
-          quantidade, valor = totais.fetch(restaurante.id, [0, BigDecimal("0")])
+          quantidade, valor = totais.fetch(restaurante.id, [ 0, BigDecimal("0") ])
           Linha.new(restaurante: restaurante, acessos: quantidade, arrecadacao: valor)
         end
       end
@@ -96,9 +96,9 @@ module Relatorios
         totais = acessos.joins(servico_refeicao: :tipo_refeicao).group("tipo_refeicoes.codigo")
                         .pluck(Arel.sql("tipo_refeicoes.codigo"), Arel.sql("COUNT(*)"),
                                Arel.sql("SUM(-movimentacao_saldos.valor)"))
-                        .to_h { |codigo, quantidade, valor| [codigo, [quantidade, valor.to_d]] }
+                        .to_h { |codigo, quantidade, valor| [ codigo, [ quantidade, valor.to_d ] ] }
         TURNOS.except(TURNO_TODOS).map do |codigo, nome|
-          quantidade, valor = totais.fetch(codigo, [0, BigDecimal("0")])
+          quantidade, valor = totais.fetch(codigo, [ 0, BigDecimal("0") ])
           Turno.new(codigo: codigo, nome: nome, acessos: quantidade, arrecadacao: valor,
                     horario: horarios_das_refeicoes[codigo])
         end
@@ -133,11 +133,11 @@ module Relatorios
     end
 
     def opcoes_turno
-      TURNOS.map { |codigo, nome| [nome, codigo] }
+      TURNOS.map { |codigo, nome| [ nome, codigo ] }
     end
 
     def opcoes_unidade
-      unidades.map { |unidade| [unidade.nome, unidade.id] }
+      unidades.map { |unidade| [ unidade.nome, unidade.id ] }
     end
 
     # Filtros na forma em que são reenviados pelo formulário e gravados em ExportacaoRelatorio.

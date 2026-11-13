@@ -2,9 +2,9 @@
 # data dd/mm/aaaa, horas HH:MM:SS, saldo "10,00" e S/N para liberação e passagem.
 module HistoricoHelper
   SITUACOES = {
-    "realizado" => ["Liberado (passagem confirmada)", "situacao-ok"],
-    "cancelado" => ["Liberado sem passagem", "situacao-aviso"],
-    "liberado" => ["Aguardando passagem", "situacao-info"]
+    "realizado" => [ "Liberado (passagem confirmada)", "situacao-ok" ],
+    "cancelado" => [ "Liberado sem passagem", "situacao-aviso" ],
+    "liberado" => [ "Aguardando passagem", "situacao-info" ]
   }.freeze
 
   def sim_nao(valor)
@@ -25,7 +25,7 @@ module HistoricoHelper
 
   # [texto, classe CSS] da situação; recusas mostram o motivo gravado na leitura.
   def situacao_registro(registro)
-    SITUACOES.fetch(registro.estado) { ["Bloqueado (#{registro.mensagem})", "situacao-erro"] }
+    SITUACOES.fetch(registro.estado) { [ "Bloqueado (#{registro.mensagem})", "situacao-erro" ] }
   end
 
   def linha_bloqueada?(registro)

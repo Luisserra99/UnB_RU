@@ -52,13 +52,13 @@ module RecargasHelper
 
   # true/false dentro de um padrão de localização (com a borda branca), nil fora deles.
   def qr_padrao_localizacao(linha, coluna)
-    [[0, 0], [0, QR_MODULOS - 7], [QR_MODULOS - 7, 0]].each do |topo, esquerda|
+    [ [ 0, 0 ], [ 0, QR_MODULOS - 7 ], [ QR_MODULOS - 7, 0 ] ].each do |topo, esquerda|
       l = linha - topo
       c = coluna - esquerda
       next unless l.between?(-1, 7) && c.between?(-1, 7)
-      return false if [l, c].any? { |v| v == -1 || v == 7 }
+      return false if [ l, c ].any? { |v| v == -1 || v == 7 }
 
-      borda = [l, c].any? { |v| [0, 6].include?(v) }
+      borda = [ l, c ].any? { |v| [ 0, 6 ].include?(v) }
       miolo = l.between?(2, 4) && c.between?(2, 4)
       return borda || miolo
     end

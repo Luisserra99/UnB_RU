@@ -33,7 +33,7 @@ class RecargasController < PortalEstudanteController
       return redirect_to(recarga_path(@recarga), alert: MSG_COBRANCA_SEM_CARTAO)
     end
 
-    @dados_cartao = DadosCartao.new(params.fetch(:dados_cartao, {}).permit(:numero, :nome, :validade, :cvv))
+    @dados_cartao = DadosCartao.new(parametros_aninhados(:dados_cartao).permit(:numero, :nome, :validade, :cvv))
     unless @dados_cartao.valid?
       flash.now[:alert] = DadosCartao::MSG_INVALIDOS
       return render(:show, status: :unprocessable_content)
@@ -69,8 +69,16 @@ class RecargasController < PortalEstudanteController
   end
 
   def params_solicitacao
-    params.fetch(:solicitacao_recarga, {})
-          .permit(:quantidade_cafes, :quantidade_almocos, :metodo).to_h.symbolize_keys
+    parametros_aninhados(:solicitacao_recarga)
+      .permit(:quantidade_cafes, :quantidade_almocos, :metodo).to_h.symbolize_keys
+  end
+
+  # Um campo aninhado enviado como texto (ex.: solicitacao_recarga=abc) responde 400 em vez de 500.
+  def parametros_aninhados(chave)
+    valor = params.fetch(chave, ActionController::Parameters.new)
+    raise ActionController::BadRequest, "Parâmetro #{chave} malformado" unless valor.is_a?(ActionController::Parameters)
+
+    valor
   end
 
   def nova_tentativa_cartao

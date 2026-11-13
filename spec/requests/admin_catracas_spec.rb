@@ -36,9 +36,9 @@ RSpec.describe "Gestão de catracas (F08)", type: :request do
     end
 
     {
-      "identificação vazia" => [{ identificacao: "" }, "Identificação da catraca é obrigatória"],
-      "piso inexistente" => [{ piso_numero: 4 }, "Piso inexistente para este restaurante"],
-      "restaurante inexistente" => [{ restaurante_id: 0 }, "Restaurante não encontrado"]
+      "identificação vazia" => [ { identificacao: "" }, "Identificação da catraca é obrigatória" ],
+      "piso inexistente" => [ { piso_numero: 4 }, "Piso inexistente para este restaurante" ],
+      "restaurante inexistente" => [ { restaurante_id: 0 }, "Restaurante não encontrado" ]
     }.each do |caso, (dados_invalidos, mensagem)|
       it "rejeita #{caso}" do
         expect { post admin_catracas_path, params: { catraca: dados(dados_invalidos) } }.not_to change(Catraca, :count)
@@ -67,7 +67,7 @@ RSpec.describe "Gestão de catracas (F08)", type: :request do
       patch admin_catraca_path(catraca), params: { catraca: dados(identificacao: "Catraca 09", piso_numero: 2, ativa: "0") }
       catraca.reload
       expect(flash[:notice]).to eq("Catraca atualizada com sucesso")
-      expect([catraca.identificacao, catraca.piso.numero, catraca.ativa]).to eq(["Catraca 09", 2, false])
+      expect([ catraca.identificacao, catraca.piso.numero, catraca.ativa ]).to eq([ "Catraca 09", 2, false ])
     end
 
     it "pede confirmação e remove a catraca" do

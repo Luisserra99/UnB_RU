@@ -76,6 +76,21 @@ RSpec.describe "Gestão de restaurantes (F08)", type: :request do
       expect(restaurante.reload.capacidade_refeicoes_hora).to eq(1500)
     end
 
+    it "acrescenta pisos na edição" do
+      restaurante = create(:restaurante)
+      expect { patch admin_restaurante_path(restaurante), params: { restaurante: { quantidade_pisos: 3 } } }
+        .to change { restaurante.pisos.count }.from(1).to(3)
+      expect(response).to redirect_to(admin_restaurantes_path)
+    end
+
+    it "não remove pisos na edição" do
+      restaurante = create(:restaurante, quantidade_pisos: 2)
+      expect { patch admin_restaurante_path(restaurante), params: { restaurante: { quantidade_pisos: 1 } } }
+        .not_to change(Piso, :count)
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Não é possível remover pisos: informe 2 ou mais")
+    end
+
     it "rejeita edição inválida" do
       restaurante = create(:restaurante)
       patch admin_restaurante_path(restaurante), params: { restaurante: { capacidade_refeicoes_hora: 0 } }

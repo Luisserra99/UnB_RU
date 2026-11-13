@@ -27,7 +27,7 @@ class ConfiguracaoPontoAcesso < ApplicationRecord
   # Reconfiguração/logout cancelam liberações que ainda não tiveram passagem.
   def cancelar_liberacoes!
     registros_acesso.liberado.find_each do |registro|
-      registro.update!(estado: :cancelado, bloqueado_em: [Time.current, registro.limite_em].min, mensagem: "Acesso cancelado")
+      registro.update!(estado: :cancelado, bloqueado_em: [ Time.current, registro.limite_em ].min, mensagem: "Acesso cancelado")
     end
   end
 

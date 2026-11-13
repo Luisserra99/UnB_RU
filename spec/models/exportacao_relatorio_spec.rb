@@ -114,7 +114,7 @@ RSpec.describe ExportacaoRelatorio, type: :model do
 
     it "persiste filtros e agrupamentos em JSON" do
       filtros = { "turno" => "almoco" }
-      agrupamentos = { "por" => ["restaurante"] }
+      agrupamentos = { "por" => [ "restaurante" ] }
 
       registro = create(:exportacao_relatorio, filtros: filtros, agrupamentos: agrupamentos)
       registro.reload

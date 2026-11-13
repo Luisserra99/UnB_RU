@@ -23,13 +23,13 @@ module Relatorios
       filtros = filtros.to_h.with_indifferent_access
       hoje = agora.in_time_zone.to_date
       @fim = interpretar_data(filtros[:fim], hoje)
-      @inicio = interpretar_data(filtros[:inicio], [hoje - DIAS_PADRAO, @fim].min)
+      @inicio = interpretar_data(filtros[:inicio], [ hoje - DIAS_PADRAO, @fim ].min)
       @restaurante = restaurantes.find { |item| item.id.to_s == filtros[:restaurante_id].to_s }
       @catraca = catracas.find { |item| item.id.to_s == filtros[:catraca_id].to_s }
       @agrupado = ActiveModel::Type::Boolean.new.cast(filtros[:agrupar]) || false
       @por_pagina = filtros[:por_pagina].to_i.clamp(1, POR_PAGINA_MAXIMO) if filtros[:por_pagina].present?
       @por_pagina ||= POR_PAGINA_PADRAO
-      @pagina = [filtros[:pagina].to_i, 1].max
+      @pagina = [ filtros[:pagina].to_i, 1 ].max
     end
 
     # RN12.7: período com data inicial depois da final é rejeitado.
@@ -78,11 +78,11 @@ module Relatorios
     # --- Paginação da tela ---
 
     def total_paginas
-      [(quantidade.to_f / por_pagina).ceil, 1].max
+      [ (quantidade.to_f / por_pagina).ceil, 1 ].max
     end
 
     def pagina_atual
-      [pagina, total_paginas].min
+      [ pagina, total_paginas ].min
     end
 
     def acessos_da_pagina
@@ -108,11 +108,11 @@ module Relatorios
     end
 
     def opcoes_restaurante
-      [["Todos", ""]] + restaurantes.map { |item| [item.nome, item.id] }
+      [ [ "Todos", "" ] ] + restaurantes.map { |item| [ item.nome, item.id ] }
     end
 
     def opcoes_catraca
-      [["Todas", ""]] + catracas.map { |item| ["#{item.identificacao} · #{item.piso.restaurante.nome}", item.id] }
+      [ [ "Todas", "" ] ] + catracas.map { |item| [ "#{item.identificacao} · #{item.piso.restaurante.nome}", item.id ] }
     end
 
     # Filtros na forma em que são reenviados pelo formulário e gravados em ExportacaoRelatorio.
@@ -133,7 +133,7 @@ module Relatorios
 
     def catracas
       @catracas ||= Catraca.includes(piso: :restaurante).to_a
-                           .sort_by { |item| [item.piso.restaurante.nome, item.identificacao] }
+                           .sort_by { |item| [ item.piso.restaurante.nome, item.identificacao ] }
     end
 
     def consulta

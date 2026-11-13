@@ -15,7 +15,7 @@ RSpec.describe HistoricoCatraca::Consulta do
     novo = registro(em: base + 1.hour)
     registro(em: base + 30.minutes, configuracao: create(:configuracao_ponto_acesso))
 
-    expect(described_class.new(catraca).registros).to eq([novo, antigo])
+    expect(described_class.new(catraca).registros).to eq([ novo, antigo ])
   end
 
   it "inclui registros de sessões anteriores na mesma catraca" do

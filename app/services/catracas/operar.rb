@@ -120,7 +120,7 @@ module Catracas
       debito.estudante.movimentacoes_saldo.creditos.includes(:recarga).order(:ocorrida_em, :id).each do |credito|
         disponivel = credito.valor - RateioConsumo.where(recarga_id: credito.recarga_id).sum(:valor)
         next unless disponivel.positive?
-        valor = [restante, disponivel].min
+        valor = [ restante, disponivel ].min
         debito.rateios_consumo.create!(recarga: credito.recarga, valor: valor)
         restante -= valor
         break if restante.zero?

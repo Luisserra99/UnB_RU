@@ -10,7 +10,7 @@ RSpec.describe Restaurante, type: :model do
   describe ".criar_com_pisos!" do
     it "cria o restaurante e os pisos numerados a partir de 1" do
       restaurante = Restaurante.criar_com_pisos!(atributos)
-      expect(restaurante.pisos.ordenados.pluck(:numero)).to eq([1, 2])
+      expect(restaurante.pisos.ordenados.pluck(:numero)).to eq([ 1, 2 ])
     end
 
     it "numera os restaurantes por unidade gestora" do
@@ -18,7 +18,7 @@ RSpec.describe Restaurante, type: :model do
       segundo = Restaurante.criar_com_pisos!(atributos(nome: "RU Planaltina"))
       outra_unidade = Restaurante.criar_com_pisos!(atributos(nome: "RU Ceilândia", unidade_gestora: create(:unidade_gestora)))
 
-      expect([primeiro.numero, segundo.numero, outra_unidade.numero]).to eq([1, 2, 1])
+      expect([ primeiro.numero, segundo.numero, outra_unidade.numero ]).to eq([ 1, 2, 1 ])
     end
 
     it "não grava o restaurante se a criação de um piso falhar" do
@@ -44,6 +44,13 @@ RSpec.describe Restaurante, type: :model do
       expect(repetido.errors[:nome]).to include("Já existe um restaurante com esse nome")
     end
 
+    it "rejeita nome repetido com outra combinação de maiúsculas e minúsculas" do
+      Restaurante.criar_com_pisos!(atributos(nome: "RU Gama"))
+      repetido = Restaurante.new(atributos(nome: "ru GAMA"))
+      expect(repetido).not_to be_valid
+      expect(repetido.errors[:nome]).to include("Já existe um restaurante com esse nome")
+    end
+
     it "rejeita número repetido na mesma unidade" do
       Restaurante.criar_com_pisos!(atributos(numero: 7))
       expect(Restaurante.new(atributos(nome: "Outro", numero: 7))).not_to be_valid
@@ -56,7 +63,7 @@ RSpec.describe Restaurante, type: :model do
     end
 
     it "exige capacidade positiva" do
-      [0, -10, nil].each do |capacidade|
+      [ 0, -10, nil ].each do |capacidade|
         restaurante = Restaurante.new(atributos(capacidade_refeicoes_hora: capacidade))
         expect(restaurante).not_to be_valid
         expect(restaurante.errors[:capacidade_refeicoes_hora]).to include("A capacidade deve ser maior que zero")
@@ -66,6 +73,37 @@ RSpec.describe Restaurante, type: :model do
     it "permite editar sem informar a quantidade de pisos" do
       restaurante = Restaurante.find(Restaurante.criar_com_pisos!(atributos).id)
       expect(restaurante.update(capacidade_refeicoes_hora: 500)).to be(true)
+    end
+  end
+
+  describe "#atualizar_com_pisos" do
+    let!(:restaurante) { Restaurante.find(Restaurante.criar_com_pisos!(atributos).id) }
+
+    it "informa a quantidade atual de pisos quando nada foi digitado" do
+      expect(restaurante.quantidade_pisos).to eq(2)
+    end
+
+    it "acrescenta os pisos que faltam, numerados em sequência" do
+      expect(restaurante.atualizar_com_pisos(quantidade_pisos: "4")).to be(true)
+      expect(restaurante.pisos.order(:numero).pluck(:numero)).to eq([ 1, 2, 3, 4 ])
+    end
+
+    it "mantém os pisos quando a quantidade não muda" do
+      expect { restaurante.atualizar_com_pisos(quantidade_pisos: "2", capacidade_refeicoes_hora: 900) }
+        .not_to change(Piso, :count)
+      expect(restaurante.reload.capacidade_refeicoes_hora).to eq(900)
+    end
+
+    it "não deixa remover pisos e não grava as outras alterações" do
+      expect(restaurante.atualizar_com_pisos(quantidade_pisos: "1", capacidade_refeicoes_hora: 900)).to be(false)
+      expect(restaurante.errors[:quantidade_pisos]).to include("Não é possível remover pisos: informe 2 ou mais")
+      expect(restaurante.reload.pisos.count).to eq(2)
+      expect(restaurante.capacidade_refeicoes_hora).to eq(400)
+    end
+
+    it "rejeita quantidade que não é número inteiro" do
+      expect(restaurante.atualizar_com_pisos(quantidade_pisos: "abc")).to be(false)
+      expect(restaurante.errors[:quantidade_pisos]).to include("O restaurante deve ter ao menos 1 piso")
     end
   end
 
@@ -93,6 +131,6 @@ RSpec.describe Restaurante, type: :model do
     unidade_atual = create(:unidade_gestora)
     segundo = create(:restaurante, unidade_gestora: unidade_atual, numero: 2)
     primeiro = create(:restaurante, unidade_gestora: unidade_atual, numero: 1)
-    expect(Restaurante.ordenados).to eq([primeiro, segundo])
+    expect(Restaurante.ordenados).to eq([ primeiro, segundo ])
   end
 end

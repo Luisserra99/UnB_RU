@@ -12,7 +12,7 @@ module Relatorios
 
     TITULO = "Relatório Global de Operação".freeze
     SUBTITULO = "Acessos registrados — auditoria interna".freeze
-    CABECALHO = ["Acesso", "Data e hora", "Matrícula", "Restaurante", "Catraca", "Refeição", "Valor debitado"].freeze
+    CABECALHO = [ "Acesso", "Data e hora", "Matrícula", "Restaurante", "Catraca", "Refeição", "Valor debitado" ].freeze
     COR_TITULO = "003366".freeze
     COR_CABECALHO = "E8EEF4".freeze
 
@@ -30,7 +30,7 @@ module Relatorios
       cabecalho(documento)
       relatorio.agrupado? ? corpo_agrupado(documento) : tabela(documento, relatorio.acessos)
       totais(documento)
-      documento.number_pages "Página <page> de <total>", at: [documento.bounds.right - 120, -8], width: 120,
+      documento.number_pages "Página <page> de <total>", at: [ documento.bounds.right - 120, -8 ], width: 120,
                                                          align: :right, size: 8
       documento.render
     end
@@ -73,10 +73,10 @@ module Relatorios
 
     def tabela(documento, acessos)
       linhas = acessos.map do |acesso|
-        [acesso.referencia, data_hora(acesso.momento), acesso.matricula.to_s, acesso.restaurante,
-         acesso.catraca, acesso.refeicao, reais(acesso.valor)]
+        [ acesso.referencia, data_hora(acesso.momento), acesso.matricula.to_s, acesso.restaurante,
+         acesso.catraca, acesso.refeicao, reais(acesso.valor) ]
       end
-      documento.table([CABECALHO] + linhas, header: true, width: documento.bounds.width,
+      documento.table([ CABECALHO ] + linhas, header: true, width: documento.bounds.width,
                                             cell_style: { size: 9, border_color: "CCCCCC" }) do
         row(0).font_style = :bold
         row(0).background_color = COR_CABECALHO

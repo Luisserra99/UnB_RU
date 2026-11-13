@@ -20,7 +20,7 @@ RSpec.describe Cardapios::ImportadorJson do
   end
 
   def importar_json(dados)
-    Tempfile.create(["cardapio", ".json"]) do |arquivo|
+    Tempfile.create([ "cardapio", ".json" ]) do |arquivo|
       arquivo.write(dados.to_json)
       arquivo.close
       Cardapios::ImportadorJson.new(semana: semana, caminho: arquivo.path).importar
@@ -54,7 +54,7 @@ RSpec.describe Cardapios::ImportadorJson do
     end
 
     it "é idempotente" do
-      contagens = -> { [Cardapio.count, OpcaoCardapio.count, ItemCardapio.count] }
+      contagens = -> { [ Cardapio.count, OpcaoCardapio.count, ItemCardapio.count ] }
       antes = contagens.call
       Cardapios::ImportadorJson.new(semana: semana).importar
       expect(contagens.call).to eq(antes)
@@ -78,11 +78,11 @@ RSpec.describe Cardapios::ImportadorJson do
       importar_json("quarta-feira" => { almoco: campos })
       opcao = cardapio_de(semana, TipoRefeicao::ALMOCO).opcao_de(OpcaoCardapio::OVOLACTOVEGETARIANA)
 
-      expect(opcao.itens.map { |item| [item.ordem, item.categoria, item.descricao] }).to eq([
-        [1, "salada_1", "Alface"],
-        [2, "molho_para_salada", "Ácido"],
-        [3, "molho_para_salada", "Limão"],
-        [4, "prato_principal", "Quiche"]
+      expect(opcao.itens.map { |item| [ item.ordem, item.categoria, item.descricao ] }).to eq([
+        [ 1, "salada_1", "Alface" ],
+        [ 2, "molho_para_salada", "Ácido" ],
+        [ 3, "molho_para_salada", "Limão" ],
+        [ 4, "prato_principal", "Quiche" ]
       ])
     end
 
@@ -112,7 +112,7 @@ RSpec.describe Cardapios::ImportadorJson do
       outro = create(:restaurante)
       inativo = create(:restaurante, ativo: false)
       almoco = TipoRefeicao.find_by!(codigo: TipoRefeicao::ALMOCO)
-      [outro, inativo].each { |r| create(:servico_refeicao, restaurante: r, tipo_refeicao: almoco, dia_semana: 3) }
+      [ outro, inativo ].each { |r| create(:servico_refeicao, restaurante: r, tipo_refeicao: almoco, dia_semana: 3) }
 
       importar_json("quarta-feira" => { almoco: campos })
 

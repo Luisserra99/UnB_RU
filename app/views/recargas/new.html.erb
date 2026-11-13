@@ -39,8 +39,10 @@
                   data: { recarga_target: "quantidade", linha: ids[categoria], preco_centavos: ((s.preco(categoria) || 0) * 100).to_i } %>
           </div>
           <% s.errors[campo].each do |mensagem| %>
-            <p class="erro-campo"><%= mensagem %></p>
+            <p class="erro-campo" data-erro-servidor><%= mensagem %></p>
           <% end %>
+          <%# Preenchido pela prévia ao vivo quando a quantidade sai da faixa permitida. %>
+          <p class="erro-campo" data-erro-previa hidden><%= config[:rotulo] %>: informe um número inteiro entre 0 e <%= SolicitacaoRecarga::QUANTIDADE_MAXIMA %></p>
         </div>
       <% end %>
     </div>
