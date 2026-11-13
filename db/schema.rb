@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_10_000003) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_12_145332) do
   create_table "cardapios", force: :cascade do |t|
     t.integer "servico_refeicao_id", null: false
     t.date "data_referencia", null: false
@@ -54,6 +54,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_000003) do
     t.datetime "updated_at", null: false
     t.index ["matricula"], name: "index_estudantes_on_matricula", unique: true
     t.index ["usuario_id"], name: "index_estudantes_on_usuario_id", unique: true
+  end
+
+  create_table "exportacao_relatorios", force: :cascade do |t|
+    t.integer "usuario_id", null: false
+    t.string "tipo", null: false
+    t.string "formato", null: false
+    t.json "filtros", default: {}, null: false
+    t.json "agrupamentos", default: {}, null: false
+    t.datetime "solicitada_em", null: false
+    t.datetime "emitida_em"
+    t.string "status", default: "processando", null: false
+    t.integer "quantidade_registros"
+    t.decimal "total_debitos", precision: 12, scale: 2
+    t.decimal "total_creditos", precision: 12, scale: 2
+    t.string "arquivo_chave"
+    t.string "arquivo_sha256"
+    t.string "assinatura_status", default: "nao_aplicavel", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["usuario_id", "solicitada_em"], name: "index_exportacao_relatorios_on_usuario_id_and_solicitada_em"
+    t.index ["usuario_id"], name: "index_exportacao_relatorios_on_usuario_id"
+    t.check_constraint "quantidade_registros IS NULL OR quantidade_registros >= 0", name: "exportacoes_quantidade_nao_negativa"
+    t.check_constraint "total_creditos IS NULL OR total_creditos >= 0", name: "exportacoes_creditos_nao_negativos"
+    t.check_constraint "total_debitos IS NULL OR total_debitos >= 0", name: "exportacoes_debitos_nao_negativos"
   end
 
   create_table "item_cardapios", force: :cascade do |t|
@@ -300,6 +324,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_000003) do
   add_foreign_key "configuracao_ponto_acessos", "restaurantes"
   add_foreign_key "configuracao_ponto_acessos", "sessao_autenticacoes"
   add_foreign_key "estudantes", "usuarios"
+  add_foreign_key "exportacao_relatorios", "usuarios"
   add_foreign_key "item_cardapios", "opcao_cardapios"
   add_foreign_key "item_recargas", "recargas"
   add_foreign_key "item_recargas", "tarifa_refeicoes"

@@ -1,3 +1,4 @@
+# language: pt
 Funcionalidade: Relatório Global de Operação
   Como administrador
   Eu quero visualizar o relatório global de operação dos restaurantes do campus, filtrando por data, turno e unidade
