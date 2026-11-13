@@ -22,6 +22,8 @@ module Extratos
       PERIODO_PADRAO => ["Últimos 30 dias", 30]
     }.freeze
 
+    POR_PAGINA = 10 # lançamentos por página na tela; a exportação sempre traz todos
+
     EVENTO_RECARGA = "Recarga de Saldo".freeze
     EVENTO_REFEICAO = "Refeição".freeze
 
@@ -31,7 +33,7 @@ module Extratos
       end
     end
 
-    attr_reader :estudante, :tipo, :periodo, :catraca_id, :agora
+    attr_reader :estudante, :tipo, :periodo, :catraca_id, :agora, :pagina
 
     # Valores fora das listas permitidas voltam ao padrão: o parâmetro vem do navegador.
     def initialize(estudante, filtros = {}, agora: Time.current)
@@ -41,6 +43,7 @@ module Extratos
       @tipo = TIPOS.key?(filtros[:tipo]) ? filtros[:tipo] : TIPO_TODOS
       @periodo = PERIODOS.key?(filtros[:periodo]) ? filtros[:periodo] : PERIODO_PADRAO
       @catraca_id = catracas.map(&:id).find { |id| id.to_s == filtros[:catraca_id].to_s }
+      @pagina = [filtros[:pagina].to_i, 1].max
     end
 
     def lancamentos
@@ -66,6 +69,50 @@ module Extratos
 
     def refeicoes_realizadas
       lancamentos.count { |lancamento| !lancamento.credito? }
+    end
+
+    def quantidade_recargas
+      lancamentos.count(&:credito?)
+    end
+
+    # Refeições do filtro contadas por tipo, na ordem do dia: { "Café da Manhã" => 1, "Almoço" => 2 }.
+    def refeicoes_por_tipo
+      contagem = lancamentos.reject(&:credito?).map(&:evento).tally
+      (TIPOS.values + [EVENTO_REFEICAO]).filter_map { |nome| [nome, contagem[nome]] if contagem[nome] }.to_h
+    end
+
+    # --- Paginação da tela ---
+
+    def total_paginas
+      [(lancamentos.size.to_f / POR_PAGINA).ceil, 1].max
+    end
+
+    def pagina_atual
+      [pagina, total_paginas].min
+    end
+
+    def lancamentos_da_pagina
+      lancamentos.slice((pagina_atual - 1) * POR_PAGINA, POR_PAGINA) || []
+    end
+
+    # Posição do primeiro e do último lançamento da página atual, para "Exibindo 1–10 de 24".
+    def intervalo_da_pagina
+      primeiro = (pagina_atual - 1) * POR_PAGINA + 1
+      [primeiro, primeiro + lancamentos_da_pagina.size - 1]
+    end
+
+    # Números de página a exibir: a primeira, a última e as vizinhas da atual. `nil` marca um salto.
+    def paginas_visiveis
+      numeros = ([1, total_paginas] + ((pagina_atual - 1)..(pagina_atual + 1)).to_a).uniq.sort
+                .select { |numero| numero.between?(1, total_paginas) }
+      numeros.each_with_object([]) do |numero, lista|
+        lista << nil if lista.last && numero - lista.last > 1
+        lista << numero
+      end
+    end
+
+    def filtrado?
+      tipo != TIPO_TODOS || periodo != PERIODO_PADRAO || catraca_id.present?
     end
 
     def saldo_atual

@@ -15,7 +15,7 @@ end
 Dado("que o {string} possui {int} restaurantes e {int} catracas cadastradas, todas online") do |unidade, restaurantes, catracas|
   expect(unidade).to eq(RelatorioGlobal::UNIDADE)
   rg_criar_restaurantes(restaurantes)
-  expect(Catraca.where(online: true).count).to eq(catracas)
+  expect(rg_catracas_online).to eq(catracas)
 end
 
 Dado("que em {string} foram registrados os seguintes acessos por restaurante:") do |_data, tabela|
@@ -95,7 +95,8 @@ end
 
 Dado("que {int} das {int} catracas cadastradas está offline") do |offline, total|
   expect(Catraca.count).to eq(total)
-  Catraca.order(:id).limit(offline).update_all(online: false)
+  rg_desligar_catracas(offline)
+  expect(rg_catracas_online).to eq(total - offline)
 end
 
 Dado("que sou um usuário autenticado com perfil de aluno") do

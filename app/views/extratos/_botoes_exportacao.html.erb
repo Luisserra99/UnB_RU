@@ -1,7 +1,10 @@
-<%# F11 — Botões de exportação. data-turbo=false: a resposta é um download, não uma página. %>
+<%# F11 — Botões de exportação e impressão. data-turbo=false: a resposta é um download, não uma página. %>
 <% [["Exportar PDF", "pdf", "botao-estudante"], ["Exportar CSV", "csv", "botao-secundario"]].each do |rotulo, formato, estilo| %>
   <%= button_to rotulo, exportacoes_extrato_path,
         params: relatorio.filtros.compact.merge("formato" => formato),
         class: "botao #{estilo}", disabled: !habilitado,
         form: { data: { turbo: false }, class: "extrato-form-exportar" } %>
 <% end %>
+<button type="button" class="botao botao-secundario" onclick="window.print()" <%= "disabled" unless habilitado %>>
+  <%= icone(:imprimir, tamanho: 16) %> Imprimir
+</button>

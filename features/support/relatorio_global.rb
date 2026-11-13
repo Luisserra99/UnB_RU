@@ -30,7 +30,19 @@ module RelatorioGlobal
   def rg_criar_restaurantes(quantidade)
     (1..quantidade).each do |numero|
       restaurante = create(:restaurante, unidade_gestora: rg_unidade, nome: "Restaurante #{numero}", quantidade_pisos: 1)
-      create(:catraca, piso: restaurante.pisos.first, identificacao: "Catraca #{format('%02d', numero)}", online: true)
+      create(:catraca, piso: restaurante.pisos.first, identificacao: "Catraca #{format('%02d', numero)}")
+      rg_ponto(restaurante) # um funcionário opera a catraca: é isso que a deixa online
+    end
+  end
+
+  def rg_catracas_online
+    Catraca.where(id: ConfiguracaoPontoAcesso.em_sessoes_validas.select(:catraca_id)).count
+  end
+
+  # Encerra a operação de `quantidade` catracas, que passam a contar como offline.
+  def rg_desligar_catracas(quantidade)
+    ConfiguracaoPontoAcesso.abertas.order(:id).last(quantidade).each do |ponto|
+      ponto.update!(finalizada_em: Time.current)
     end
   end
 

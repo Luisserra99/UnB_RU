@@ -112,11 +112,29 @@ RSpec.describe Relatorios::OperacaoGlobal do
   end
 
   describe "catracas online (RN09.5)" do
-    it "conta as online sobre as cadastradas na unidade" do
+    it "conta as catracas em operação sobre as cadastradas na unidade" do
       restaurante_com_catraca(unidade, "Restaurante 3", online: false)
       restaurante_com_catraca(create(:unidade_gestora, nome: "Campus Gama"), "RU Gama")
 
       expect([relatorio.catracas_online, relatorio.catracas_cadastradas]).to eq([2, 3])
+    end
+
+    it "deixa de contar a catraca quando o ponto de acesso é encerrado" do
+      ConfiguracaoPontoAcesso.where(restaurante: restaurante_um).update_all(finalizada_em: Time.current)
+
+      expect(relatorio.catracas_online).to eq(1)
+    end
+
+    it "deixa de contar a catraca quando a sessão do funcionário termina" do
+      ConfiguracaoPontoAcesso.find_by!(restaurante: restaurante_um).sessao_autenticacao.encerrar!
+
+      expect(relatorio.catracas_online).to eq(1)
+    end
+
+    it "não conta catraca desativada, mesmo com ponto de acesso aberto" do
+      restaurante_um.catracas.update_all(ativa: false)
+
+      expect(relatorio.catracas_online).to eq(1)
     end
   end
 

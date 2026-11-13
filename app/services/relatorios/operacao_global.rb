@@ -105,8 +105,11 @@ module Relatorios
       end
     end
 
+    # Catraca online = catraca ativa que está em operação agora: tem um ponto de acesso confirmado
+    # por um funcionário com sessão válida (F05). É o mesmo critério de Catraca#em_operacao?.
     def catracas_online
-      catracas_da_unidade.where(online: true).count
+      catracas_da_unidade.where(ativa: true)
+                         .where(id: ConfiguracaoPontoAcesso.em_sessoes_validas.select(:catraca_id)).count
     end
 
     def catracas_cadastradas

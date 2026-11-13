@@ -2,14 +2,25 @@
 <% content_for :title, "Relatório Global de Operação — Acessos | RU UnB" %>
 <% r = @relatorio %>
 
-<%= render layout: "admin/shared/cabecalho", locals: { titulo: "Relatório Global de Operação" } do %>
+<%= render "admin/shared/abas", atual: :acessos %>
+
+<header class="relatorio-topo">
+  <div>
+    <p class="relatorio-etiquetas">
+      <span class="selo relatorio-selo">Módulo de Auditoria</span>
+      <span class="selo relatorio-selo-neutro">Somente leitura</span>
+    </p>
+    <h1>Relatório Global de Operação</h1>
+  </div>
   <div class="acoes-pagina">
     <%= link_to "Visão consolidada", admin_relatorio_global_path, class: "botao botao-secundario" %>
-    <%= button_to "Exportar PDF", exportar_admin_acessos_relatorio_global_path,
+    <%= button_to exportar_admin_acessos_relatorio_global_path,
           params: r.filtros.compact, class: "botao botao-primario", disabled: !r.valido?,
-          form: { data: { turbo: false }, class: "relatorio-form-exportar" } %>
+          form: { data: { turbo: false }, class: "relatorio-form-exportar" } do %>
+      <%= icone(:documento, tamanho: 16) %> Exportar PDF
+    <% end %>
   </div>
-<% end %>
+</header>
 
 <section class="cartao" id="acessos-filtros">
   <h2>Acessos registrados</h2>
@@ -42,12 +53,14 @@
 <% if r.valido? %>
   <section class="relatorio-indicadores" id="acessos-totais">
     <article class="cartao relatorio-indicador">
-      <h2>Acessos no período</h2>
-      <strong id="total-acessos"><%= number_with_delimiter(r.quantidade) %></strong>
+      <h2>Acessos no período <%= icone(:passagem, tamanho: 18) %></h2>
+      <p class="relatorio-numero"><strong id="total-acessos"><%= number_with_delimiter(r.quantidade) %></strong> acessos</p>
+      <p class="relatorio-apoio"><span>Período</span><b><%= r.periodo_nome %></b></p>
     </article>
-    <article class="cartao relatorio-indicador">
-      <h2>Total debitado</h2>
-      <strong id="total-debitado"><%= moeda(r.total_debitado) %></strong>
+    <article class="cartao relatorio-indicador destaque">
+      <h2>Total debitado <%= icone(:dinheiro, tamanho: 18) %></h2>
+      <p class="relatorio-numero"><strong id="total-debitado"><%= moeda(r.total_debitado) %></strong></p>
+      <p class="relatorio-apoio"><span>Restaurante · Catraca</span><b><%= r.restaurante_nome %> · <%= r.catraca_nome %></b></p>
     </article>
   </section>
 

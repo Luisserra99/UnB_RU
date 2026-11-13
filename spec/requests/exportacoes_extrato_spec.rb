@@ -64,6 +64,31 @@ RSpec.describe "Exportação do extrato do estudante (F11)", type: :request do
       expect(ExportacaoRelatorio.last.usuario).to eq(aluno)
     end
 
+    it "mostra indicadores, contador, botão de imprimir e etiquetas por evento" do
+      get extrato_path
+
+      expect(response.body).to include("Refeições realizadas", "2 totais", "Imprimir", "Registros auditáveis",
+                                       "evento-almoco", "evento-recarga", "Exibindo", "1 almoço")
+      expect(response.body).not_to include("Limpar Filtros")
+    end
+
+    it "oferece limpar filtros quando algum filtro está aplicado" do
+      get extrato_path, params: { tipo: "recarga" }
+
+      expect(response.body).to include("Limpar Filtros", "1 totais")
+      expect(response.body).not_to include("evento-almoco")
+    end
+
+    it "pagina os lançamentos e exporta todos, independentemente da página" do
+      12.times { |indice| recarga_do_extrato(estudante, em: 5.days.ago + indice.minutes, valor: "1.00") }
+
+      get extrato_path, params: { pagina: 2 }
+      expect(response.body).to include("14 totais").and match(/Exibindo <b>11–14<\/b>/)
+
+      post exportacoes_extrato_path, params: { formato: "csv", pagina: 2 }
+      expect(response.body.lines.size).to eq(15) # cabeçalho + 14 lançamentos
+    end
+
     it "mostra filtros, totais e botões de exportação na tela do extrato" do
       get extrato_path
 

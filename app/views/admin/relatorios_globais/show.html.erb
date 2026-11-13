@@ -2,10 +2,7 @@
 <% content_for :title, "Relatório Global de Operação | RU UnB" %>
 <% r = @relatorio %>
 
-<nav class="relatorio-abas" aria-label="Administração geral">
-  <%= link_to "Restaurantes e Catracas", admin_restaurantes_path, class: "relatorio-aba" %>
-  <span class="relatorio-aba ativa" aria-current="page">Relatório Global de Operação</span>
-</nav>
+<%= render "admin/shared/abas", atual: :relatorio %>
 
 <header class="relatorio-topo">
   <div>
@@ -17,7 +14,7 @@
   </div>
   <div class="acoes-pagina" id="relatorio-exportar">
     <%= link_to "Acessos detalhados", admin_acessos_relatorio_global_path, class: "botao botao-secundario" %>
-    <% [["Exportar CSV", "csv", "botao-secundario", :historico], ["Exportar PDF Oficial", "pdf", "botao-primario", :confirmar]].each do |rotulo, formato, estilo, icone_botao| %>
+    <% [["Exportar CSV", "csv", "botao-secundario", :filtro], ["Exportar PDF Oficial", "pdf", "botao-primario", :documento]].each do |rotulo, formato, estilo, icone_botao| %>
       <%= button_to exportar_admin_relatorio_global_path,
             params: r.filtros.compact.merge("formato" => formato), class: "botao #{estilo}",
             form: { data: { turbo: false }, class: "relatorio-form-exportar" } do %>

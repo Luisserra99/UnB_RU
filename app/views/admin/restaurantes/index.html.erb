@@ -1,5 +1,8 @@
 <% content_for :title, "Gestão de Restaurantes | RU UnB" %>
 
+<%# Abas da administração geral, as mesmas das telas de relatório (Tarsila). %>
+<%= render "admin/shared/abas", atual: :restaurantes %>
+
 <%= render layout: "admin/shared/cabecalho", locals: { titulo: "Gestão de Restaurantes e Catracas Físicas" } do %>
   <div class="acoes-pagina">
     <%= link_to "Cadastrar restaurante", new_admin_restaurante_path, class: "botao botao-primario" %>

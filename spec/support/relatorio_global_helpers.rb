@@ -7,9 +7,11 @@ module RelatorioGlobalHelpers
   NOMES = { TipoRefeicao::CAFE_DA_MANHA => "Café da Manhã", TipoRefeicao::ALMOCO => "Almoço",
             TipoRefeicao::JANTAR => "Jantar" }.freeze
 
+  # Catraca "online" é a que está em operação: tem um ponto de acesso aberto numa sessão válida.
   def restaurante_com_catraca(unidade, nome, online: true)
     restaurante = create(:restaurante, unidade_gestora: unidade, nome: nome, quantidade_pisos: 1)
-    create(:catraca, piso: restaurante.pisos.first, online: online)
+    catraca = create(:catraca, piso: restaurante.pisos.first)
+    create(:configuracao_ponto_acesso, catraca: catraca) if online
     restaurante
   end
 

@@ -1,8 +1,39 @@
-<%# F11 — Filtros, totais, lançamentos e exportação do extrato (responsável: Tarsila). %>
+<%# F11 — Indicadores, filtros, lançamentos e exportação do extrato (responsável: Tarsila). Segue o quadro US04 do Figma. %>
 <% r = relatorio %>
-<section class="cartao" id="extrato-exportacao">
-  <h2>Lançamentos e exportação</h2>
+<% hoje = Date.current %>
 
+<div class="extrato-acoes" id="extrato-exportar">
+  <p class="sobretitulo">Portal do Estudante / Prestação de Contas</p>
+  <div class="extrato-exportar">
+    <%= render "extratos/botoes_exportacao", relatorio: r, habilitado: true %>
+  </div>
+</div>
+
+<section class="extrato-indicadores" id="extrato-totais">
+  <article class="cartao extrato-indicador">
+    <h2>Total gasto <%= icone(:dinheiro, tamanho: 18) %></h2>
+    <strong id="total-gasto"><%= moeda(r.total_gasto) %></strong>
+    <p><span><%= pluralize(r.refeicoes_realizadas, "débito", plural: "débitos") %></span><span class="extrato-negativo">Total consumido</span></p>
+  </article>
+  <article class="cartao extrato-indicador">
+    <h2>Refeições realizadas <%= icone(:talheres, tamanho: 18) %></h2>
+    <strong><span id="refeicoes-realizadas"><%= r.refeicoes_realizadas %></span> <small>refeições</small></strong>
+    <p><span><%= resumo_das_refeicoes(r.refeicoes_por_tipo) %></span></p>
+  </article>
+  <article class="cartao extrato-indicador destaque">
+    <h2>Total recarregado <%= icone(:carteira, tamanho: 18) %></h2>
+    <strong id="total-recarregado"><%= moeda(r.total_recarregado) %></strong>
+    <p><span><%= pluralize(r.quantidade_recargas, "recarga", plural: "recargas") %></span><span class="extrato-positivo">Saldo restante: <%= moeda(r.saldo_atual) %></span></p>
+  </article>
+</section>
+
+<section class="cartao" id="extrato-filtros-cartao">
+  <div class="extrato-titulo-secao">
+    <h2><%= icone(:filtro, tamanho: 16) %> Filtros de auditoria e consulta</h2>
+    <% if r.filtrado? %>
+      <%= link_to extrato_path, class: "extrato-limpar" do %><%= icone(:atualizar, tamanho: 14) %> Limpar Filtros<% end %>
+    <% end %>
+  </div>
   <%= form_with url: extrato_path, method: :get, class: "extrato-filtros", id: "extrato-filtros" do |form| %>
     <div class="campo">
       <%= form.label :periodo, "Período de referência" %>
@@ -18,35 +49,59 @@
     </div>
     <%= form.submit "Filtrar", name: nil, class: "botao botao-secundario" %>
   <% end %>
+</section>
 
-  <dl class="extrato-totais" id="extrato-totais">
-    <div><dt>Total gasto</dt><dd id="total-gasto"><%= moeda(r.total_gasto) %></dd></div>
-    <div><dt>Refeições realizadas</dt><dd id="refeicoes-realizadas"><%= r.refeicoes_realizadas %></dd></div>
-    <div><dt>Total recarregado</dt><dd id="total-recarregado"><%= moeda(r.total_recarregado) %></dd></div>
-  </dl>
+<section class="cartao" id="extrato-exportacao">
+  <div class="extrato-titulo-secao">
+    <h2>Lançamentos Contábeis e Registros de Catraca <span class="selo extrato-contador" id="total-lancamentos"><%= r.lancamentos.size %> totais</span></h2>
+    <span class="extrato-auditavel"><%= icone(:cadeado, tamanho: 14) %> Registros auditáveis</span>
+  </div>
 
   <% if r.vazio? %>
     <p class="texto-suave" id="lancamentos-vazio">Não há lançamentos para os filtros selecionados.</p>
   <% else %>
     <div class="tabela-rolagem">
       <table class="tabela" id="lancamentos">
-        <thead><tr><th>Data e hora</th><th>Evento</th><th>Local</th><th>Catraca</th><th>Valor</th></tr></thead>
+        <thead>
+          <tr><th scope="col">Data e hora</th><th scope="col">Refeição / Evento</th><th scope="col">Restaurante</th><th scope="col" class="numero">Valor</th></tr>
+        </thead>
         <tbody>
-          <% r.lancamentos.each do |lancamento| %>
-            <tr class="<%= lancamento.credito? ? "movimentacao-credito" : "movimentacao-debito" %>">
-              <td><%= lancamento.momento.strftime("%d/%m/%Y %H:%M") %></td>
-              <td><%= lancamento.evento %></td>
-              <td><%= lancamento.local || "—" %></td>
-              <td><%= lancamento.catraca || "—" %></td>
-              <td><%= lancamento.credito? ? "+ " : "− " %><%= moeda(lancamento.valor.abs) %></td>
+          <% r.lancamentos_da_pagina.each do |lancamento| %>
+            <tr class="<%= "linha-credito" if lancamento.credito? %>">
+              <td>
+                <b><%= momento_do_lancamento(lancamento.momento, hoje: hoje) %></b>
+                <% if lancamento.momento.to_date >= hoje - 1 %><small class="texto-suave"><%= lancamento.momento.strftime("%d/%m/%Y") %></small><% end %>
+              </td>
+              <td><span class="selo evento <%= classe_do_evento(lancamento) %>"><%= lancamento.evento %></span></td>
+              <td>
+                <b><%= lancamento.local || "—" %></b>
+                <% if lancamento.catraca %><small class="texto-suave"><%= lancamento.catraca %></small><% end %>
+              </td>
+              <td class="numero <%= lancamento.credito? ? "extrato-positivo" : "extrato-negativo" %>">
+                <b><%= lancamento.credito? ? "+ " : "− " %><%= moeda(lancamento.valor.abs) %></b>
+              </td>
             </tr>
           <% end %>
         </tbody>
       </table>
     </div>
-  <% end %>
 
-  <div class="extrato-exportar">
-    <%= render "extratos/botoes_exportacao", relatorio: r, habilitado: true %>
-  </div>
+    <nav class="paginacao extrato-paginacao" aria-label="Páginas dos lançamentos">
+      <% primeiro, ultimo = r.intervalo_da_pagina %>
+      <span id="lancamentos-intervalo">Exibindo <b><%= primeiro %>–<%= ultimo %></b> de <b><%= r.lancamentos.size %></b> registros · <%= Extratos::Relatorio::POR_PAGINA %> por página</span>
+      <% if r.total_paginas > 1 %>
+        <span class="extrato-paginas">
+          <% r.paginas_visiveis.each do |numero| %>
+            <% if numero.nil? %>
+              <span class="extrato-salto" aria-hidden="true">…</span>
+            <% elsif numero == r.pagina_atual %>
+              <span class="extrato-pagina ativa" aria-current="page"><%= numero %></span>
+            <% else %>
+              <%= link_to numero, extrato_path(r.filtros.compact.merge("pagina" => numero)), class: "extrato-pagina" %>
+            <% end %>
+          <% end %>
+        </span>
+      <% end %>
+    </nav>
+  <% end %>
 </section>
