@@ -6,9 +6,35 @@
 .movimentacao-credito td:last-child { color: var(--verde, #1a7f37); font-weight: 600; }
 .movimentacao-debito td:last-child { color: var(--vermelho, #b42318); font-weight: 600; }
 
-/* F11 — Filtros, totais e exportação do extrato (Tarsila). */
-#extrato-exportacao { margin-bottom: 1.25rem; }
-.extrato-filtros { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; margin: 0.75rem 0 1rem; }
+/* F11 — Indicadores, filtros, lançamentos e exportação do extrato (Tarsila). Quadro US04 do Figma. */
+.extrato-acoes { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1.25rem; }
+.extrato-acoes .sobretitulo { margin: 0; }
+.extrato-exportar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+.extrato-vazio .extrato-exportar { justify-content: center; margin-top: 1rem; }
+.extrato-form-exportar { display: inline; }
+.extrato-exportar .botao .icone { vertical-align: -3px; }
+.botao[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+.extrato-indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem; }
+.extrato-indicadores .cartao + .cartao { margin-top: 0; }
+.extrato-indicador h2 { display: flex; align-items: center; justify-content: space-between; margin: 0 0 0.4rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--texto-suave, #5f5e5e); }
+.extrato-indicador h2 .icone { color: var(--erro, #c3221a); }
+.extrato-indicador:nth-child(2) h2 .icone { color: var(--verde, #18803a); }
+.extrato-indicador.destaque h2 .icone { color: var(--azul-estudante, #1351b4); }
+.extrato-indicador > strong { display: block; font-size: 1.7rem; font-weight: 800; color: var(--azul-marinho, #003a8c); }
+.extrato-indicador > strong small { font-size: 0.8rem; font-weight: 500; color: var(--texto-suave, #5f5e5e); }
+.extrato-indicador.destaque > strong { color: var(--verde, #18803a); }
+.extrato-indicador p { display: flex; justify-content: space-between; gap: 0.75rem; margin: 0.5rem 0 0; font-size: 0.78rem; color: var(--texto-suave, #5f5e5e); }
+.extrato-positivo { color: var(--verde, #18803a); font-weight: 600; }
+.extrato-negativo { color: var(--erro, #c3221a); font-weight: 600; }
+
+#extrato-filtros-cartao, #extrato-exportacao { margin-bottom: 1.25rem; }
+.extrato-titulo-secao { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.extrato-titulo-secao h2 { margin: 0; font-size: 0.95rem; }
+#extrato-filtros-cartao h2 { font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.extrato-titulo-secao .icone { vertical-align: -2px; }
+.extrato-limpar { font-size: 0.82rem; font-weight: 600; color: var(--azul-estudante, #1351b4); text-decoration: none; }
+.extrato-filtros { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; margin-top: 0.85rem; }
 .extrato-filtros .campo { min-width: 12rem; flex: 1; }
 .extrato-seletor {
   padding: 0.55rem 0.7rem;
@@ -17,11 +43,26 @@
   background: var(--campo, #f4f1ef);
   font: inherit;
 }
-.extrato-totais { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0 0 1rem; }
-.extrato-totais div { flex: 1; min-width: 10rem; padding: 0.75rem 1rem; border-radius: var(--raio-campo, 10px); background: var(--campo, #f4f1ef); }
-.extrato-totais dt { font-size: 0.8rem; }
-.extrato-totais dd { margin: 0.2rem 0 0; font-size: 1.15rem; font-weight: 700; }
-.extrato-exportar { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; }
-.extrato-vazio .extrato-exportar { justify-content: center; }
-.extrato-form-exportar { display: inline; }
-.botao[disabled] { opacity: 0.5; cursor: not-allowed; }
+.extrato-contador { margin-left: 0.4rem; background: var(--azul-claro, #dde8fb); color: var(--azul-marinho, #003a8c); border-radius: 6px; text-transform: none; }
+.extrato-auditavel { font-size: 0.78rem; color: var(--verde, #18803a); }
+#lancamentos td { vertical-align: middle; }
+#lancamentos td small { display: block; font-size: 0.75rem; }
+#lancamentos .numero { text-align: right; white-space: nowrap; }
+#lancamentos .linha-credito td { background: var(--verde-fundo, #e9f8ec); }
+.evento { border-radius: 6px; text-transform: none; letter-spacing: 0; font-size: 0.75rem; padding: 0.2rem 0.55rem; }
+.evento-almoco { background: var(--verde-claro, #9cf2a3); color: var(--verde-escuro, #0b5d24); }
+.evento-jantar { background: var(--campo, #f4f1ef); color: var(--texto, #1b1b1c); }
+.evento-cafe { background: var(--azul-claro, #dde8fb); color: var(--azul-marinho, #003a8c); }
+.evento-recarga { background: var(--verde, #18803a); color: #fff; }
+.evento-refeicao { background: var(--campo, #f4f1ef); color: var(--texto-suave, #5f5e5e); }
+.extrato-paginacao { justify-content: space-between; }
+.extrato-paginas { display: inline-flex; gap: 0.3rem; }
+.extrato-pagina { display: inline-grid; place-items: center; min-width: 1.9rem; height: 1.9rem; padding: 0 0.4rem; border-radius: 6px; background: var(--campo, #f4f1ef); color: var(--texto, #1b1b1c); font-weight: 600; text-decoration: none; }
+.extrato-pagina.ativa { background: var(--azul-estudante, #1351b4); color: #fff; }
+
+/* Impressão do extrato: só o conteúdo, sem menu, filtros e botões. */
+@media print {
+  header, nav, footer, .extrato-exportar, #extrato-filtros-cartao, .extrato-paginas, .extrato-vazio .botao { display: none !important; }
+  body { background: #fff; }
+  .cartao { box-shadow: none; break-inside: avoid; }
+}

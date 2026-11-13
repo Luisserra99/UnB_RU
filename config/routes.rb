@@ -68,6 +68,10 @@ Rails.application.routes.draw do
   get "admin/relatorio-global", to: "admin/relatorios_globais#show", as: :admin_relatorio_global
   post "admin/relatorio-global/exportacoes", to: "admin/relatorios_globais#exportar",
                                              as: :exportar_admin_relatorio_global
+  # F12 — Acessos do relatório de operação e exportação em PDF para auditoria (Tarsila)
+  get "admin/relatorio-global/acessos", to: "admin/acessos_operacao#index", as: :admin_acessos_relatorio_global
+  post "admin/relatorio-global/acessos/exportacoes", to: "admin/acessos_operacao#exportar",
+                                                     as: :exportar_admin_acessos_relatorio_global
 
   get "up" => "rails/health#show", as: :rails_health_check
 end

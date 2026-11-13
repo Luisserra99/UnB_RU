@@ -30,7 +30,19 @@ module RelatorioGlobal
   def rg_criar_restaurantes(quantidade)
     (1..quantidade).each do |numero|
       restaurante = create(:restaurante, unidade_gestora: rg_unidade, nome: "Restaurante #{numero}", quantidade_pisos: 1)
-      create(:catraca, piso: restaurante.pisos.first, identificacao: "Catraca #{format('%02d', numero)}", online: true)
+      create(:catraca, piso: restaurante.pisos.first, identificacao: "Catraca #{format('%02d', numero)}")
+      rg_ponto(restaurante) # um funcionário opera a catraca: é isso que a deixa online
+    end
+  end
+
+  def rg_catracas_online
+    Catraca.where(id: ConfiguracaoPontoAcesso.em_sessoes_validas.select(:catraca_id)).count
+  end
+
+  # Encerra a operação de `quantidade` catracas, que passam a contar como offline.
+  def rg_desligar_catracas(quantidade)
+    ConfiguracaoPontoAcesso.abertas.order(:id).last(quantidade).each do |ponto|
+      ponto.update!(finalizada_em: Time.current)
     end
   end
 
@@ -115,11 +127,15 @@ module RelatorioGlobal
   end
 
   def rg_linha_restaurante(nome)
-    find("#tabela-consolidacao tbody tr", text: /\A#{Regexp.escape(nome)}\b/)
+    find("#tabela-consolidacao tbody tr") { |linha| linha.has_css?(".restaurante-nome", text: nome, exact_text: true) }
   end
 
+  # Textos das células de uma linha. Nas células com selo, barra ou legenda, vale só o nome.
   def rg_celulas(linha)
-    linha.all("th, td").map { |celula| celula.text.squish }
+    linha.all("th, td").map do |celula|
+      nome = celula.first(".restaurante-nome, .metodo-nome", minimum: 0)
+      (nome || celula).text.squish
+    end
   end
 
   def rg_texto_pdf

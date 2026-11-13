@@ -1,23 +1,37 @@
-<%# F09 — Relatório Global de Operação (responsável: Tarsila). Tela somente leitura. %>
+<%# F09 — Relatório Global de Operação (responsável: Tarsila). Tela somente leitura, conforme o quadro US16 do Figma. %>
 <% content_for :title, "Relatório Global de Operação | RU UnB" %>
 <% r = @relatorio %>
 
-<%= render layout: "admin/shared/cabecalho", locals: { titulo: "Relatório Global de Operação" } do %>
+<%= render "admin/shared/abas", atual: :relatorio %>
+
+<header class="relatorio-topo">
+  <div>
+    <p class="relatorio-etiquetas">
+      <span class="selo relatorio-selo">Módulo de Auditoria</span>
+      <span class="selo relatorio-selo-neutro">Somente leitura</span>
+    </p>
+    <h1>Relatório Global de Operação</h1>
+  </div>
   <div class="acoes-pagina" id="relatorio-exportar">
-    <% [["Exportar CSV", "csv", "botao-secundario"], ["Exportar PDF Oficial", "pdf", "botao-primario"]].each do |rotulo, formato, estilo| %>
-      <%= button_to rotulo, exportar_admin_relatorio_global_path,
+    <%= link_to "Acessos detalhados", admin_acessos_relatorio_global_path, class: "botao botao-secundario" %>
+    <% [["Exportar CSV", "csv", "botao-secundario", :filtro], ["Exportar PDF Oficial", "pdf", "botao-primario", :documento]].each do |rotulo, formato, estilo, icone_botao| %>
+      <%= button_to exportar_admin_relatorio_global_path,
             params: r.filtros.compact.merge("formato" => formato), class: "botao #{estilo}",
-            form: { data: { turbo: false }, class: "relatorio-form-exportar" } %>
+            form: { data: { turbo: false }, class: "relatorio-form-exportar" } do %>
+        <%= icone(icone_botao, tamanho: 16) %> <%= rotulo %>
+      <% end %>
     <% end %>
   </div>
-<% end %>
+</header>
 
 <section class="cartao" id="relatorio-filtros">
   <%= form_with url: admin_relatorio_global_path, method: :get, class: "relatorio-filtros" do |form| %>
     <div class="campo">
       <%= form.label :data, "Data contábil" %>
       <%= form.date_field :data, value: r.data.iso8601, class: "relatorio-seletor" %>
-      <small class="texto-suave" id="filtro-data-contabil"><%= r.data_nome %></small>
+      <small class="texto-suave">
+        <span id="filtro-data-contabil"><%= r.data_nome %></span><% if r.hoje? %> · Em tempo real<% end %>
+      </small>
     </div>
     <div class="campo">
       <%= form.label :turno, "Janela de serviço" %>
@@ -28,6 +42,10 @@
       <%= form.select :unidade_id, r.opcoes_unidade, { selected: r.unidade&.id }, class: "relatorio-seletor" %>
     </div>
     <%= form.submit "Aplicar filtros", name: nil, class: "botao botao-secundario" %>
+    <p class="relatorio-catracas <%= "com-offline" if r.catracas_online < r.catracas_cadastradas %>">
+      <span class="relatorio-ponto" aria-hidden="true"></span>
+      Catracas Online: <strong id="catracas-online"><%= r.catracas_online %>/<%= r.catracas_cadastradas %></strong>
+    </p>
   <% end %>
 </section>
 
@@ -36,93 +54,108 @@
 <% end %>
 
 <section class="relatorio-indicadores" id="relatorio-indicadores">
-  <article class="cartao relatorio-indicador" id="card-arrecadacao-global">
-    <h2>Arrecadação Global</h2>
-    <strong><%= moeda(r.arrecadacao_global) %></strong>
-  </article>
   <article class="cartao relatorio-indicador" id="card-refeicoes-servidas">
-    <h2>Refeições Servidas</h2>
-    <strong><%= number_with_delimiter(r.total_acessos) %></strong>
+    <h2>Total de Refeições Servidas <%= icone(:talheres, tamanho: 18) %></h2>
+    <p class="relatorio-numero"><strong><%= number_with_delimiter(r.total_acessos) %></strong> acessos</p>
+    <p class="relatorio-apoio"><span>Transações validadas</span><b><%= number_with_delimiter(r.transacoes_validadas) %></b></p>
   </article>
-  <article class="cartao relatorio-indicador" id="card-catracas-online">
-    <h2>Catracas Online</h2>
-    <strong id="catracas-online"><%= r.catracas_online %>/<%= r.catracas_cadastradas %></strong>
+  <article class="cartao relatorio-indicador destaque" id="card-arrecadacao-global">
+    <h2>Arrecadação Global <%= icone(:dinheiro, tamanho: 18) %></h2>
+    <p class="relatorio-numero"><strong><%= moeda(r.arrecadacao_global) %></strong></p>
+    <p class="relatorio-apoio"><span>Ticket médio por estudante</span><b><%= moeda(r.ticket_medio) %></b></p>
   </article>
 </section>
 
-<section class="cartao" id="consolidacao">
-  <h2>Consolidação Operacional dos Restaurantes</h2>
-  <div class="tabela-rolagem">
-    <table class="tabela" id="tabela-consolidacao">
-      <thead>
-        <tr><th scope="col">Restaurante</th><th scope="col" class="numero">Acessos</th><th scope="col" class="numero">Arrecadação bruta</th></tr>
-      </thead>
-      <tbody>
-        <% r.linhas.each do |linha| %>
-          <tr class="linha-restaurante">
-            <td><%= linha.restaurante.nome %></td>
-            <td class="numero"><%= number_with_delimiter(linha.acessos) %></td>
-            <td class="numero"><%= moeda(linha.arrecadacao) %></td>
-          </tr>
-        <% end %>
-      </tbody>
-      <tfoot>
-        <tr id="total-consolidado">
-          <th scope="row">Total Consolidado</th>
-          <td class="numero"><%= number_with_delimiter(r.total_acessos) %></td>
-          <td class="numero"><%= moeda(r.arrecadacao_global) %></td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-</section>
-
-<div class="relatorio-colunas">
-  <section class="cartao" id="liquidacao">
-    <h2>Métodos de Liquidação</h2>
+<div class="relatorio-grade">
+  <section class="cartao" id="consolidacao">
+    <h2>Consolidação Operacional dos Restaurantes</h2>
     <div class="tabela-rolagem">
-      <table class="tabela" id="tabela-liquidacao">
+      <table class="tabela" id="tabela-consolidacao">
         <thead>
-          <tr><th scope="col">Método</th><th scope="col" class="numero">Participação</th><th scope="col" class="numero">Valor liquidado</th></tr>
+          <tr>
+            <th scope="col">Unidade <%= r.unidade_nome %></th>
+            <th scope="col" class="numero">Acessos</th>
+            <th scope="col" class="numero">Arrecadação bruta</th>
+          </tr>
         </thead>
         <tbody>
-          <% r.liquidacoes.each do |item| %>
-            <tr class="linha-liquidacao">
-              <td><%= item.nome %></td>
-              <td class="numero"><%= item.percentual %>%</td>
-              <td class="numero"><%= moeda(item.valor) %></td>
+          <% r.linhas.each do |linha| %>
+            <tr class="linha-restaurante">
+              <td>
+                <span class="relatorio-restaurante">
+                  <span class="relatorio-ordem" aria-hidden="true"><%= format("%02d", linha.restaurante.numero) %></span>
+                  <span>
+                    <span class="restaurante-nome"><%= linha.restaurante.nome %></span>
+                    <small class="texto-suave"><%= r.unidade_nome %></small>
+                  </span>
+                </span>
+              </td>
+              <td class="numero"><b><%= number_with_delimiter(linha.acessos) %></b></td>
+              <td class="numero relatorio-valor"><%= moeda(linha.arrecadacao) %></td>
             </tr>
           <% end %>
         </tbody>
         <tfoot>
-          <tr><th scope="row">Total liquidado</th><td></td><td class="numero" id="liquidacao-total"><%= moeda(r.soma_liquidacoes) %></td></tr>
+          <tr id="total-consolidado">
+            <th scope="row">Total Consolidado</th>
+            <td class="numero"><%= number_with_delimiter(r.total_acessos) %></td>
+            <td class="numero relatorio-total"><%= moeda(r.arrecadacao_global) %></td>
+          </tr>
         </tfoot>
       </table>
     </div>
-    <dl class="relatorio-resumo">
-      <div><dt>Ticket médio por estudante</dt><dd id="ticket-medio"><%= moeda(r.ticket_medio) %></dd></div>
-      <div><dt>Transações validadas</dt><dd id="transacoes-validadas"><%= number_with_delimiter(r.transacoes_validadas) %> operações</dd></div>
-      <div><dt>Divergências contábeis</dt><dd id="divergencias-contabeis"><%= moeda(r.divergencia_contabil) %></dd></div>
-    </dl>
   </section>
 
-  <section class="cartao" id="distribuicao">
-    <h2>Distribuição por Refeição</h2>
-    <div class="tabela-rolagem">
-      <table class="tabela" id="tabela-distribuicao">
-        <thead>
-          <tr><th scope="col">Refeição</th><th scope="col" class="numero">Acessos</th><th scope="col" class="numero">Arrecadação</th></tr>
+  <div class="relatorio-lateral">
+    <section class="cartao" id="liquidacao">
+      <h2>Métodos de Liquidação</h2>
+      <table class="tabela-liquidacao" id="tabela-liquidacao">
+        <thead class="somente-leitor">
+          <tr><th scope="col">Método</th><th scope="col">Participação</th><th scope="col">Valor liquidado</th></tr>
         </thead>
         <tbody>
-          <% r.distribuicao_por_refeicao.each do |item| %>
-            <tr>
-              <td><%= item.nome %></td>
-              <td class="numero"><%= number_with_delimiter(item.acessos) %></td>
-              <td class="numero"><%= moeda(item.arrecadacao) %></td>
+          <% r.liquidacoes.each do |item| %>
+            <tr class="linha-liquidacao metodo-<%= item.metodo.dasherize %>">
+              <td>
+                <span class="relatorio-ponto" aria-hidden="true"></span><span class="metodo-nome"><%= item.nome %></span>
+                <span class="relatorio-barra" aria-hidden="true"><span style="width: <%= item.percentual %>%"></span></span>
+              </td>
+              <td class="numero"><b><%= item.percentual %>%</b></td>
+              <td class="numero texto-suave"><%= moeda(item.valor) %></td>
             </tr>
           <% end %>
         </tbody>
+        <tfoot>
+          <tr><th scope="row" colspan="2">Total liquidado</th><td class="numero" id="liquidacao-total"><%= moeda(r.soma_liquidacoes) %></td></tr>
+        </tfoot>
       </table>
-    </div>
-  </section>
+      <dl class="relatorio-resumo">
+        <div><dt>Ticket Médio por Estudante:</dt><dd id="ticket-medio"><%= moeda(r.ticket_medio) %></dd></div>
+        <div><dt>Transações Validadas:</dt><dd id="transacoes-validadas"><%= number_with_delimiter(r.transacoes_validadas) %> operações</dd></div>
+        <div>
+          <dt>Divergências Contábeis:</dt>
+          <dd id="divergencias-contabeis" class="<%= r.divergencia_contabil.zero? ? "sem-divergencia" : "com-divergencia" %>"><%= moeda(r.divergencia_contabil) %></dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="cartao" id="distribuicao">
+      <h2>Distribuição por Refeição</h2>
+      <p class="texto-suave relatorio-legenda">Volume consolidado nos turnos oficiais da unidade.</p>
+      <ul class="relatorio-refeicoes" id="tabela-distribuicao">
+        <% r.distribuicao_por_refeicao.each do |item| %>
+          <li>
+            <span>
+              <b><%= item.nome %></b>
+              <small class="texto-suave"><%= item.horario || "Sem horário cadastrado" %></small>
+            </span>
+            <span class="numero">
+              <b><%= number_with_delimiter(item.acessos) %> refs</b>
+              <small class="relatorio-valor"><%= moeda(item.arrecadacao) %></small>
+            </span>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  </div>
 </div>

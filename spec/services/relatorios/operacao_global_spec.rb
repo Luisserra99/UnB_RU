@@ -65,6 +65,12 @@ RSpec.describe Relatorios::OperacaoGlobal do
                                  "Jantar" => [0, 0])
     end
 
+    it "informa o horário de cada refeição a partir dos serviços cadastrados" do
+      horarios = relatorio.distribuicao_por_refeicao.to_h { |item| [item.nome, item.horario] }
+
+      expect(horarios).to eq("Café da Manhã" => "06:30 – 09:00", "Almoço" => "11:00 – 14:30", "Jantar" => "17:00 – 20:00")
+    end
+
     it "aplica o filtro de turno a todos os números (RN09.4)" do
       resultado = relatorio(turno: TipoRefeicao::ALMOCO)
 
@@ -106,11 +112,29 @@ RSpec.describe Relatorios::OperacaoGlobal do
   end
 
   describe "catracas online (RN09.5)" do
-    it "conta as online sobre as cadastradas na unidade" do
+    it "conta as catracas em operação sobre as cadastradas na unidade" do
       restaurante_com_catraca(unidade, "Restaurante 3", online: false)
       restaurante_com_catraca(create(:unidade_gestora, nome: "Campus Gama"), "RU Gama")
 
       expect([relatorio.catracas_online, relatorio.catracas_cadastradas]).to eq([2, 3])
+    end
+
+    it "deixa de contar a catraca quando o ponto de acesso é encerrado" do
+      ConfiguracaoPontoAcesso.where(restaurante: restaurante_um).update_all(finalizada_em: Time.current)
+
+      expect(relatorio.catracas_online).to eq(1)
+    end
+
+    it "deixa de contar a catraca quando a sessão do funcionário termina" do
+      ConfiguracaoPontoAcesso.find_by!(restaurante: restaurante_um).sessao_autenticacao.encerrar!
+
+      expect(relatorio.catracas_online).to eq(1)
+    end
+
+    it "não conta catraca desativada, mesmo com ponto de acesso aberto" do
+      restaurante_um.catracas.update_all(ativa: false)
+
+      expect(relatorio.catracas_online).to eq(1)
     end
   end
 
@@ -124,6 +148,10 @@ RSpec.describe Relatorios::OperacaoGlobal do
       expect(resultado.liquidacoes.map(&:percentual)).to eq([0, 0])
       expect(resultado.ticket_medio).to eq(0)
       expect(resultado.linhas.size).to eq(2)
+    end
+
+    it "deixa sem horário a refeição que não tem serviço cadastrado" do
+      expect(relatorio.distribuicao_por_refeicao.map(&:horario)).to eq([nil, nil, nil])
     end
   end
 

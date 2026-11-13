@@ -21,7 +21,7 @@ module Relatorios
 
     Linha = Struct.new(:restaurante, :acessos, :arrecadacao, keyword_init: true)
     Liquidacao = Struct.new(:metodo, :nome, :valor, :percentual, keyword_init: true)
-    Turno = Struct.new(:codigo, :nome, :acessos, :arrecadacao, keyword_init: true)
+    Turno = Struct.new(:codigo, :nome, :acessos, :arrecadacao, :horario, keyword_init: true)
 
     attr_reader :data, :turno, :unidade, :agora
 
@@ -99,13 +99,17 @@ module Relatorios
                         .to_h { |codigo, quantidade, valor| [codigo, [quantidade, valor.to_d]] }
         TURNOS.except(TURNO_TODOS).map do |codigo, nome|
           quantidade, valor = totais.fetch(codigo, [0, BigDecimal("0")])
-          Turno.new(codigo: codigo, nome: nome, acessos: quantidade, arrecadacao: valor)
+          Turno.new(codigo: codigo, nome: nome, acessos: quantidade, arrecadacao: valor,
+                    horario: horarios_das_refeicoes[codigo])
         end
       end
     end
 
+    # Catraca online = catraca ativa que está em operação agora: tem um ponto de acesso confirmado
+    # por um funcionário com sessão válida (F05). É o mesmo critério de Catraca#em_operacao?.
     def catracas_online
-      catracas_da_unidade.where(online: true).count
+      catracas_da_unidade.where(ativa: true)
+                         .where(id: ConfiguracaoPontoAcesso.em_sessoes_validas.select(:catraca_id)).count
     end
 
     def catracas_cadastradas
@@ -149,6 +153,18 @@ module Relatorios
 
     def restaurantes
       @restaurantes ||= unidade ? unidade.restaurantes.ativos.order(:numero).to_a : []
+    end
+
+    # Horário de cada refeição na unidade ("11:00 – 14:30"): do início mais cedo ao fim mais tarde
+    # entre os serviços cadastrados nos restaurantes. Refeição sem serviço fica sem horário.
+    def horarios_das_refeicoes
+      @horarios_das_refeicoes ||= ServicoRefeicao.joins(:tipo_refeicao).where(restaurante: restaurantes)
+                                                 .pluck("tipo_refeicoes.codigo", :inicio, :fim)
+                                                 .group_by(&:first).transform_values do |servicos|
+        inicio = servicos.map { |servico| servico[1] }.min
+        fim = servicos.map { |servico| servico[2] }.max
+        "#{inicio.strftime('%H:%M')} – #{fim.strftime('%H:%M')}"
+      end
     end
 
     def catracas_da_unidade

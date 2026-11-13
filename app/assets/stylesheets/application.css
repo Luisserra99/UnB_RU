@@ -128,8 +128,10 @@ a { color: inherit; }
 }
 a.nav-item:hover { background: var(--campo); }
 .nav-item.desabilitado { color: var(--texto-fraco); cursor: not-allowed; }
-.aplicacao-controle .nav-item.ativo { background: var(--azul-estudante); color: #fff; font-weight: 600; }
-.portal-estudante .nav-item.ativo { background: var(--campo); color: var(--azul-marinho); font-weight: 700; }
+/* O item ativo muda só de cor: com outro peso de fonte ele mudava de largura e deslocava os vizinhos. */
+.nav-item { font-weight: 600; }
+.aplicacao-controle .nav-item.ativo { background: var(--azul-estudante); color: #fff; }
+.portal-estudante .nav-item.ativo { background: var(--campo); color: var(--azul-marinho); }
 
 .link-area-operador {
   display: inline-flex;

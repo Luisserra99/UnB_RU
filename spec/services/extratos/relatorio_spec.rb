@@ -115,6 +115,55 @@ RSpec.describe Extratos::Relatorio do
     end
   end
 
+  describe "resumo dos indicadores" do
+    it "conta as refeições por tipo, na ordem do dia, e as recargas" do
+      expect(relatorio.refeicoes_por_tipo).to eq("Almoço" => 2, "Jantar" => 1)
+      expect(relatorio.quantidade_recargas).to eq(1)
+    end
+
+    it "sabe quando há filtro diferente do padrão" do
+      expect(relatorio).not_to be_filtrado
+      expect(relatorio(tipo: TipoRefeicao::ALMOCO)).to be_filtrado
+      expect(relatorio(periodo: "hoje")).to be_filtrado
+    end
+  end
+
+  describe "paginação da tela" do
+    before do
+      12.times { |indice| recarga_do_extrato(estudante, em: Time.zone.local(2024, 5, 12, 8, indice), valor: "1.00") }
+    end
+
+    it "mostra 10 lançamentos por página sem alterar os totais" do
+      primeira = relatorio
+      segunda = relatorio(pagina: "2")
+
+      expect(primeira.lancamentos.size).to eq(16)
+      expect(primeira.total_paginas).to eq(2)
+      expect(primeira.lancamentos_da_pagina.size).to eq(10)
+      expect(primeira.intervalo_da_pagina).to eq([1, 10])
+      expect(segunda.lancamentos_da_pagina.size).to eq(6)
+      expect(segunda.intervalo_da_pagina).to eq([11, 16])
+      expect(segunda.total_recarregado).to eq(primeira.total_recarregado)
+    end
+
+    it "limita a página a valores existentes" do
+      expect(relatorio(pagina: "99").pagina_atual).to eq(2)
+      expect(relatorio(pagina: "-3").pagina_atual).to eq(1)
+    end
+
+    it "mostra só as páginas próximas quando há muitas" do
+      60.times { |indice| recarga_do_extrato(estudante, em: Time.zone.local(2024, 5, 11, 8, indice), valor: "1.00") }
+
+      expect(relatorio.paginas_visiveis).to eq([1, 2, nil, 8])
+      expect(relatorio(pagina: "5").paginas_visiveis).to eq([1, nil, 4, 5, 6, nil, 8])
+      expect(relatorio(pagina: "8").paginas_visiveis).to eq([1, nil, 7, 8])
+    end
+
+    it "não inclui a página nos filtros gravados na exportação" do
+      expect(relatorio(pagina: "2").filtros.keys).to eq(%w[tipo periodo catraca_id])
+    end
+  end
+
   describe "isolamento entre estudantes" do
     it "nunca inclui lançamentos de outro estudante" do
       outro = create(:usuario_estudante).estudante

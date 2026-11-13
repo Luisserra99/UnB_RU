@@ -12,7 +12,9 @@ module ExtratoExportacao
     "Almoço" => [TipoRefeicao::ALMOCO, "11:00", "14:30"],
     "Jantar" => [TipoRefeicao::JANTAR, "17:00", "20:00"]
   }.freeze
-  PAGINAS = { "Extrato e Histórico de Refeições" => :extrato_path }.freeze
+  # Páginas abertas pelo passo "abri a página {string}" (F11 e F12).
+  PAGINAS = { "Extrato e Histórico de Refeições" => :extrato_path,
+              "Relatório Global de Operação" => :admin_acessos_relatorio_global_path }.freeze
   DATA_HORA = /\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}/
 
   def extrato_momento(texto)

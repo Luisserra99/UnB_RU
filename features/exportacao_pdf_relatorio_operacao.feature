@@ -8,7 +8,7 @@ Funcionalidade: Exportação em PDF do Relatório de Operação
 
   Contexto:
     Dado que estou autenticado como administrador geral "Daniel Dezan Baby"
-    E estou na página "Relatório Global de Operação"
+    E abri a página "Relatório Global de Operação"
     E existem os seguintes acessos registrados:
       | acesso | data_hora        | matricula | restaurante      | catraca    | refeicao      | valor_debitado |
       | A001   | 14/10/2026 07:30 | 232046097 | RU Darcy Ribeiro | Catraca 01 | Café da Manhã | 4,50           |

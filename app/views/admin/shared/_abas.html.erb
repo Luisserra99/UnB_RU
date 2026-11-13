@@ -1,0 +1,13 @@
+<%# Abas da administração geral (quadros US13 e US16 do Figma) — Tarsila. Uso: render "admin/shared/abas", atual: :relatorio %>
+<% abas = [[:restaurantes, "Restaurantes e Catracas", admin_restaurantes_path],
+           [:relatorio, "Relatório Global de Operação", admin_relatorio_global_path],
+           [:acessos, "Acessos Detalhados", admin_acessos_relatorio_global_path]] %>
+<nav class="relatorio-abas" aria-label="Administração geral">
+  <% abas.each do |chave, rotulo, caminho| %>
+    <% if chave == atual %>
+      <span class="relatorio-aba ativa" aria-current="page"><%= rotulo %></span>
+    <% else %>
+      <%= link_to rotulo, caminho, class: "relatorio-aba" %>
+    <% end %>
+  <% end %>
+</nav>

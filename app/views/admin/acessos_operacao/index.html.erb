@@ -1,0 +1,140 @@
+<%# F12 — Acessos do Relatório de Operação, com exportação em PDF para auditoria (responsável: Tarsila). %>
+<% content_for :title, "Relatório Global de Operação — Acessos | RU UnB" %>
+<% r = @relatorio %>
+
+<%= render "admin/shared/abas", atual: :acessos %>
+
+<header class="relatorio-topo">
+  <div>
+    <p class="relatorio-etiquetas">
+      <span class="selo relatorio-selo">Módulo de Auditoria</span>
+      <span class="selo relatorio-selo-neutro">Somente leitura</span>
+    </p>
+    <h1>Relatório Global de Operação</h1>
+  </div>
+  <div class="acoes-pagina">
+    <%= link_to "Visão consolidada", admin_relatorio_global_path, class: "botao botao-secundario" %>
+    <%= button_to exportar_admin_acessos_relatorio_global_path,
+          params: r.filtros.compact, class: "botao botao-primario", disabled: !r.valido?,
+          form: { data: { turbo: false }, class: "relatorio-form-exportar" } do %>
+      <%= icone(:documento, tamanho: 16) %> Exportar PDF
+    <% end %>
+  </div>
+</header>
+
+<section class="cartao" id="acessos-filtros">
+  <h2>Acessos registrados</h2>
+  <%= form_with url: admin_acessos_relatorio_global_path, method: :get, class: "relatorio-filtros" do |form| %>
+    <div class="campo">
+      <%= form.label :inicio, "Data inicial" %>
+      <%= form.date_field :inicio, value: r.inicio.iso8601, class: "relatorio-seletor" %>
+    </div>
+    <div class="campo">
+      <%= form.label :fim, "Data final" %>
+      <%= form.date_field :fim, value: r.fim.iso8601, class: "relatorio-seletor" %>
+    </div>
+    <div class="campo">
+      <%= form.label :restaurante_id, "Restaurante" %>
+      <%= form.select :restaurante_id, r.opcoes_restaurante, { selected: r.restaurante&.id.to_s }, class: "relatorio-seletor" %>
+    </div>
+    <div class="campo">
+      <%= form.label :catraca_id, "Catraca" %>
+      <%= form.select :catraca_id, r.opcoes_catraca, { selected: r.catraca&.id.to_s }, class: "relatorio-seletor" %>
+    </div>
+    <div class="campo relatorio-campo-marcar">
+      <%= form.check_box :agrupar, { checked: r.agrupado?, id: "agrupar" }, "1", "" %>
+      <%= form.label :agrupar, "Agrupar por restaurante e catraca", for: "agrupar" %>
+    </div>
+    <%= form.hidden_field :por_pagina, value: r.por_pagina unless r.por_pagina == Relatorios::AcessosOperacao::POR_PAGINA_PADRAO %>
+    <%= form.submit "Aplicar filtros", name: nil, class: "botao botao-secundario" %>
+  <% end %>
+</section>
+
+<% if r.valido? %>
+  <section class="relatorio-indicadores" id="acessos-totais">
+    <article class="cartao relatorio-indicador">
+      <h2>Acessos no período <%= icone(:passagem, tamanho: 18) %></h2>
+      <p class="relatorio-numero"><strong id="total-acessos"><%= number_with_delimiter(r.quantidade) %></strong> acessos</p>
+      <p class="relatorio-apoio"><span>Período</span><b><%= r.periodo_nome %></b></p>
+    </article>
+    <article class="cartao relatorio-indicador destaque">
+      <h2>Total debitado <%= icone(:dinheiro, tamanho: 18) %></h2>
+      <p class="relatorio-numero"><strong id="total-debitado"><%= moeda(r.total_debitado) %></strong></p>
+      <p class="relatorio-apoio"><span>Restaurante · Catraca</span><b><%= r.restaurante_nome %> · <%= r.catraca_nome %></b></p>
+    </article>
+  </section>
+
+  <% if r.agrupado? && !r.vazio? %>
+    <section class="cartao" id="acessos-subtotais">
+      <h2>Subtotais por restaurante e catraca</h2>
+      <div class="tabela-rolagem">
+        <table class="tabela" id="tabela-subtotais">
+          <thead>
+            <tr><th scope="col">Restaurante</th><th scope="col">Catraca</th><th scope="col" class="numero">Acessos</th><th scope="col" class="numero">Total debitado</th></tr>
+          </thead>
+          <tbody>
+            <% r.grupos.each do |grupo| %>
+              <% grupo.catracas.each do |subtotal| %>
+                <tr>
+                  <td><%= grupo.restaurante %></td>
+                  <td><%= subtotal.catraca %></td>
+                  <td class="numero"><%= number_with_delimiter(subtotal.quantidade) %></td>
+                  <td class="numero"><%= moeda(subtotal.total) %></td>
+                </tr>
+              <% end %>
+              <tr class="linha-subtotal">
+                <th scope="row" colspan="2">Total <%= grupo.restaurante %></th>
+                <td class="numero"><%= number_with_delimiter(grupo.quantidade) %></td>
+                <td class="numero"><%= moeda(grupo.total) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  <% end %>
+
+  <section class="cartao" id="acessos-lista">
+    <h2>Listagem</h2>
+    <% if r.vazio? %>
+      <p class="texto-suave" id="acessos-vazio">Não há acessos para os filtros selecionados.</p>
+    <% else %>
+      <div class="tabela-rolagem">
+        <table class="tabela" id="tabela-acessos">
+          <thead>
+            <tr>
+              <th scope="col">Acesso</th><th scope="col">Data e hora</th><th scope="col">Matrícula</th>
+              <th scope="col">Restaurante</th><th scope="col">Catraca</th><th scope="col">Refeição</th>
+              <th scope="col" class="numero">Valor debitado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% r.acessos_da_pagina.each do |acesso| %>
+              <tr>
+                <td><%= acesso.referencia %></td>
+                <td><%= acesso.momento.strftime("%d/%m/%Y %H:%M") %></td>
+                <td><%= acesso.matricula %></td>
+                <td><%= acesso.restaurante %></td>
+                <td><%= acesso.catraca %></td>
+                <td><%= acesso.refeicao %></td>
+                <td class="numero"><%= moeda(acesso.valor) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <nav class="paginacao" aria-label="Páginas da listagem">
+        <% parametros = r.filtros.compact.merge("por_pagina" => r.por_pagina) %>
+        <% if r.pagina_atual > 1 %>
+          <%= link_to "Anterior", admin_acessos_relatorio_global_path(parametros.merge("pagina" => r.pagina_atual - 1)), class: "botao botao-secundario" %>
+        <% end %>
+        <span id="pagina-atual">Página <%= r.pagina_atual %> de <%= r.total_paginas %></span>
+        <% if r.pagina_atual < r.total_paginas %>
+          <%= link_to "Próxima", admin_acessos_relatorio_global_path(parametros.merge("pagina" => r.pagina_atual + 1)), class: "botao botao-secundario" %>
+        <% end %>
+        <span>O PDF inclui todos os acessos do filtro, não só os desta página.</span>
+      </nav>
+    <% end %>
+  </section>
+<% end %>
