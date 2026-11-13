@@ -8,7 +8,7 @@ module HistoricoCatraca
 
     def initialize(catraca, pagina: 1)
       @catraca = catraca
-      @pagina = [pagina.to_i, 1].max
+      @pagina = [ pagina.to_i, 1 ].max
     end
 
     def registros
@@ -23,7 +23,7 @@ module HistoricoCatraca
     end
 
     def total_paginas
-      [(total.to_f / POR_PAGINA).ceil, 1].max
+      [ (total.to_f / POR_PAGINA).ceil, 1 ].max
     end
 
     def passagens

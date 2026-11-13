@@ -29,7 +29,7 @@ RSpec.describe "Valores monetários da recarga (F02)", type: :model do
     end
 
     it "mantém o saldo exato após várias confirmações (0,10 + 0,20 = 0,30)" do
-      [1, 2].each do |cafes|
+      [ 1, 2 ].each do |cafes|
         s = SolicitacaoRecarga.new(estudante: estudante, quantidade_cafes: cafes.to_s, quantidade_almocos: "0",
                                    metodo: "cartao_credito")
         s.salvar

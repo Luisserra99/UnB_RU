@@ -11,7 +11,7 @@ class ServicoRefeicao < ApplicationRecord
   has_many :cardapios, dependent: :destroy
 
   validates :dia_semana, inclusion: { in: DIAS_SEMANA, message: "deve estar entre 0 (domingo) e 6 (sábado)" }
-  validates :dia_semana, uniqueness: { scope: [:restaurante_id, :tipo_refeicao_id], message: "já possui este serviço no restaurante" }
+  validates :dia_semana, uniqueness: { scope: [ :restaurante_id, :tipo_refeicao_id ], message: "já possui este serviço no restaurante" }
   validates :inicio, :fim, presence: true
   validate :inicio_antes_do_fim
   validate :sem_sobreposicao_de_horario

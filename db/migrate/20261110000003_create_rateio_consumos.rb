@@ -7,6 +7,6 @@ class CreateRateioConsumos < ActiveRecord::Migration[8.1]
       t.timestamps
       t.check_constraint "valor > 0", name: "rateio_valor_positivo"
     end
-    add_index :rateio_consumos, [:movimentacao_saldo_id, :recarga_id], unique: true, name: "rateio_origem_unica"
+    add_index :rateio_consumos, [ :movimentacao_saldo_id, :recarga_id ], unique: true, name: "rateio_origem_unica"
   end
 end

@@ -6,12 +6,12 @@ RSpec.describe Pagamentos::ProcessarRetorno do
   let(:pix) { create(:pagamento, :pix, recarga: recarga) }
 
   {
-    ["Confirmada", 2] => [:confirmado, BigDecimal("22.50")],
-    ["Pendente", 9] => [:pendente, 0],
-    ["Pendente", 11] => [:expirado, 0],
-    ["Expirada", 11] => [:expirado, 0],
-    ["Confirmada", 11] => [:expirado, 0],
-    ["Recusada", 1] => [:recusado, 0]
+    [ "Confirmada", 2 ] => [ :confirmado, BigDecimal("22.50") ],
+    [ "Pendente", 9 ] => [ :pendente, 0 ],
+    [ "Pendente", 11 ] => [ :expirado, 0 ],
+    [ "Expirada", 11 ] => [ :expirado, 0 ],
+    [ "Confirmada", 11 ] => [ :expirado, 0 ],
+    [ "Recusada", 1 ] => [ :recusado, 0 ]
   }.each do |(status, minutos), (esperado, saldo)|
     it "PIX com status #{status} após #{minutos} minutos fica #{esperado} e saldo #{saldo.to_f}" do
       described_class.call(pix, status, em: pix.created_at + minutos.minutes)

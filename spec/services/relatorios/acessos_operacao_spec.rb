@@ -53,13 +53,13 @@ RSpec.describe Relatorios::AcessosOperacao do
 
   it "não mistura catracas de mesmo nome de restaurantes diferentes nos subtotais (RN12.5)" do
     grupos = relatorio(agrupar: "1").grupos
-    resumo = grupos.flat_map { |grupo| grupo.catracas.map { |sub| [sub.restaurante, sub.catraca, sub.quantidade, sub.total] } }
+    resumo = grupos.flat_map { |grupo| grupo.catracas.map { |sub| [ sub.restaurante, sub.catraca, sub.quantidade, sub.total ] } }
 
-    expect(resumo).to eq([["RU Darcy Ribeiro", "Catraca 01", 2, BigDecimal("9.00")],
-                          ["RU Darcy Ribeiro", "Catraca 02", 1, BigDecimal("4.50")],
-                          ["RU Gama", "Catraca 01", 1, BigDecimal("4.50")]])
-    expect(grupos.map { |grupo| [grupo.restaurante, grupo.quantidade, grupo.total] })
-      .to eq([["RU Darcy Ribeiro", 3, BigDecimal("13.50")], ["RU Gama", 1, BigDecimal("4.50")]])
+    expect(resumo).to eq([ [ "RU Darcy Ribeiro", "Catraca 01", 2, BigDecimal("9.00") ],
+                          [ "RU Darcy Ribeiro", "Catraca 02", 1, BigDecimal("4.50") ],
+                          [ "RU Gama", "Catraca 01", 1, BigDecimal("4.50") ] ])
+    expect(grupos.map { |grupo| [ grupo.restaurante, grupo.quantidade, grupo.total ] })
+      .to eq([ [ "RU Darcy Ribeiro", 3, BigDecimal("13.50") ], [ "RU Gama", 1, BigDecimal("4.50") ] ])
   end
 
   it "registra o agrupamento só quando ele foi pedido" do
@@ -83,7 +83,7 @@ RSpec.describe Relatorios::AcessosOperacao do
   it "usa os últimos 7 dias quando não há datas ou elas são inválidas" do
     resultado = described_class.new({ inicio: "ontem", fim: "" }, agora: agora)
 
-    expect([resultado.inicio, resultado.fim]).to eq([Date.new(2026, 10, 10), Date.new(2026, 10, 16)])
+    expect([ resultado.inicio, resultado.fim ]).to eq([ Date.new(2026, 10, 10), Date.new(2026, 10, 16) ])
     expect(resultado.quantidade).to eq(5)
   end
 

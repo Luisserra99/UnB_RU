@@ -6,6 +6,6 @@ class CreateCardapios < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-    add_index :cardapios, [:servico_refeicao_id, :data_referencia], unique: true
+    add_index :cardapios, [ :servico_refeicao_id, :data_referencia ], unique: true
   end
 end

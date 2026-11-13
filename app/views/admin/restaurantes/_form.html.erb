@@ -16,12 +16,14 @@
       <div class="campo-entrada"><%= f.text_field :nome %></div>
     </div>
 
-    <% if restaurante.new_record? %>
-      <div class="campo">
-        <%= f.label :quantidade_pisos, "Quantidade de pisos" %>
-        <div class="campo-entrada"><%= f.number_field :quantidade_pisos %></div>
-      </div>
-    <% end %>
+    <div class="campo">
+      <%= f.label :quantidade_pisos, "Quantidade de pisos" %>
+      <%# Na edição o mínimo é a quantidade atual: dá para acrescentar pisos, não remover. %>
+      <div class="campo-entrada"><%= f.number_field :quantidade_pisos, min: restaurante.persisted? ? restaurante.pisos.count : 1, step: 1 %></div>
+      <% if restaurante.persisted? %>
+        <p class="texto-suave">Pisos só podem ser acrescentados; os existentes não são removidos.</p>
+      <% end %>
+    </div>
 
     <div class="campo">
       <%= f.label :capacidade_refeicoes_hora, "Capacidade (refeições por hora)" %>

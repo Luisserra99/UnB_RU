@@ -2,8 +2,8 @@ require "pdf-reader"
 
 # Apoio aos testes da F09 (Tarsila): cria acessos realizados com débito e rateio por método de pagamento.
 module RelatorioGlobalHelpers
-  HORAS = { TipoRefeicao::CAFE_DA_MANHA => ["06:30", "09:00", 7], TipoRefeicao::ALMOCO => ["11:00", "14:30", 12],
-            TipoRefeicao::JANTAR => ["17:00", "20:00", 18] }.freeze
+  HORAS = { TipoRefeicao::CAFE_DA_MANHA => [ "06:30", "09:00", 7 ], TipoRefeicao::ALMOCO => [ "11:00", "14:30", 12 ],
+            TipoRefeicao::JANTAR => [ "17:00", "20:00", 18 ] }.freeze
   NOMES = { TipoRefeicao::CAFE_DA_MANHA => "Café da Manhã", TipoRefeicao::ALMOCO => "Almoço",
             TipoRefeicao::JANTAR => "Jantar" }.freeze
 

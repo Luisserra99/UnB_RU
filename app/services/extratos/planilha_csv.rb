@@ -17,8 +17,8 @@ module Extratos
       BOM + CSV.generate(col_sep: ";") do |csv|
         csv << CABECALHO
         @relatorio.lancamentos.each do |lancamento|
-          csv << [data_hora(lancamento.momento), lancamento.evento, lancamento.local,
-                  lancamento.catraca, valor_decimal(lancamento.valor)]
+          csv << [ data_hora(lancamento.momento), lancamento.descricao, lancamento.local,
+                  lancamento.catraca, valor_decimal(lancamento.valor) ]
         end
       end
     end

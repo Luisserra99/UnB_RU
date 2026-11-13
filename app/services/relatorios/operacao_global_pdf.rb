@@ -61,22 +61,22 @@ module Relatorios
 
     def consolidacao(documento)
       secao(documento, "Consolidação operacional dos restaurantes")
-      linhas = relatorio.linhas.map { |linha| [linha.restaurante.nome, linha.acessos.to_s, reais(linha.arrecadacao)] }
-      linhas << ["Total Consolidado", relatorio.total_acessos.to_s, reais(relatorio.arrecadacao_global)]
-      tabela(documento, ["Restaurante", "Acessos", "Arrecadação bruta"], linhas, destacar_ultima: true)
+      linhas = relatorio.linhas.map { |linha| [ linha.restaurante.nome, linha.acessos.to_s, reais(linha.arrecadacao) ] }
+      linhas << [ "Total Consolidado", relatorio.total_acessos.to_s, reais(relatorio.arrecadacao_global) ]
+      tabela(documento, [ "Restaurante", "Acessos", "Arrecadação bruta" ], linhas, destacar_ultima: true)
     end
 
     def liquidacao(documento)
       secao(documento, "Métodos de liquidação")
-      linhas = relatorio.liquidacoes.map { |item| [item.nome, "#{item.percentual}%", reais(item.valor)] }
-      linhas << ["Total liquidado", "", reais(relatorio.soma_liquidacoes)]
-      tabela(documento, ["Método", "Participação", "Valor liquidado"], linhas, destacar_ultima: true)
+      linhas = relatorio.liquidacoes.map { |item| [ item.nome, "#{item.percentual}%", reais(item.valor) ] }
+      linhas << [ "Total liquidado", "", reais(relatorio.soma_liquidacoes) ]
+      tabela(documento, [ "Método", "Participação", "Valor liquidado" ], linhas, destacar_ultima: true)
     end
 
     def distribuicao(documento)
       secao(documento, "Distribuição por refeição")
-      linhas = relatorio.distribuicao_por_refeicao.map { |item| [item.nome, item.acessos.to_s, reais(item.arrecadacao)] }
-      tabela(documento, ["Refeição", "Acessos", "Arrecadação"], linhas)
+      linhas = relatorio.distribuicao_por_refeicao.map { |item| [ item.nome, item.acessos.to_s, reais(item.arrecadacao) ] }
+      tabela(documento, [ "Refeição", "Acessos", "Arrecadação" ], linhas)
     end
 
     def secao(documento, titulo)
@@ -86,7 +86,7 @@ module Relatorios
 
     def tabela(documento, cabecalho, linhas, destacar_ultima: false)
       ultima = linhas.size
-      documento.table([cabecalho] + linhas, header: true, width: documento.bounds.width,
+      documento.table([ cabecalho ] + linhas, header: true, width: documento.bounds.width,
                                             cell_style: { size: 9, border_color: "CCCCCC" }) do
         row(0).font_style = :bold
         row(0).background_color = COR_CABECALHO

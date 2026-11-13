@@ -153,7 +153,8 @@ Então("o total de restaurantes deve ser {int}") do |total|
 end
 
 Então("o restaurante {string} deve ter capacidade de {int} refeições por hora") do |nome, capacidade|
-  expect(linha_do_restaurante(nome)).to have_css("td", exact_text: capacidade.to_s)
+  # A tabela formata com separador de milhar: 1500 aparece como "1.500".
+  expect(linha_do_restaurante(nome)).to have_css("td", exact_text: ActiveSupport::NumberHelper.number_to_delimited(capacidade, delimiter: "."))
 end
 
 Então("a catraca {string} deve aparecer no {string} do restaurante {string}") do |identificacao, nome_piso, nome_restaurante|

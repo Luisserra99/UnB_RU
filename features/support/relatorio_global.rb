@@ -6,9 +6,9 @@ require "pdf-reader"
 module RelatorioGlobal
   UNIDADE = "Campus Darcy Ribeiro".freeze
   TURNOS = {
-    "Café da Manhã" => { codigo: TipoRefeicao::CAFE_DA_MANHA, inicio: "06:30", fim: "09:00", hora: [7, 30] },
-    "Almoço" => { codigo: TipoRefeicao::ALMOCO, inicio: "11:00", fim: "14:30", hora: [12, 0] },
-    "Jantar" => { codigo: TipoRefeicao::JANTAR, inicio: "17:00", fim: "20:00", hora: [18, 30] }
+    "Café da Manhã" => { codigo: TipoRefeicao::CAFE_DA_MANHA, inicio: "06:30", fim: "09:00", hora: [ 7, 30 ] },
+    "Almoço" => { codigo: TipoRefeicao::ALMOCO, inicio: "11:00", fim: "14:30", hora: [ 12, 0 ] },
+    "Jantar" => { codigo: TipoRefeicao::JANTAR, inicio: "17:00", fim: "20:00", hora: [ 18, 30 ] }
   }.freeze
   METODOS = { "PIX Institucional Instantâneo" => :pix, "Cartão de Crédito / Débito" => :cartao_credito }.freeze
   TAMANHO_LOTE = 500
@@ -57,7 +57,7 @@ module RelatorioGlobal
 
   def rg_servico(restaurante, turno)
     @rg_servicos ||= {}
-    @rg_servicos[[restaurante.id, turno]] ||= begin
+    @rg_servicos[[ restaurante.id, turno ]] ||= begin
       dados = TURNOS.fetch(turno)
       tipo = create(:tipo_refeicao, codigo: dados[:codigo], nome: turno)
       create(:servico_refeicao, restaurante: restaurante, tipo_refeicao: tipo, dia_semana: 5,
@@ -96,12 +96,12 @@ module RelatorioGlobal
           valor_previsto: valor, estado: "realizado", mensagem: "Boa refeição", lido_em: momento - 2.seconds,
           liberado_em: momento - 2.seconds, passagem_em: momento, bloqueado_em: momento }
       end
-      ids_registros = RegistroAcesso.insert_all!(registros, returning: [:id]).rows.flatten
+      ids_registros = RegistroAcesso.insert_all!(registros, returning: [ :id ]).rows.flatten
       debitos = ids_registros.map do |id|
         { estudante_id: rg_estudante.id, registro_acesso_id: id, natureza: "debito_refeicao", valor: -valor,
           ocorrida_em: momento }
       end
-      ids_debitos = MovimentacaoSaldo.insert_all!(debitos, returning: [:id]).rows.flatten
+      ids_debitos = MovimentacaoSaldo.insert_all!(debitos, returning: [ :id ]).rows.flatten
       RateioConsumo.insert_all!(ids_debitos.flat_map { |id| rg_rateios(id, valor, participacoes) })
     end
   end

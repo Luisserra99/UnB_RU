@@ -114,7 +114,10 @@ RSpec.describe Catracas::Operar do
   end
 
   it "divide FIFO entre recargas e preserva a soma do débito" do
-    estudante.movimentacoes_saldo.creditos.first.recarga.update_columns(confirmada_em: agora - 1.day)
+    # O saldo inicial é criado antes do travel_to; fixa a data para o FIFO não depender do relógio real.
+    credito_antigo = estudante.movimentacoes_saldo.creditos.first
+    credito_antigo.update_columns(ocorrida_em: agora - 1.day)
+    credito_antigo.recarga.update_columns(confirmada_em: agora - 1.day)
     # Consome R$ 9, restam R$ 1 da primeira recarga e R$ 2 da nova.
     create(:tarifa_refeicao, tipo_refeicao: servico.tipo_refeicao).update!(valor: 9)
     operador.passar(ler)
@@ -123,7 +126,7 @@ RSpec.describe Catracas::Operar do
     TarifaRefeicao.vigente_para(servico.tipo_refeicao).update!(valor: 2.5)
     registro = ler
     operador.passar(registro)
-    expect(registro.movimentacao_saldo.rateios_consumo.order(:id).pluck(:valor)).to eq([1, 1.5])
+    expect(registro.movimentacao_saldo.rateios_consumo.order(:id).pluck(:valor)).to eq([ 1, 1.5 ])
     expect(estudante.saldo).to eq(0.5)
   end
 

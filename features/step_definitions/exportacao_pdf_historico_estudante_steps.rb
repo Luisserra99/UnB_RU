@@ -3,7 +3,7 @@
 # O passo "deve ser exibida a mensagem {string}" já existe em gestao_restaurante_catracas_steps.rb.
 
 # Os lançamentos dos cenários são de maio de 2024, então o relógio é fixado nessa data.
-EXTRATO_AGORA_PADRAO = [2024, 5, 14, 20, 0].freeze
+EXTRATO_AGORA_PADRAO = [ 2024, 5, 14, 20, 0 ].freeze
 
 Dado("que estou logado como estudante com matrícula {string}") do |matricula|
   travel_to Time.zone.local(*EXTRATO_AGORA_PADRAO)

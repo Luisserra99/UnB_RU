@@ -42,9 +42,11 @@
         <%= qr_code_pix_svg(pagamento.pix_copia_cola) %>
         <figcaption class="texto-suave">QR Code simulado (ambiente acadêmico)</figcaption>
       </figure>
-      <div class="campo pix-copia-cola">
+      <div class="campo pix-copia-cola" data-controller="copiar">
         <div class="campo-rotulo"><label for="pix_copia_cola">Código PIX Copia e Cola</label></div>
-        <textarea id="pix_copia_cola" class="codigo-pix" readonly rows="4"><%= pagamento.pix_copia_cola %></textarea>
+        <textarea id="pix_copia_cola" class="codigo-pix" readonly rows="4" data-copiar-target="origem"><%= pagamento.pix_copia_cola %></textarea>
+        <button type="button" class="botao botao-estudante" data-copiar-target="botao" data-action="copiar#copiar">Copiar código</button>
+        <p class="texto-suave" role="status" aria-live="polite" data-copiar-target="status"></p>
         <% if Rails.env.local? %>
           <%= button_to "Simular pagamento (ambiente de testes)", simular_confirmacao_recarga_path(@recarga),
                 class: "botao botao-secundario" %>

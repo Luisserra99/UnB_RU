@@ -19,6 +19,6 @@ class CreateMovimentacaoSaldos < ActiveRecord::Migration[8.1]
                          name: "movimentacao_saldos_origem_coerente"
     end
     add_index :movimentacao_saldos, :registro_acesso_id, unique: true
-    add_index :movimentacao_saldos, [:estudante_id, :ocorrida_em]
+    add_index :movimentacao_saldos, [ :estudante_id, :ocorrida_em ]
   end
 end

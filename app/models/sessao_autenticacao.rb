@@ -23,7 +23,7 @@ class SessaoAutenticacao < ApplicationRecord
       expira_em: agora + duracao,
       ponto_acesso_pendente: true
     )
-    [sessao, token]
+    [ sessao, token ]
   end
 
   def self.localizar(token)

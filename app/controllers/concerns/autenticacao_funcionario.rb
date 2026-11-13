@@ -41,7 +41,7 @@ module AutenticacaoFuncionario
 
   # reset_session remove cookies, mas também é necessário encerrar a configuração no banco.
   def encerrar_sessoes_anteriores
-    [:token_sessao_controle, :token_sessao_estudante].each do |chave|
+    [ :token_sessao_controle, :token_sessao_estudante ].each do |chave|
       SessaoAutenticacao.localizar(session[chave])&.encerrar!
     end
   end

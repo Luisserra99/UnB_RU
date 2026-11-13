@@ -16,7 +16,7 @@ restaurante = Restaurante.find_by(nome: "RU Darcy Ribeiro") ||
               Restaurante.criar_com_pisos!(unidade_gestora: unidade, nome: "RU Darcy Ribeiro",
                                            quantidade_pisos: 3, capacidade_refeicoes_hora: 1200)
 
-["CAT-01", "CAT-02"].each do |identificacao|
+[ "CAT-01", "CAT-02" ].each do |identificacao|
   next if restaurante.catracas.exists?(identificacao: identificacao)
 
   restaurante.pisos.find_by!(numero: 1).catracas.create!(identificacao: identificacao)

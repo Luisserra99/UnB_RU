@@ -33,9 +33,9 @@ RSpec.describe Relatorios::OperacaoGlobal do
     it "lista um restaurante por linha, na ordem da numeração, inclusive os zerados (RN09.7 e RN09.8)" do
       linhas = relatorio.linhas
 
-      expect(linhas.map { |linha| linha.restaurante.nome }).to eq(["Restaurante 1", "Restaurante 2"])
-      expect(linhas.map(&:acessos)).to eq([3, 0])
-      expect(linhas.map(&:arrecadacao)).to eq([BigDecimal("11.50"), 0])
+      expect(linhas.map { |linha| linha.restaurante.nome }).to eq([ "Restaurante 1", "Restaurante 2" ])
+      expect(linhas.map(&:acessos)).to eq([ 3, 0 ])
+      expect(linhas.map(&:arrecadacao)).to eq([ BigDecimal("11.50"), 0 ])
     end
 
     it "soma o valor realmente debitado, com o café da manhã a R$ 2,50" do
@@ -59,14 +59,14 @@ RSpec.describe Relatorios::OperacaoGlobal do
     end
 
     it "distribui os acessos por refeição" do
-      distribuicao = relatorio.distribuicao_por_refeicao.to_h { |item| [item.nome, [item.acessos, item.arrecadacao]] }
+      distribuicao = relatorio.distribuicao_por_refeicao.to_h { |item| [ item.nome, [ item.acessos, item.arrecadacao ] ] }
 
-      expect(distribuicao).to eq("Café da Manhã" => [1, BigDecimal("2.50")], "Almoço" => [2, BigDecimal("9.00")],
-                                 "Jantar" => [0, 0])
+      expect(distribuicao).to eq("Café da Manhã" => [ 1, BigDecimal("2.50") ], "Almoço" => [ 2, BigDecimal("9.00") ],
+                                 "Jantar" => [ 0, 0 ])
     end
 
     it "informa o horário de cada refeição a partir dos serviços cadastrados" do
-      horarios = relatorio.distribuicao_por_refeicao.to_h { |item| [item.nome, item.horario] }
+      horarios = relatorio.distribuicao_por_refeicao.to_h { |item| [ item.nome, item.horario ] }
 
       expect(horarios).to eq("Café da Manhã" => "06:30 – 09:00", "Almoço" => "11:00 – 14:30", "Jantar" => "17:00 – 20:00")
     end
@@ -77,7 +77,7 @@ RSpec.describe Relatorios::OperacaoGlobal do
       expect(resultado.total_acessos).to eq(2)
       expect(resultado.arrecadacao_global).to eq(BigDecimal("9.00"))
       expect(resultado.soma_liquidacoes).to eq(BigDecimal("9.00"))
-      expect(resultado.distribuicao_por_refeicao.map(&:acessos)).to eq([0, 2, 0])
+      expect(resultado.distribuicao_por_refeicao.map(&:acessos)).to eq([ 0, 2, 0 ])
     end
 
     it "aplica o filtro de data contábil" do
@@ -98,8 +98,8 @@ RSpec.describe Relatorios::OperacaoGlobal do
       acesso_realizado(restaurante_com_catraca(outra, "RU Gama"), turno: TipoRefeicao::ALMOCO, dia: hoje, recarga: pix)
 
       expect(relatorio.total_acessos).to eq(3)
-      expect(relatorio(unidade_id: outra.id).linhas.map { |linha| [linha.restaurante.nome, linha.acessos] })
-        .to eq([["RU Gama", 1]])
+      expect(relatorio(unidade_id: outra.id).linhas.map { |linha| [ linha.restaurante.nome, linha.acessos ] })
+        .to eq([ [ "RU Gama", 1 ] ])
     end
 
     it "não conta leituras recusadas, que não geram débito" do
@@ -116,7 +116,7 @@ RSpec.describe Relatorios::OperacaoGlobal do
       restaurante_com_catraca(unidade, "Restaurante 3", online: false)
       restaurante_com_catraca(create(:unidade_gestora, nome: "Campus Gama"), "RU Gama")
 
-      expect([relatorio.catracas_online, relatorio.catracas_cadastradas]).to eq([2, 3])
+      expect([ relatorio.catracas_online, relatorio.catracas_cadastradas ]).to eq([ 2, 3 ])
     end
 
     it "deixa de contar a catraca quando o ponto de acesso é encerrado" do
@@ -144,14 +144,14 @@ RSpec.describe Relatorios::OperacaoGlobal do
 
       expect(resultado).to be_vazio
       expect(resultado.arrecadacao_global).to eq(0)
-      expect(resultado.liquidacoes.map(&:valor)).to eq([0, 0])
-      expect(resultado.liquidacoes.map(&:percentual)).to eq([0, 0])
+      expect(resultado.liquidacoes.map(&:valor)).to eq([ 0, 0 ])
+      expect(resultado.liquidacoes.map(&:percentual)).to eq([ 0, 0 ])
       expect(resultado.ticket_medio).to eq(0)
       expect(resultado.linhas.size).to eq(2)
     end
 
     it "deixa sem horário a refeição que não tem serviço cadastrado" do
-      expect(relatorio.distribuicao_por_refeicao.map(&:horario)).to eq([nil, nil, nil])
+      expect(relatorio.distribuicao_por_refeicao.map(&:horario)).to eq([ nil, nil, nil ])
     end
   end
 

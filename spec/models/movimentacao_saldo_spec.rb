@@ -49,6 +49,6 @@ RSpec.describe MovimentacaoSaldo, type: :model do
   it "lista os mais recentes primeiro" do
     antigo = create(:movimentacao_saldo, estudante: estudante, ocorrida_em: 2.days.ago)
     novo = create(:movimentacao_saldo, estudante: estudante, ocorrida_em: 1.day.ago)
-    expect(estudante.movimentacoes_saldo.recentes).to eq([novo, antigo])
+    expect(estudante.movimentacoes_saldo.recentes).to eq([ novo, antigo ])
   end
 end

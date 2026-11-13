@@ -6,6 +6,6 @@ class CreateOpcaoCardapios < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-    add_index :opcao_cardapios, [:cardapio_id, :dieta], unique: true
+    add_index :opcao_cardapios, [ :cardapio_id, :dieta ], unique: true
   end
 end

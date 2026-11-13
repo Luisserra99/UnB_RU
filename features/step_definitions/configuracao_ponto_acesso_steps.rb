@@ -14,7 +14,7 @@ Dado("que o funcionário de identificação {string} está cadastrado") do |iden
   @usuario = create(:funcionario, identificacao: identificacao)
 end
 Dado("que os restaurantes {string} e {string} estão cadastrados e ativos") do |a, b|
-  [a,b].each { |nome| create(:restaurante, nome: nome) }
+  [ a, b ].each { |nome| create(:restaurante, nome: nome) }
 end
 Dado("que a catraca {string} está cadastrada e ativa no restaurante {string}") do |identificacao, nome|
   create(:catraca, piso: Restaurante.find_by!(nome: nome).pisos.first, identificacao: identificacao)
@@ -32,7 +32,7 @@ Então("o sistema deve solicitar a seleção de um restaurante e de uma catraca"
   expect(page).to have_content("Escolha do restaurante e da catraca")
 end
 Então("deve apresentar os restaurantes cadastrados e ativos") do
-  Restaurante.ativos.each { |r| expect(page).to have_select("Restaurante", with_options: [r.nome]) }
+  Restaurante.ativos.each { |r| expect(page).to have_select("Restaurante", with_options: [ r.nome ]) }
 end
 Então("o funcionário ainda não deve possuir um ponto de acesso configurado na sessão") do
   expect(sessao_ponto.ponto_acesso_atual).to be_nil
@@ -99,7 +99,7 @@ Então("a reconfiguração deve ser concluída e as operações do novo ponto de
   expect(sessao_ponto.ponto_acesso_atual).to be_disponivel
 end
 Dado("ainda não configurou um ponto de acesso") { expect(sessao_ponto.ponto_acesso_atual).to be_nil }
-Quando("tenta confirmar o restaurante {string} e a catraca {string}") { |r,c| enviar_ponto(r,c) }
+Quando("tenta confirmar o restaurante {string} e a catraca {string}") { |r, c| enviar_ponto(r, c) }
 Então("nenhum ponto de acesso deve ser configurado na sessão") { expect(sessao_ponto&.ponto_acesso_atual).to be_nil }
 Quando("tenta confirmar a catraca {string}") do |c|
   enviar_ponto("RU Darcy Ribeiro", c)
@@ -114,8 +114,8 @@ Dado("o cadastro {string} está {string}") do |nome, situacao|
     end
   end
 end
-Quando("tenta confirmar o restaurante {string} e a catraca {string} como novo ponto de acesso") { |r,c| enviar_ponto(r,c) }
-Então("o ponto de acesso confirmado da sessão deve continuar sendo o restaurante {string} e a catraca {string}") do |r,c|
+Quando("tenta confirmar o restaurante {string} e a catraca {string} como novo ponto de acesso") { |r, c| enviar_ponto(r, c) }
+Então("o ponto de acesso confirmado da sessão deve continuar sendo o restaurante {string} e a catraca {string}") do |r, c|
   step "a sessão deve ter como ponto de acesso o restaurante \"#{r}\" e a catraca \"#{c}\""
 end
 Então("a reconfiguração deve permanecer pendente") { expect(sessao_ponto).to be_ponto_acesso_pendente }
@@ -131,7 +131,7 @@ Quando("acessa a seleção de ponto de acesso") { visit controle_root_path }
 Dado("todas as catracas do restaurante {string} foram desativadas") { |r| Restaurante.find_by!(nome: r).catracas.update_all(ativa: false) }
 Então("a confirmação do ponto de acesso deve permanecer indisponível") { expect(page).to have_button("Confirmar ponto de acesso", disabled: true) }
 Dado("que o funcionário {string} não possui uma sessão autenticada ativa") { |_i| expect(SessaoAutenticacao.ativas).to be_empty }
-Quando("tenta configurar o restaurante {string} e a catraca {string}") { |r,c| enviar_ponto(r,c) }
+Quando("tenta configurar o restaurante {string} e a catraca {string}") { |r, c| enviar_ponto(r, c) }
 Então("o sistema deve solicitar o login do funcionário") { esperar_tela_de_login }
 Então("nenhum ponto de acesso deve ser configurado") { expect(ConfiguracaoPontoAcesso.count).to eq(0) }
 Quando("a sessão é encerrada por {string}") do |motivo|
@@ -151,7 +151,7 @@ Então("as operações que dependem do ponto de acesso devem permanecer indispon
   expect(sessao_ponto.ponto_acesso_atual).to be_nil
 end
 
-Dado("selecionou o restaurante {string} e a catraca {string}") do |r,c|
+Dado("selecionou o restaurante {string} e a catraca {string}") do |r, c|
   step %(seleciona o restaurante "#{r}")
   step %(selecionou a catraca "#{c}")
 end

@@ -12,6 +12,6 @@ class CreateItemRecargas < ActiveRecord::Migration[8.1]
       t.check_constraint "quantidade > 0", name: "item_recargas_quantidade_positiva"
       t.check_constraint "valor_unitario > 0", name: "item_recargas_valor_unitario_positivo"
     end
-    add_index :item_recargas, [:recarga_id, :tipo_refeicao_id], unique: true
+    add_index :item_recargas, [ :recarga_id, :tipo_refeicao_id ], unique: true
   end
 end

@@ -75,9 +75,9 @@ module Cardapios
       return [] if proprios.values.flat_map { |valor| valores(valor) }.empty?
 
       campos.flat_map do |campo, valor|
-        next [] unless [nil, dieta].include?(dieta_do_campo(campo))
+        next [] unless [ nil, dieta ].include?(dieta_do_campo(campo))
 
-        valores(valor).map { |descricao| [categoria_do_campo(campo), descricao] }
+        valores(valor).map { |descricao| [ categoria_do_campo(campo), descricao ] }
       end
     end
 

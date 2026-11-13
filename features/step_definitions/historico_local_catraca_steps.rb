@@ -45,7 +45,7 @@ end
 
 # Almoço e jantar no dia da semana da leitura, com a tarifa do Contexto ("valor da refeição").
 def historico_preparar_refeicoes(momento)
-  { TipoRefeicao::ALMOCO => ["Almoço", "11:00", "14:30"], TipoRefeicao::JANTAR => ["Jantar", "17:30", "19:30"] }
+  { TipoRefeicao::ALMOCO => [ "Almoço", "11:00", "14:30" ], TipoRefeicao::JANTAR => [ "Jantar", "17:30", "19:30" ] }
     .each do |codigo, (nome, inicio, fim)|
       tipo = create(:tipo_refeicao, codigo: codigo, nome: nome)
       ServicoRefeicao.find_or_create_by!(restaurante: historico_restaurante, tipo_refeicao: tipo, dia_semana: momento.wday) do |servico|
@@ -84,7 +84,7 @@ end
 
 def historico_linhas_exibidas
   all("#historico-acessos tbody tr").map do |linha|
-    historico_colunas.to_h { |coluna| [coluna, linha.find("td[data-coluna='#{coluna}']").text.strip] }
+    historico_colunas.to_h { |coluna| [ coluna, linha.find("td[data-coluna='#{coluna}']").text.strip ] }
   end
 end
 

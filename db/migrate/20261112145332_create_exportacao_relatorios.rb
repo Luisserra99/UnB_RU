@@ -28,7 +28,7 @@ class CreateExportacaoRelatorios < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :exportacao_relatorios, [:usuario_id, :solicitada_em]
+    add_index :exportacao_relatorios, [ :usuario_id, :solicitada_em ]
 
     add_check_constraint :exportacao_relatorios,
                          "quantidade_registros IS NULL OR quantidade_registros >= 0",

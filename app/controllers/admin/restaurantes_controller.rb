@@ -24,7 +24,7 @@ module Admin
     end
 
     def update
-      if @restaurante.update(params.expect(restaurante: %i[nome capacidade_refeicoes_hora ativo]))
+      if @restaurante.atualizar_com_pisos(params.expect(restaurante: %i[nome quantidade_pisos capacidade_refeicoes_hora ativo]))
         redirect_to admin_restaurantes_path, notice: "Restaurante atualizado com sucesso"
       else
         render :edit, status: :unprocessable_content

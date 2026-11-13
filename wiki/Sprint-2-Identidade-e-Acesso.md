@@ -53,7 +53,7 @@ O histórico pede de novo a matrícula e a senha do funcionário que gerencia a 
 
 ---
 
-## Para os outros integrantes
+## Integração com outras funcionalidades
 
 - **Proteger uma tela da aplicação de controle:** herde de `Controle::BaseController`. Dentro dele estão disponíveis `funcionario_atual` e `sessao_atual`; nas views também existe `funcionario_autenticado?`.
 - **Visual (Figma):** as telas da aplicação de controle usam o layout `controle` (cabeçalho "RU UnB · Operacional" com operador e "Sair"), que já vem aplicado em `Controle::BaseController`. As telas do estudante usam o layout `application` (cabeçalho "RU UnB Digital · Portal do Estudante"). As cores, a fonte (Raleway) e as classes ficam em [app/assets/stylesheets/application.css](../app/assets/stylesheets/application.css): `cartao`, `campo`/`campo-entrada`, `botao botao-primario`, `botao botao-estudante`, `cabecalho-pagina` etc. Os ícones SVG ficam em `icone(:nome)` ([app/helpers/icones_helper.rb](../app/helpers/icones_helper.rb)).

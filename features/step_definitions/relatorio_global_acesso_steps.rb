@@ -2,7 +2,7 @@
 # Os helpers `rg_*` ficam em features/support/relatorio_global.rb.
 # Reaproveitados de outros arquivos: "deve ser exibida a mensagem {string}" (F08) e "clico em {string}" (F11).
 
-RG_HOJE = [2025, 10, 24, 15, 0].freeze
+RG_HOJE = [ 2025, 10, 24, 15, 0 ].freeze
 
 # --- Contexto ---
 
@@ -19,20 +19,20 @@ Dado("que o {string} possui {int} restaurantes e {int} catracas cadastradas, tod
 end
 
 Dado("que em {string} foram registrados os seguintes acessos por restaurante:") do |_data, tabela|
-  @rg_por_restaurante = tabela.hashes.to_h { |linha| [linha["restaurante"], linha["acessos"].to_i] }
+  @rg_por_restaurante = tabela.hashes.to_h { |linha| [ linha["restaurante"], linha["acessos"].to_i ] }
 end
 
 Dado("que em {string} foram registrados os seguintes acessos por turno:") do |_data, tabela|
-  @rg_por_turno = tabela.hashes.to_h { |linha| [linha["turno"], linha["acessos"].to_i] }
+  @rg_por_turno = tabela.hashes.to_h { |linha| [ linha["turno"], linha["acessos"].to_i ] }
 end
 
 Dado("que em {string} todos os acessos de {string} e de {string} ocorreram no {string}") do |_data, turno_a, turno_b, restaurante|
-  @rg_concentrados = { turnos: [turno_a, turno_b], restaurante: restaurante }
+  @rg_concentrados = { turnos: [ turno_a, turno_b ], restaurante: restaurante }
 end
 
 # Último passo do contexto: com tudo declarado, grava os acessos do dia.
 Dado("que a arrecadação de {string} foi liquidada nos seguintes métodos:") do |data, tabela|
-  valores = tabela.hashes.to_h { |linha| [RelatorioGlobal::METODOS.fetch(linha["metodo"]), reais(linha["valor"].delete("R$ "))] }
+  valores = tabela.hashes.to_h { |linha| [ RelatorioGlobal::METODOS.fetch(linha["metodo"]), reais(linha["valor"].delete("R$ ")) ] }
   total = valores.values.sum
   participacoes = valores.transform_values { |valor| valor / total }
   dia = rg_data(data)
@@ -86,7 +86,7 @@ Dado("que no turno {string} de {string} somente o {string} teve acessos") do |tu
   restaurantes = RegistroAcesso.where(passagem_em: dia, servico_refeicao: servicos)
                                .joins(:configuracao_ponto_acesso).distinct
                                .pluck("configuracao_ponto_acessos.restaurante_id")
-  expect(restaurantes).to eq([rg_restaurante(restaurante).id])
+  expect(restaurantes).to eq([ rg_restaurante(restaurante).id ])
 end
 
 Dado("que não há acessos registrados em {string}") do |data|
@@ -165,11 +165,11 @@ Então("a linha {string} deve exibir arrecadação de {string}") do |_linha, val
 end
 
 Então(/^o "([^"]+)" deve exibir ([\d.]+) acessos e arrecadação bruta de "([^"]+)"$/) do |restaurante, acessos, valor|
-  expect(rg_celulas(rg_linha_restaurante(restaurante))).to eq([restaurante, acessos, valor])
+  expect(rg_celulas(rg_linha_restaurante(restaurante))).to eq([ restaurante, acessos, valor ])
 end
 
 Então("o método {string} deve exibir {string} e {string}") do |metodo, percentual, valor|
-  expect(rg_celulas(find("#tabela-liquidacao tbody tr", text: metodo))).to eq([metodo, percentual, valor])
+  expect(rg_celulas(find("#tabela-liquidacao tbody tr", text: metodo))).to eq([ metodo, percentual, valor ])
 end
 
 Então("a soma dos métodos de liquidação deve ser igual a {string}") do |valor|
@@ -190,11 +190,11 @@ Então("deve ser gerado um arquivo CSV com os dados do relatório") do
   linhas = rg_linhas_csv
   expect(page.response_headers["Content-Disposition"]).to match(/attachment; filename="relatorio-global-2025-10-24-\d+\.csv"/)
   expect(linhas.size).to eq(Restaurante.count + 1)
-  expect(linhas.last.values_at(3, 4, 5)).to eq(["Total Consolidado", "2980", "13410,00"])
+  expect(linhas.last.values_at(3, 4, 5)).to eq([ "Total Consolidado", "2980", "13410,00" ])
 end
 
 Então("o arquivo deve conter somente os dados do turno {string}") do |turno|
-  expect(rg_linhas_csv.map { |linha| linha[1] }.uniq).to eq([turno])
+  expect(rg_linhas_csv.map { |linha| linha[1] }.uniq).to eq([ turno ])
 end
 
 Então("deve ser gerado um documento PDF com os mesmos dados exibidos no relatório") do

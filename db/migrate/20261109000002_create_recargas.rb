@@ -13,6 +13,6 @@ class CreateRecargas < ActiveRecord::Migration[8.1]
       t.check_constraint "status IN ('pendente', 'confirmada', 'expirada', 'cancelada')", name: "recargas_status_valido"
       t.check_constraint "status <> 'confirmada' OR confirmada_em IS NOT NULL", name: "recargas_confirmada_com_data"
     end
-    add_index :recargas, [:estudante_id, :solicitada_em]
+    add_index :recargas, [ :estudante_id, :solicitada_em ]
   end
 end

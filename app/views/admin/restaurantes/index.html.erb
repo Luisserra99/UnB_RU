@@ -37,7 +37,7 @@
               <td><%= restaurante.nome %></td>
               <td><%= restaurante.unidade_gestora.nome %></td>
               <td><%= restaurante.pisos.size %></td>
-              <td><%= restaurante.capacidade_refeicoes_hora %></td>
+              <td><%= number_with_delimiter(restaurante.capacidade_refeicoes_hora, delimiter: ".") %></td>
               <td><%= restaurante.ativo? ? "Ativo" : "Inativo" %></td>
               <td class="acoes-linha">
                 <%= link_to "Ver catracas", controle_restaurante_catracas_path(restaurante) if restaurante.ativo? %>
