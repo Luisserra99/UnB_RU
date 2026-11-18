@@ -211,13 +211,14 @@ O grupo usou o **Claude Code** (Anthropic) como apoio. O código gerado foi revi
 | Testes adicionais de regra e de segurança, escritos por um agente separado do que implementou | F02, F03 |
 | Documentação das páginas | F01–F12 e esta Home |
 
-F01–F08 e F10 usaram o Claude Code (Claude Opus 5.5); F09, F11 e F12 usaram o Claude (Claude Fable 5.2). O detalhamento está na seção "Uso de IA" das páginas. O uso na Sprint 1 está registrado na [wiki da Sprint 1](Sprint-1.md#6-uso-de-ia-na-sprint).
+F01–F08 e F10 usaram o Claude Code (Claude Opus 5.5); F09, F11 e F12 usaram o Claude (Claude Fable 5.2). O detalhamento está na seção "Uso de IA" das páginas. O uso na Sprint 1 está registrado na [wiki da Sprint 1](Sprint-1.md#6-uso-de-ia-na-sprint), e o da Sprint 3 na [wiki da Sprint 3](Sprint-3.md#7-uso-de-ia-na-sprint).
 
 ---
 
 ## Páginas
 
 - [Sprint 1 — especificação das funcionalidades](Sprint-1.md)
+- [Sprint 3 — refatoração e documentação: distribuição de tarefas](Sprint-3.md)
 - [Identidade e Acesso — base comum e usuários de teste](Sprint-2-Identidade-e-Acesso.md)
 - [Relatório da segunda etapa da Sprint 1: modelo ER](../docs/sprint-1/relatorio-etapa-2.md) ([PDF](../docs/sprint-1/relatorio-etapa-2.pdf))
 - [README do repositório](../README.MD)
