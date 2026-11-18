@@ -46,7 +46,7 @@ O foco da sprint é refatorar e documentar o código já entregue, **sem mudar o
 
 | # | Critério | Ferramenta | Meta |
 |---|---|---|---|
-| C1 | Complexidade por método | [RubyCritic](https://github.com/whitesmith/rubycritic) (ABC Score) | **ABC < 20** em todo método; métodos próximos de 20 também são refatorados |
+| C1 | Complexidade por método | [RubyCritic](https://github.com/whitesmith/rubycritic) (Flog) e RuboCop (ABC) | **Flog < 20 e ABC < 20** em todo método; métodos próximos de 20 também são refatorados |
 | C2 | Cobertura de testes RSpec | [SimpleCov](https://github.com/simplecov-ruby/simplecov) | **> 90%** em cada controller e model do grupo, com os valores anotados |
 | C3 | Happy path e sad path | RSpec e Cucumber | Todo caso de teste tem happy path e sad path. **Os `.feature` já existentes não podem ser alterados** |
 | C4 | Documentação do código | [RDoc](https://github.com/ruby/rdoc) | Todo método tem: (a) descrição, (b) argumentos, (c) retorno e possibilidades de retorno, (d) efeitos colaterais (redirecionamento, escrita no banco etc.) |
@@ -93,13 +93,27 @@ O dia 27/11 fica só para a entrega. Se alguma etapa atrasar, o Scrum Master avi
 
 | ID | Tarefa | Responsável | Etapa |
 |---|---|---|---|
-| T0 | Adicionar `rubycritic` e `simplecov` ao `Gemfile` (grupo `development, test`), iniciar o SimpleCov no topo de `spec/rails_helper.rb` (e em `features/support/env.rb`, se o grupo quiser a cobertura do Cucumber), configurar grupos por pasta (Controllers, Models, Services, Forms, Helpers), definir a geração do RDoc (`.rdoc_options` ou tarefa rake restrita a `app/`) e ignorar no `.gitignore` as saídas `coverage/`, `tmp/rubycritic/` e `doc/` | Luis | 1 |
+| T0 | Adicionar `rubycritic`, `simplecov` e `rdoc` ao `Gemfile`, iniciar o SimpleCov no topo de `spec/spec_helper.rb` com grupos por pasta (Controllers, Models, Services, Forms, Helpers), configurar o RubyCritic (`.rubycritic.yml`), criar as tarefas `qualidade:*` e `documentacao` e ignorar `doc/` no `.gitignore`. Ver [como rodar](#como-rodar-as-ferramentas-t0) | Luis | 1 |
 | T1 | Rodar RubyCritic e SimpleCov no commit da T0 e publicar a medição de antes: lista dos métodos com ABC ≥ 15 e a cobertura de cada controller e model | Luis | 2 |
 | T2 | Criar o GitHub Project da Sprint 3 com as lanes Backlog, Doing, Done e Accepted | Weldo | 1 |
 | T3 | Arquivo `.txt` da entrega (link do repositório, nomes e matrículas) | Weldo | 7 |
 | T4 | Consolidar esta página: seção "O que foi refatorado" e tabela de antes e depois com as linhas de todos | Daniel | 7 |
 | T5 | Verificação final na `sprint-3`: RubyCritic sem método com ABC ≥ 20, SimpleCov > 90% por controller e model, `rspec` e `cucumber` passando sem alteração nos `.feature` existentes, RDoc gerado sem método sem documentação, RuboCop limpo | Daniel | 7 |
 | T6 | Atualizar a [Home](Home.md) (papéis, branch de entrega e resultados dos testes) e abrir o PR `Grupo 02 - Sprint 3` | Daniel | 8 |
+
+### Como rodar as ferramentas (T0)
+
+Depois de `bundle install`, os comandos abaixo valem para todos os integrantes. No Windows, use `ruby bin/rails ...`.
+
+| Critério | Comando | O que mostra |
+|---|---|---|
+| C1 | `bin/rails "qualidade:metodos[15]"` | Tabela Markdown com o **Flog** (mesmo analisador do RubyCritic) e o **ABC** (cálculo do RuboCop, com o vetor `<A, B, C>`) de cada método com nota ≥ 15 em `app/`. Para filtrar: `bin/rails "qualidade:metodos[0,app/forms/dados_cartao.rb app/models]"` |
+| C1 | `bundle exec rubycritic` | Relatório completo em `tmp/rubycritic/overview.html`: nota geral, smells (Reek), duplicação (Flay) e métodos com Flog ≥ 25 |
+| C2 | `bundle exec rspec` e depois `bin/rails qualidade:cobertura` | O RSpec gera `coverage/index.html`; a tarefa imprime a tabela Markdown da cobertura de cada controller e model. Para outras pastas: `bin/rails "qualidade:cobertura[app/services app/forms]"` |
+| C4 | `bin/rails qualidade:rdoc` | Classes, constantes e métodos (inclusive privados) sem comentário RDoc. Aceita caminhos: `bin/rails "qualidade:rdoc[app/models/pagamento.rb]"` |
+| C4 | `bin/rails documentacao` | Gera o HTML do RDoc em `doc/app/index.html` |
+
+`coverage/`, `tmp/rubycritic/` e `doc/` ficam fora do git. O RubyCritic só sinaliza métodos com Flog ≥ 25, então a lista completa por método sai da tarefa `qualidade:metodos`. **O grupo adota as duas medidas no critério C1: um método só está pronto com Flog < 20 e ABC < 20.**
 
 ---
 
