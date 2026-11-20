@@ -93,6 +93,19 @@ RSpec.describe "Recarga de Saldo (F02)", type: :request do
         expect(response.body).to include("Finalizar pagamento")
       end
 
+      it "limita o número a 16 dígitos e a validade a MM/AA, com as máscaras do formulário" do
+        get recarga_path(recarga)
+        pagina = Nokogiri::HTML(response.body)
+        expect(pagina.at_css("form.formulario-cartao")["data-controller"]).to eq("cartao")
+        expect(pagina.at_css("#dados_cartao_numero").to_h).to include(
+          "maxlength" => "19", "data-cartao-target" => "numero", "data-action" => "input->cartao#numero"
+        )
+        expect(pagina.at_css("#dados_cartao_validade").to_h).to include(
+          "maxlength" => "5", "inputmode" => "numeric", "data-cartao-target" => "validade",
+          "data-action" => "input->cartao#validade"
+        )
+      end
+
       it "confirma com cartão válido e atualiza o saldo" do
         post pagar_cartao_recarga_path(recarga), params: cartao
         expect(response).to redirect_to(recarga_path(recarga))
