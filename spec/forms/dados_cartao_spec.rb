@@ -28,6 +28,19 @@ RSpec.describe DadosCartao do
     expect(described_class.new(validos.merge(nome: ""))).not_to be_valid
   end
 
+  it "aceita o número com espaços, pontos ou hífens" do
+    cartao = described_class.new(validos.merge(numero: "4111.1111-1111 1111"))
+    expect(cartao).to be_valid
+    expect(cartao.numero_normalizado).to eq("4111111111111111")
+  end
+
+  it "rejeita número em branco e validade em branco" do
+    cartao = described_class.new(validos.merge(numero: nil, validade: nil))
+    expect(cartao).not_to be_valid
+    expect(cartao.errors[:numero]).to include("Número do cartão inválido")
+    expect(cartao.errors[:validade]).to include("Validade inválida: use o formato MM/AA")
+  end
+
   it "expõe só os últimos dígitos" do
     expect(described_class.new(validos).ultimos_digitos).to eq("1111")
   end
