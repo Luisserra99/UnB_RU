@@ -34,12 +34,16 @@ module AutenticacaoEstudante
   def exigir_estudante!
     return if estudante_autenticado?
 
-    expirada = SessaoAutenticacao.localizar(session[CHAVE_SESSAO_ESTUDANTE])&.expirada?
+    mensagem = mensagem_de_login_obrigatorio
     destino = request.get? ? request.fullpath : nil
     reset_session
     session[:retorno_estudante] = destino if destino
-    mensagem = expirada ? AutenticacaoFuncionario::MSG_SESSAO_EXPIRADA : MSG_LOGIN_ESTUDANTE_OBRIGATORIO
     redirect_to login_estudante_path, alert: mensagem
+  end
+
+  def mensagem_de_login_obrigatorio
+    expirada = SessaoAutenticacao.localizar(session[CHAVE_SESSAO_ESTUDANTE])&.expirada?
+    expirada ? AutenticacaoFuncionario::MSG_SESSAO_EXPIRADA : MSG_LOGIN_ESTUDANTE_OBRIGATORIO
   end
 
   def iniciar_sessao_estudante(usuario)
