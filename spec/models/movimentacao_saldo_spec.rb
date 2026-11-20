@@ -17,6 +17,23 @@ RSpec.describe MovimentacaoSaldo, type: :model do
       expect(credito.errors[:recarga]).to include("deve ser do mesmo estudante")
     end
 
+    it "é válido com recarga confirmada do mesmo estudante" do
+      expect(build(:movimentacao_saldo, :credito_recarga, estudante: estudante)).to be_valid
+    end
+
+    it "exige a recarga e não aceita registro de acesso" do
+      credito = build(:movimentacao_saldo, :credito_recarga, estudante: estudante, recarga: nil,
+                                                             registro_acesso: create(:registro_acesso, estudante: estudante))
+      expect(credito).not_to be_valid
+      expect(credito.errors[:recarga]).to include("é obrigatória para crédito")
+      expect(credito.errors[:registro_acesso_id]).to include("não se aplica a crédito")
+    end
+
+    it "descreve a recarga sem método quando não há pagamento confirmado" do
+      credito = build(:movimentacao_saldo, :credito_recarga, estudante: estudante)
+      expect(credito.descricao).to eq("Recarga de Saldo")
+    end
+
     it "exige valor positivo" do
       credito = build(:movimentacao_saldo, :credito_recarga, estudante: estudante)
       credito.valor = -1
@@ -36,8 +53,44 @@ RSpec.describe MovimentacaoSaldo, type: :model do
       expect(debito.errors[:valor]).to include("do débito deve ser negativo")
     end
 
+    it "é válido com passagem realizada pelo mesmo estudante" do
+      expect(build(:movimentacao_saldo, :debito_refeicao, estudante: estudante)).to be_valid
+    end
+
+    it "exige o registro da passagem" do
+      debito = build(:movimentacao_saldo, :debito_refeicao, estudante: estudante, registro_acesso: nil)
+      expect(debito).not_to be_valid
+      expect(debito.errors[:registro_acesso]).to include("é obrigatório para débito")
+    end
+
+    it "rejeita passagem de outro estudante ou não realizada" do
+      mensagem = "deve ser uma passagem realizada pelo mesmo estudante"
+      de_outro = build(:movimentacao_saldo, :debito_refeicao, estudante: estudante,
+                                                              registro_acesso: create(:registro_acesso))
+      expect(de_outro).not_to be_valid
+      expect(de_outro.errors[:registro_acesso]).to include(mensagem)
+
+      nao_realizada = build(:movimentacao_saldo, :debito_refeicao, estudante: estudante)
+      allow(nao_realizada.registro_acesso).to receive(:realizado?).and_return(false)
+      expect(nao_realizada).not_to be_valid
+      expect(nao_realizada.errors[:registro_acesso]).to include(mensagem)
+    end
+
+    it "não aceita recarga" do
+      debito = build(:movimentacao_saldo, :debito_refeicao, estudante: estudante,
+                                                            recarga: create(:recarga, estudante: estudante))
+      expect(debito).not_to be_valid
+      expect(debito.errors[:recarga]).to include("não se aplica a débito")
+    end
+
     it "é descrito como refeição" do
       expect(build(:movimentacao_saldo, :debito_refeicao).descricao).to eq("Refeição")
+    end
+
+    it "é descrito com o tipo da refeição quando o serviço é conhecido" do
+      debito = build(:movimentacao_saldo, :debito_refeicao)
+      allow(debito).to receive(:tipo_refeicao).and_return(build(:tipo_refeicao, nome: "Almoço"))
+      expect(debito.descricao).to eq("Refeição: Almoço")
     end
   end
 
