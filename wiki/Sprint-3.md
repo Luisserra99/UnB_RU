@@ -526,9 +526,7 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 
 ### 6.2 Antes e depois
 
-> Preenchido por cada integrante na etapa 6, a partir da medição de antes (6.1). Uma linha por método refatorado e uma por controller ou model do escopo.
-
-> **Luis** (F02, F03 e login do portal): medido em 20/11/2026 na `sprint-3`, depois do merge da F02, da F03 e do login do portal. Todos os métodos do escopo ficaram abaixo de 18 nas duas medidas; a maior nota agora é o Flog 16,71 de `SessoesEstudanteController#create`. RDoc: 111 de 111 métodos documentados, além de todas as classes, módulos e constantes (`bin/rails "qualidade:rdoc[...]"` com 100% nos 16 arquivos). Fora de controllers e models, os forms, services e o helper do escopo também ficaram com 100% de cobertura. Testes novos: 40 exemplos RSpec de happy path e sad path (de 507 para 547).
+> As colunas de antes já vêm da medição de antes (6.1). Na etapa 6, cada integrante preenche nas suas linhas o depois (`bin/rails "qualidade:metodos[0,<arquivo>]"` e `bin/rails qualidade:cobertura`) e a refatoração aplicada. Métodos entre 15 e 20 que forem mantidos recebem "Revisto e mantido" e o motivo.
 
 #### Complexidade por método
 
@@ -552,7 +550,70 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 | Luis | `DadosCartao#luhn_valido?` | 15,68 | 15,68 | 11,53 | 11,53 | Revisto e mantido: algoritmo de Luhn em um só bloco |
 | Luis | `RecargasHelper#qr_modulos` | 15,57 | 15,57 | 12,25 | 12,25 | Revisto e mantido: um laço sobre a grade do QR Code |
 | Luis | `MovimentacaoSaldo#descricao` | 15,21 | 7,86 | 12,08 | 6,32 | Descrição do crédito extraída para `descricao_do_credito` |
-| | | | | | | |
+| Weldo | `Controle::HistoricoController#create` | 30,17 | | 25,40 | | |
+| Weldo | `Controle::SessoesController#create` | 25,52 | | 22,91 | | |
+| Weldo | `CadastroEstudante#salvar` | 18,78 | | 13,30 | | |
+| Weldo | `ControleHelper#item_nav_controle` | 17,13 | | 13,64 | | |
+| Weldo | `CadastroEstudante#validar_email` | 16,99 | | 13,34 | | |
+| Weldo | `Controle::HistoricoController#historico_liberado?` | 16,27 | | 10,82 | | |
+| Daniel | `Catracas::Operar#ler` | 67,65 | | 54,90 | | |
+| Daniel | `RateioConsumo#origens_e_limites` | 59,79 | | 43,12 | | |
+| Daniel | `Catracas::Operar#passar` | 40,28 | | 26,27 | | |
+| Daniel | `PontosAcesso::Configurar::call` | 39,34 | | 29,31 | | |
+| Daniel | `RegistroAcesso#coerencia_da_passagem` | 31,21 | | 22,83 | | |
+| Daniel | `Catracas::Operar#ratear!` | 30,18 | | 22,20 | | |
+| Daniel | `ConfiguracaoPontoAcesso#disponivel?` | 29,08 | | 18,38 | | |
+| Daniel | `Controle::PontosAcessoController#create` | 27,68 | | 21,19 | | |
+| Daniel | `Catracas::Operar#confirmar_liberacao` | 17,17 | | 12,81 | | |
+| Daniel | `Controle::TerminalController#passagem` | 17,09 | | 12,21 | | |
+| Daniel | `Catracas::Operar#expirar_pendentes!` | 16,94 | | 12,08 | | |
+| Daniel | `Controle::TerminalController#ler` | 16,69 | | 12,21 | | |
+| Leonardo | `ServicoRefeicao#sem_sobreposicao_de_horario` | 29,09 | | 21,63 | | |
+| Leonardo | `Cardapios::ImportadorJson#importar` | 28,72 | | 20,25 | | |
+| Leonardo | `Restaurante#atualizar_com_pisos` | 26,90 | | 17,38 | | |
+| Leonardo | `Admin::CatracasController#salvar` | 21,25 | | 23,19 | | |
+| Leonardo | `CardapiosController#show` | 22,75 | | 19,72 | | |
+| Leonardo | `Catraca#identificacao_unica_no_restaurante` | 21,43 | | 15,33 | | |
+| Leonardo | `Cardapios::ImportadorJson#importar_cardapio` | 18,05 | | 16,67 | | |
+| Leonardo | `Cardapios::ImportadorJson#itens_da_dieta` | 17,15 | | 16,03 | | |
+| Tarsila | `Relatorios::AcessosOperacaoPdf#corpo_agrupado` | 45,84 | | 28,23 | | |
+| Tarsila | `Relatorios::AcessosOperacao#initialize` | 45,77 | | 37,43 | | |
+| Tarsila | `Relatorios::AcessosOperacaoPdf#cabecalho` | 37,04 | | 28,04 | | |
+| Tarsila | `Relatorios::OperacaoGlobalCsv#render` | 34,02 | | 19,13 | | |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#indicadores` | 33,83 | | 25,02 | | |
+| Tarsila | `Extratos::Relatorio#paginas_visiveis` | 31,48 | | 19,10 | | |
+| Tarsila | `Extratos::Pdf#resumo` | 30,58 | | 22,02 | | |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#cabecalho` | 29,70 | | 22,02 | | |
+| Tarsila | `Extratos::Pdf#cabecalho` | 28,52 | | 22,09 | | |
+| Tarsila | `Relatorios::OperacaoGlobal#initialize` | 28,47 | | 23,02 | | |
+| Tarsila | `Relatorios::AcessosOperacao#grupos` | 27,87 | | 17,61 | | |
+| Tarsila | `Relatorios::AcessosOperacao#consulta` | 26,67 | | 19,34 | | |
+| Tarsila | `Extratos::Relatorio#lancamento_de_refeicao` | 26,17 | | 20,32 | | |
+| Tarsila | `Extratos::Pdf#tabela` | 25,88 | | 22,83 | | |
+| Tarsila | `Relatorios::AcessosOperacaoPdf#tabela` | 25,52 | | 23,11 | | |
+| Tarsila | `Extratos::Relatorio#initialize` | 25,38 | | 21,68 | | |
+| Tarsila | `Relatorios::AcessosOperacao#montar_acesso` | 24,83 | | 19,47 | | |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#consolidacao` | 24,05 | | 18,28 | | |
+| Tarsila | `Relatorios::OperacaoGlobal#distribuicao_por_refeicao` | 23,77 | | 18,60 | | |
+| Tarsila | `ExportacaoRelatorio#validar_conclusao` | 22,92 | | 17,72 | | |
+| Tarsila | `ExportacoesExtratoController#create` | 22,61 | | 18,22 | | |
+| Tarsila | `Relatorios::OperacaoGlobal#horarios_das_refeicoes` | 22,24 | | 16,03 | | |
+| Tarsila | `Extratos::PlanilhaCsv#render` | 21,88 | | 13,19 | | |
+| Tarsila | `Relatorios::OperacaoGlobal#acessos` | 21,55 | | 15,33 | | |
+| Tarsila | `Relatorios::ExportarAcessosOperacao#call` | 20,88 | | 15,65 | | |
+| Tarsila | `Relatorios::AcessosOperacaoPdf#render` | 20,63 | | 15,07 | | |
+| Tarsila | `Relatorios::OperacaoGlobal#linhas` | 20,33 | | 16,40 | | |
+| Tarsila | `Extratos::Relatorio#corresponde?` | 20,23 | | 14,90 | | |
+| Tarsila | `Admin::RelatoriosGlobaisController#exportar` | 20,03 | | 16,25 | | |
+| Tarsila | `Relatorios::OperacaoGlobal#liquidacoes` | 18,94 | | 13,15 | | |
+| Tarsila | `Relatorios::ExportarAcessosOperacao#concluir` | 17,34 | | 14,32 | | |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#liquidacao` | 16,77 | | 13,38 | | |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#tabela` | 15,00 | | 16,67 | | |
+| Tarsila | `Extratos::Exportar#concluir` | 16,43 | | 13,60 | | |
+| Tarsila | `Extratos::Relatorio#refeicoes_por_tipo` | 16,32 | | 10,95 | | |
+| Tarsila | `Admin::AcessosOperacaoController#exportar` | 16,16 | | 13,30 | | |
+| Tarsila | `Relatorios::ExportarOperacaoGlobal#call` | 15,01 | | 11,58 | | |
+| Tarsila | `Extratos::Exportar#call` | 15,01 | | 11,58 | | |
 
 #### Cobertura (SimpleCov)
 
@@ -568,7 +629,44 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 | Luis | `app/models/pagamento.rb` | 100,00% | 100,00% |
 | Luis | `app/models/recarga.rb` | 100,00% | 100,00% |
 | Luis | `app/models/tarifa_refeicao.rb` | 95,65% | 100,00% |
-| | | | |
+| Weldo | `app/controllers/application_controller.rb` | 100,00% | |
+| Weldo | `app/controllers/cadastros_controller.rb` | 100,00% | |
+| Weldo | `app/controllers/concerns/autenticacao_funcionario.rb` | 100,00% | |
+| Weldo | `app/controllers/controle/base_controller.rb` | 100,00% | |
+| Weldo | `app/controllers/controle/historico_controller.rb` | 100,00% | |
+| Weldo | `app/controllers/controle/painel_controller.rb` | 100,00% | |
+| Weldo | `app/controllers/controle/sessoes_controller.rb` | 100,00% | |
+| Weldo | `app/controllers/paginas_controller.rb` | 100,00% | |
+| Weldo | `app/models/application_record.rb` | 100,00% | |
+| Weldo | `app/models/estudante.rb` | 100,00% | |
+| Weldo | `app/models/papel.rb` | 100,00% | |
+| Weldo | `app/models/sessao_autenticacao.rb` | 100,00% | |
+| Weldo | `app/models/usuario.rb` | 100,00% | |
+| Weldo | `app/models/usuario_papel.rb` | 100,00% | |
+| Daniel | `app/controllers/controle/pontos_acesso_controller.rb` | 100,00% | |
+| Daniel | `app/controllers/controle/terminal_controller.rb` | 83,33% | |
+| Daniel | `app/models/configuracao_ponto_acesso.rb` | 100,00% | |
+| Daniel | `app/models/rateio_consumo.rb` | 100,00% | |
+| Daniel | `app/models/registro_acesso.rb` | 96,15% | |
+| Leonardo | `app/controllers/admin/base_controller.rb` | 100,00% | |
+| Leonardo | `app/controllers/admin/catracas_controller.rb` | 100,00% | |
+| Leonardo | `app/controllers/admin/restaurantes_controller.rb` | 100,00% | |
+| Leonardo | `app/controllers/cardapios_controller.rb` | 100,00% | |
+| Leonardo | `app/controllers/controle/catracas_controller.rb` | 100,00% | |
+| Leonardo | `app/models/cardapio.rb` | 100,00% | |
+| Leonardo | `app/models/catraca.rb` | 100,00% | |
+| Leonardo | `app/models/item_cardapio.rb` | 100,00% | |
+| Leonardo | `app/models/opcao_cardapio.rb` | 100,00% | |
+| Leonardo | `app/models/piso.rb` | 100,00% | |
+| Leonardo | `app/models/restaurante.rb` | 100,00% | |
+| Leonardo | `app/models/servico_refeicao.rb` | 100,00% | |
+| Leonardo | `app/models/tipo_refeicao.rb` | 100,00% | |
+| Leonardo | `app/models/unidade_gestora.rb` | 100,00% | |
+| Tarsila | `app/controllers/admin/acessos_operacao_controller.rb` | 100,00% | |
+| Tarsila | `app/controllers/admin/relatorios_base_controller.rb` | 100,00% | |
+| Tarsila | `app/controllers/admin/relatorios_globais_controller.rb` | 100,00% | |
+| Tarsila | `app/controllers/exportacoes_extrato_controller.rb` | 100,00% | |
+| Tarsila | `app/models/exportacao_relatorio.rb` | 100,00% | |
 
 #### Resumo do projeto
 
