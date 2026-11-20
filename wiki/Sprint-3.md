@@ -528,16 +528,46 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 
 > Preenchido por cada integrante na etapa 6, a partir da medição de antes (6.1). Uma linha por método refatorado e uma por controller ou model do escopo.
 
+> **Luis** (F02, F03 e login do portal): medido em 20/11/2026 na `sprint-3`, depois do merge da F02, da F03 e do login do portal. Todos os métodos do escopo ficaram abaixo de 18 nas duas medidas; a maior nota agora é o Flog 16,71 de `SessoesEstudanteController#create`. RDoc: 111 de 111 métodos documentados, além de todas as classes, módulos e constantes (`bin/rails "qualidade:rdoc[...]"` com 100% nos 16 arquivos). Fora de controllers e models, os forms, services e o helper do escopo também ficaram com 100% de cobertura. Testes novos: 40 exemplos RSpec de happy path e sad path (de 507 para 547).
+
 #### Complexidade por método
 
 | Responsável | Classe#método | Flog antes | Flog depois | ABC antes | ABC depois | Refatoração aplicada |
 |---|---|---|---|---|---|---|
+| Luis | `Pagamentos::GatewaySimulado#copia_e_cola` | 49,39 | 9,06 | 28,44 | 8,66 | Campos do BR Code viram uma lista de dados (`campos_br_code`); extraídos `conta_pix` e `txid_emv` |
+| Luis | `SolicitacaoRecarga#salvar` | 45,87 | 16,10 | 30,03 | 11,22 | *Extract method*: `montar_recarga`, `categorias_compradas`, `adicionar_item` e `adicionar_pagamento` |
+| Luis | `DadosCartao#validade_futura` | 29,95 | 9,68 | 19,75 | 7,68 | *Extract method*: `fim_da_validade` e `mes_e_ano_da_validade`; regex em constante |
+| Luis | `SessoesEstudanteController#create` | 28,44 | 16,71 | 25,24 | 14,87 | *Extract method*: `campos_em_branco` e `entrar`; usuário sem cadastro de estudante recusado com a mesma mensagem de credencial inválida |
+| Luis | `MovimentacaoSaldo#validar_credito` | 28,12 | 10,39 | 22,14 | 9,22 | Validação da recarga separada em `validar_recarga_do_credito`, com `return` antecipado |
+| Luis | `RecargasController#pagar_cartao` | 26,70 | 10,15 | 24,54 | 9,27 | Predicado `cobranca_cartao_em_aberto?`; extraídos `params_cartao`, `dados_cartao_invalidos`, `cobrar_cartao` e `redirecionar_apos_pagamento` (reusado em `simular_confirmacao`) |
+| Luis | `MovimentacaoSaldo#validar_debito` | 26,61 | 10,39 | 21,19 | 9,22 | Validação da passagem separada em `validar_passagem_do_debito`, com `return` antecipado |
+| Luis | `RecargasHelper#qr_padrao_localizacao` | 26,17 | 9,10 | 19,10 | 9,00 | Cantos em constante; desenho do padrão extraído para `qr_modulo_do_localizador` |
+| Luis | `RecargasController#create` | 26,07 | 16,15 | 19,75 | 15,26 | Predicado `somente_calcular?`; formatação dos erros movida para `SolicitacaoRecarga#mensagem_erro` |
+| Luis | `ExtratosController#show` | 25,09 | 8,02 | 19,47 | 7,35 | Predicado `extrato_de_outro_estudante?`; extraídos `negar_acesso` e `filtros_do_relatorio` |
+| Luis | `TarifaRefeicao#sem_sobreposicao_de_vigencia` | 21,68 | 9,87 | 17,58 | 8,54 | Consulta extraída para `tarifas_sobrepostas`, com os scopes `nao_encerradas_em` e `iniciadas_antes_de` |
+| Luis | `Pagamentos::GatewaySimulado#crc16` | 21,35 | 8,03 | 13,08 | 7,28 | Laço por byte e por bit extraído para `crc16_byte` e `crc16_bit` |
+| Luis | `Extratos::Consulta#refeicoes` | 18,19 | 6,26 | 13,34 | 5,39 | Conversão de cada débito extraída para `refeicao_de` |
+| Luis | `AutenticacaoEstudante#exigir_estudante!` | 16,43 | 11,72 | 15,39 | 11,79 | Escolha do aviso extraída para `mensagem_de_login_obrigatorio` |
+| Luis | `Pagamento#confirmar!` | 15,69 | 15,69 | 12,41 | 12,41 | Revisto e mantido: transação curta e legível |
+| Luis | `DadosCartao#luhn_valido?` | 15,68 | 15,68 | 11,53 | 11,53 | Revisto e mantido: algoritmo de Luhn em um só bloco |
+| Luis | `RecargasHelper#qr_modulos` | 15,57 | 15,57 | 12,25 | 12,25 | Revisto e mantido: um laço sobre a grade do QR Code |
+| Luis | `MovimentacaoSaldo#descricao` | 15,21 | 7,86 | 12,08 | 6,32 | Descrição do crédito extraída para `descricao_do_credito` |
 | | | | | | | |
 
 #### Cobertura (SimpleCov)
 
 | Responsável | Controller / model | Cobertura antes | Cobertura depois |
 |---|---|---|---|
+| Luis | `app/controllers/concerns/autenticacao_estudante.rb` | 100,00% | 100,00% |
+| Luis | `app/controllers/extratos_controller.rb` | 100,00% | 100,00% |
+| Luis | `app/controllers/portal_estudante_controller.rb` | 100,00% | 100,00% |
+| Luis | `app/controllers/recargas_controller.rb` | 100,00% | 100,00% |
+| Luis | `app/controllers/sessoes_estudante_controller.rb` | 100,00% | 100,00% |
+| Luis | `app/models/item_recarga.rb` | 100,00% | 100,00% |
+| Luis | `app/models/movimentacao_saldo.rb` | 97,37% | 100,00% |
+| Luis | `app/models/pagamento.rb` | 100,00% | 100,00% |
+| Luis | `app/models/recarga.rb` | 100,00% | 100,00% |
+| Luis | `app/models/tarifa_refeicao.rb` | 95,65% | 100,00% |
 | | | | |
 
 #### Resumo do projeto
@@ -574,7 +604,7 @@ Cada integrante registra aqui, na etapa 6, se usou IA no seu escopo, no mesmo fo
 
 | Integrante | Ferramenta e modelo | Uso | Revisão |
 |---|---|---|---|
-| Luis Eduardo Curi Serra | | | |
+| Luis Eduardo Curi Serra | Claude Code (Claude Opus 5.5) | Ferramentas da T0 (configuração e tarefas `qualidade:*`, com specs); medição de antes (T1) e de depois do escopo; refatoração da F02, da F03 e do login do portal; testes RSpec de happy path e sad path; comentários RDoc de todo o escopo; padrão de RDoc e de refatoração da seção 5; texto das issues do Luis (criadas por ele no GitHub) | Verificação automática a cada passo: RSpec (547 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop e RDoc a 100% no escopo. O código PIX e o SVG do QR Code foram comparados byte a byte antes e depois da refatoração. Revisão do código e dos textos pelo Luis antes do push e dos PRs |
 | Weldo Gonçalves da Silva Junior | | | |
 | Daniel Dezan Baby | | | |
 | Leonardo Tome Sampaio | | | |
