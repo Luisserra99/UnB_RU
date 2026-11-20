@@ -1,7 +1,6 @@
 # Login e logout do Portal do Estudante (F02/F03).
 class SessoesEstudanteController < ApplicationController
   MSG_FALHA = "Não foi possível autenticar as credenciais.".freeze
-  MSG_SOMENTE_ESTUDANTES = "Acesso negado: o Portal do Estudante é restrito a estudantes.".freeze
 
   def new
     redirect_to new_recarga_path if estudante_autenticado?
@@ -14,10 +13,7 @@ class SessoesEstudanteController < ApplicationController
     return render_falha if @campos_obrigatorios.any?
 
     usuario = Usuario.autenticar(@matricula, senha)
-    return render_falha(MSG_FALHA) if usuario.nil?
-    return render_falha(MSG_SOMENTE_ESTUDANTES) if usuario.estudante.nil?
-
-    entrar(usuario)
+    usuario&.estudante ? entrar(usuario) : render_falha(MSG_FALHA)
   end
 
   def destroy

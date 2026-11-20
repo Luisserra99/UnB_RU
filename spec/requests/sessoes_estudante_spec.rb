@@ -41,11 +41,13 @@ RSpec.describe "Login do Portal do Estudante (F02/F03)", type: :request do
     expect(response).to have_http_status(:unprocessable_content)
   end
 
-  it "nega acesso a funcionário sem cadastro de estudante" do
+  it "recusa funcionário sem cadastro de estudante como credencial inválida" do
     funcionario = create(:funcionario)
-    post login_estudante_path, params: { matricula: funcionario.identificacao, senha: "senhaCorreta" }
+    expect do
+      post login_estudante_path, params: { matricula: funcionario.identificacao, senha: "senhaCorreta" }
+    end.not_to change(SessaoAutenticacao, :count)
     expect(response).to have_http_status(:unprocessable_content)
-    expect(response.body).to include("Acesso negado: o Portal do Estudante é restrito a estudantes.")
+    expect(response.body).to include(SessoesEstudanteController::MSG_FALHA)
   end
 
   it "encerra a sessão no logout" do
