@@ -60,10 +60,12 @@
     <% end %>
     <% erros = @dados_cartao.errors %>
     <%= form_with model: @dados_cartao, scope: :dados_cartao, url: pagar_cartao_recarga_path(@recarga), method: :post,
-          class: "formulario formulario-cartao" do |f| %>
-      <% [[:numero, "Número do cartão", { autocomplete: "cc-number", inputmode: "numeric", placeholder: "0000 0000 0000 0000" }],
+          class: "formulario formulario-cartao", data: { controller: "cartao" } do |f| %>
+      <% [[:numero, "Número do cartão", { autocomplete: "cc-number", inputmode: "numeric", placeholder: "0000 0000 0000 0000",
+                                          maxlength: 19, data: { cartao_target: "numero", action: "input->cartao#numero" } }],
           [:nome, "Nome impresso no cartão", { autocomplete: "cc-name" }],
-          [:validade, "Validade (MM/AA)", { autocomplete: "cc-exp", placeholder: "MM/AA" }],
+          [:validade, "Validade (MM/AA)", { autocomplete: "cc-exp", inputmode: "numeric", placeholder: "MM/AA",
+                                            maxlength: 5, data: { cartao_target: "validade", action: "input->cartao#validade" } }],
           [:cvv, "CVV", { autocomplete: "cc-csc", inputmode: "numeric", maxlength: 3 }]].each do |atributo, rotulo, opcoes| %>
         <div class="campo">
           <div class="campo-rotulo"><%= f.label atributo, rotulo %></div>

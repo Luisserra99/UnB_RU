@@ -88,8 +88,38 @@ RSpec.describe Pagamento, type: :model do
     end
   end
 
+  describe "transições sem efeito" do
+    it "não recusa um pagamento já confirmado" do
+      pagamento = create(:pagamento, :cartao, recarga: recarga)
+      pagamento.confirmar!
+      pagamento.recusar!
+      expect(pagamento.reload).to be_confirmado
+      expect(estudante.saldo).to eq(BigDecimal("22.50"))
+    end
+
+    it "expira o cartão pendente sem expirar a recarga" do
+      pagamento = create(:pagamento, :cartao, recarga: recarga)
+      pagamento.expirar!
+      expect(pagamento.reload).to be_expirado
+      expect(recarga.reload).to be_pendente
+    end
+
+    it "cartão nunca vence pelo prazo do PIX" do
+      expect(create(:pagamento, :cartao, recarga: recarga).vencido?(1.year.from_now)).to be(false)
+    end
+  end
+
   it "traduz o nome do método" do
     expect(described_class.nome_metodo("pix")).to eq("PIX")
     expect(described_class.nome_metodo(:cartao_credito)).to eq("Cartão de Crédito")
+    expect(build(:pagamento, :cartao).nome_metodo).to eq("Cartão de Crédito")
+  end
+
+  it "devolve o próprio código para método desconhecido" do
+    expect(described_class.nome_metodo("boleto")).to eq("boleto")
+  end
+
+  it "informa o prazo do PIX em minutos" do
+    expect(described_class.new.minutos_de_validade).to eq(10)
   end
 end

@@ -30,6 +30,28 @@ RSpec.describe TarifaRefeicao, type: :model do
     expect(nova).to be_valid
   end
 
+  describe "#vigente_em?" do
+    let(:tarifa) do
+      described_class.new(tipo_refeicao: almoco, valor: 4.5, vigente_desde: Time.zone.local(2026, 1, 1),
+                          vigente_ate: Time.zone.local(2026, 6, 1))
+    end
+
+    it "vale do início (inclusive) até o fim (exclusive)" do
+      expect(tarifa.vigente_em?(Time.zone.local(2026, 1, 1))).to be(true)
+      expect(tarifa.vigente_em?(Time.zone.local(2026, 5, 31, 23, 59))).to be(true)
+    end
+
+    it "não vale antes do início nem a partir do fim" do
+      expect(tarifa.vigente_em?(Time.zone.local(2025, 12, 31))).to be(false)
+      expect(tarifa.vigente_em?(Time.zone.local(2026, 6, 1))).to be(false)
+    end
+
+    it "sem fim, vale para sempre depois do início" do
+      tarifa.vigente_ate = nil
+      expect(tarifa.vigente_em?(Time.zone.local(2030, 1, 1))).to be(true)
+    end
+  end
+
   describe ".vigente_para" do
     it "devolve a tarifa vigente no momento, por tipo ou código" do
       antiga = described_class.create!(tipo_refeicao: almoco, valor: 4, vigente_desde: Time.zone.local(2026, 1, 1),

@@ -12,6 +12,17 @@ RSpec.describe Pagamentos::GatewaySimulado do
     end
   end
 
+  describe ".txid_emv" do
+    it "mantém só letras e dígitos, até 25 caracteres" do
+      expect(described_class.txid_emv("PIXSIM-ABC123")).to eq("PIXSIMABC123")
+      expect(described_class.txid_emv("A" * 30)).to eq("A" * 25)
+    end
+
+    it "devolve texto vazio para referência ausente" do
+      expect(described_class.txid_emv(nil)).to eq("")
+    end
+  end
+
   it "calcula o CRC16-CCITT de referência" do
     expect(described_class.crc16("123456789")).to eq("29B1")
   end
@@ -24,6 +35,13 @@ RSpec.describe Pagamentos::GatewaySimulado do
       expect(pagamento.referencia_provedor).to start_with("PIXSIM-")
       expect(pagamento.expira_em).to be_within(1.second).of(agora + 10.minutes)
       expect(pagamento.pix_copia_cola).to be_present
+    end
+
+    it "mantém a referência que o pagamento já tinha" do
+      pagamento = Pagamento.new(metodo: "pix", valor_solicitado: 4.5, referencia_provedor: "PIXSIM-EXISTENTE")
+      described_class.emitir_pix(pagamento)
+      expect(pagamento.referencia_provedor).to eq("PIXSIM-EXISTENTE")
+      expect(pagamento.pix_copia_cola).to include("PIXSIMEXISTENTE")
     end
   end
 
