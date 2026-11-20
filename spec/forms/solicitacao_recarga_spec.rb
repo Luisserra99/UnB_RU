@@ -65,6 +65,29 @@ RSpec.describe SolicitacaoRecarga do
     expect(estudante.saldo).to eq(0)
   end
 
+  it "não grava nada e devolve o motivo quando o banco rejeita a recarga" do
+    allow(Pagamentos::GatewaySimulado).to receive(:emitir_pix) # PIX sem código: pagamento inválido
+    s = solicitacao(quantidade_almocos: "2", metodo: "pix")
+
+    expect { expect(s.salvar).to be(false) }.not_to change(Recarga, :count)
+    expect(s.errors[:base]).to be_present
+    expect(Pagamento.count).to eq(0)
+  end
+
+  it "junta os erros distintos numa frase" do
+    s = solicitacao(quantidade_cafes: "abc", quantidade_almocos: "-1")
+    s.valid?
+    expect(s.mensagem_erro).to include("Cafés da Manhã: informe um número inteiro entre 0 e 100")
+    expect(s.mensagem_erro).to include(". Almoços/Jantares")
+    expect(s.mensagem_erro).to include("Selecione o método de pagamento")
+  end
+
+  it "não tem mensagem de erro quando é válida" do
+    s = solicitacao(quantidade_almocos: "1", metodo: "pix")
+    expect(s).to be_valid
+    expect(s.mensagem_erro).to eq("")
+  end
+
   it "cria só o item da categoria escolhida e um pagamento com cartão" do
     s = solicitacao(quantidade_cafes: "5", quantidade_almocos: "0", metodo: "cartao_credito")
     expect(s.salvar).to be(true)
