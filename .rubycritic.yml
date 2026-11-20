@@ -1,0 +1,7 @@
+# Sprint 3 (critério C1): bundle exec rubycritic analisa app/ e salva o relatório em tmp/rubycritic.
+# A nota Flog por método de todos os métodos (não só os acima de 25) sai em: bin/rails qualidade:metodos
+paths:
+  - "app"
+formats:
+  - "html"
+no_browser: true

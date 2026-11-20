@@ -46,7 +46,7 @@ O foco da sprint é refatorar e documentar o código já entregue, **sem mudar o
 
 | # | Critério | Ferramenta | Meta |
 |---|---|---|---|
-| C1 | Complexidade por método | [RubyCritic](https://github.com/whitesmith/rubycritic) (ABC Score) | **ABC < 20** em todo método; métodos próximos de 20 também são refatorados |
+| C1 | Complexidade por método | [RubyCritic](https://github.com/whitesmith/rubycritic) (Flog) e RuboCop (ABC) | **Flog < 20 e ABC < 20** em todo método; métodos próximos de 20 também são refatorados |
 | C2 | Cobertura de testes RSpec | [SimpleCov](https://github.com/simplecov-ruby/simplecov) | **> 90%** em cada controller e model do grupo, com os valores anotados |
 | C3 | Happy path e sad path | RSpec e Cucumber | Todo caso de teste tem happy path e sad path. **Os `.feature` já existentes não podem ser alterados** |
 | C4 | Documentação do código | [RDoc](https://github.com/ruby/rdoc) | Todo método tem: (a) descrição, (b) argumentos, (c) retorno e possibilidades de retorno, (d) efeitos colaterais (redirecionamento, escrita no banco etc.) |
@@ -93,13 +93,27 @@ O dia 27/11 fica só para a entrega. Se alguma etapa atrasar, o Scrum Master avi
 
 | ID | Tarefa | Responsável | Etapa |
 |---|---|---|---|
-| T0 | Adicionar `rubycritic` e `simplecov` ao `Gemfile` (grupo `development, test`), iniciar o SimpleCov no topo de `spec/rails_helper.rb` (e em `features/support/env.rb`, se o grupo quiser a cobertura do Cucumber), configurar grupos por pasta (Controllers, Models, Services, Forms, Helpers), definir a geração do RDoc (`.rdoc_options` ou tarefa rake restrita a `app/`) e ignorar no `.gitignore` as saídas `coverage/`, `tmp/rubycritic/` e `doc/` | Luis | 1 |
+| T0 | Adicionar `rubycritic`, `simplecov` e `rdoc` ao `Gemfile`, iniciar o SimpleCov no topo de `spec/spec_helper.rb` com grupos por pasta (Controllers, Models, Services, Forms, Helpers), configurar o RubyCritic (`.rubycritic.yml`), criar as tarefas `qualidade:*` e `documentacao` e ignorar `doc/` no `.gitignore`. Ver [como rodar](#como-rodar-as-ferramentas-t0) | Luis | 1 |
 | T1 | Rodar RubyCritic e SimpleCov no commit da T0 e publicar a medição de antes: lista dos métodos com ABC ≥ 15 e a cobertura de cada controller e model | Luis | 2 |
 | T2 | Criar o GitHub Project da Sprint 3 com as lanes Backlog, Doing, Done e Accepted | Weldo | 1 |
 | T3 | Arquivo `.txt` da entrega (link do repositório, nomes e matrículas) | Weldo | 7 |
 | T4 | Consolidar esta página: seção "O que foi refatorado" e tabela de antes e depois com as linhas de todos | Daniel | 7 |
-| T5 | Verificação final na `sprint-3`: RubyCritic sem método com ABC ≥ 20, SimpleCov > 90% por controller e model, `rspec` e `cucumber` passando sem alteração nos `.feature` existentes, RDoc gerado sem método sem documentação, RuboCop limpo | Daniel | 7 |
+| T5 | Verificação final na `sprint-3`: nenhum método com Flog ≥ 20 ou ABC ≥ 20, SimpleCov > 90% por controller e model, `rspec` e `cucumber` passando sem alteração nos `.feature` existentes, RDoc gerado sem método sem documentação, RuboCop limpo | Daniel | 7 |
 | T6 | Atualizar a [Home](Home.md) (papéis, branch de entrega e resultados dos testes) e abrir o PR `Grupo 02 - Sprint 3` | Daniel | 8 |
+
+### Como rodar as ferramentas (T0)
+
+Depois de `bundle install`, os comandos abaixo valem para todos os integrantes. No Windows, use `ruby bin/rails ...`.
+
+| Critério | Comando | O que mostra |
+|---|---|---|
+| C1 | `bin/rails "qualidade:metodos[15]"` | Tabela Markdown com o **Flog** (mesmo analisador do RubyCritic) e o **ABC** (cálculo do RuboCop, com o vetor `<A, B, C>`) de cada método com nota ≥ 15 em `app/`. Para filtrar: `bin/rails "qualidade:metodos[0,app/forms/dados_cartao.rb app/models]"` |
+| C1 | `bundle exec rubycritic` | Relatório completo em `tmp/rubycritic/overview.html`: nota geral, smells (Reek), duplicação (Flay) e métodos com Flog ≥ 25 |
+| C2 | `bundle exec rspec` e depois `bin/rails qualidade:cobertura` | O RSpec gera `coverage/index.html`; a tarefa imprime a tabela Markdown da cobertura de cada controller e model. Para outras pastas: `bin/rails "qualidade:cobertura[app/services app/forms]"` |
+| C4 | `bin/rails qualidade:rdoc` | Classes, constantes e métodos (inclusive privados) sem comentário RDoc. Aceita caminhos: `bin/rails "qualidade:rdoc[app/models/pagamento.rb]"` |
+| C4 | `bin/rails documentacao` | Gera o HTML do RDoc em `doc/app/index.html` |
+
+`coverage/`, `tmp/rubycritic/` e `doc/` ficam fora do git. O RubyCritic só sinaliza métodos com Flog ≥ 25, então a lista completa por método sai da tarefa `qualidade:metodos`. **O grupo adota as duas medidas no critério C1: um método só está pronto com Flog < 20 e ABC < 20.**
 
 ---
 
@@ -176,7 +190,7 @@ Sugestão de issues por integrante (uma por critério e escopo, para a tabela de
 
 | Issue sugerida | Conteúdo |
 |---|---|
-| `[S3][<Fxx>] Refatoração — ABC < 20` | Métodos com ABC ≥ 15 do escopo, segundo a T1; técnica usada (extract method, extract class, objeto de serviço etc.) |
+| `[S3][<Fxx>] Refatoração — Flog e ABC < 20` | Métodos do escopo com nota ≥ 15 na [medição de antes](#61-medição-de-antes-t1); técnica usada (extract method, extract class, objeto de serviço etc.) |
 | `[S3][<Fxx>] Cobertura > 90%` | Cobertura de antes por controller e model e specs adicionados |
 | `[S3][<Fxx>] Happy path e sad path` | Casos que só tinham um dos caminhos e os testes adicionados, sem alterar os `.feature` existentes |
 | `[S3][<Fxx>] Documentação RDoc` | Comentários (a)–(d) em todos os métodos do escopo |
@@ -199,7 +213,7 @@ Commits seguem o padrão do grupo; para esta sprint, use também `refactor` (mud
 
 ### Definição de pronto (Done)
 
-- Nenhum método do escopo com ABC ≥ 20 no RubyCritic, e os próximos de 20 também revistos.
+- Nenhum método do escopo com Flog ≥ 20 ou ABC ≥ 20 (`bin/rails qualidade:metodos`), e os próximos de 20 também revistos.
 - Cada controller e model do escopo com cobertura > 90% no SimpleCov.
 - `bundle exec rspec` e `bundle exec cucumber` passando, sem alteração nos `.feature` existentes.
 - Todos os métodos do escopo com comentário RDoc cobrindo (a)–(d), no padrão do piloto.
@@ -211,31 +225,288 @@ Commits seguem o padrão do grupo; para esta sprint, use também `refactor` (mud
 
 ## 6. Antes e depois da refatoração
 
-> A coluna "antes" é preenchida por Luis na etapa 2 (T1). A coluna "depois" é preenchida por cada integrante na etapa 6. Uma linha por método refatorado e uma por controller ou model do grupo.
+### 6.1 Medição de antes (T1)
 
-### ABC Score (RubyCritic)
+> Medida em 18/11/2026 no commit `575ba8c` (T0, branch `sprint-3-chore-Luis/ferramentas`), antes de qualquer refatoração, com os comandos da [seção 3](#como-rodar-as-ferramentas-t0). O responsável de cada arquivo é quem o criou na Sprint 2, conforme a [distribuição](#4-distribuição-por-integrante).
 
-| Responsável | Classe#método | ABC antes | ABC depois | Refatoração aplicada |
+Esta é a medição de partida da sprint: os números abaixo servem de "antes" na [seção 6.2](#62-antes-e-depois) e definem quais métodos e arquivos cada integrante precisa corrigir.
+
+#### Como a medição foi feita
+
+**Ambiente:** Linux, Ruby 3.3.4, Rails 8.1.4.1, banco SQLite de teste. Versões das ferramentas (do `Gemfile.lock`): RubyCritic 5.0.0 (com Flog 4.9.4, Reek 6.5.0 e Flay 2.14.5), RuboCop 1.92.2, SimpleCov 1.3.2 e RDoc 8.1.0.
+
+**Comandos, na ordem em que foram rodados:**
+
+```bash
+git checkout 575ba8c          # commit da T0, sem nenhuma refatoração
+bundle install
+
+# Testes: confirmam que o ponto de partida está verde e geram a cobertura
+bundle exec rspec                       # gera coverage/coverage.json (SimpleCov)
+bundle exec cucumber --format progress
+bundle exec rubocop
+
+# C1: complexidade por método
+bin/rails "qualidade:metodos[15]"       # todos os métodos com Flog ou ABC >= 15
+bin/rails "qualidade:metodos[20]"       # só os que estão acima do limite
+bundle exec rubycritic                  # nota geral, smells e duplicação
+
+# C2: cobertura, lida do coverage.json do RSpec acima
+bin/rails qualidade:cobertura                                     # controllers e models
+bin/rails "qualidade:cobertura[app/forms app/helpers app/services]"
+
+# C4: documentação
+bin/rails qualidade:rdoc
+```
+
+**Como os números foram consolidados:**
+
+- **Nota do método:** é a maior entre o Flog e o ABC que a tarefa `qualidade:metodos` imprime. Os métodos com nota ≥ 20 estão marcados como **Refatorar** (violam o C1) e os que têm nota entre 15 e 20 como **Revisar** ("próximos de 20", como pede o enunciado).
+- **Por que duas medidas:** o RubyCritic, ferramenta indicada pelo enunciado, mede a complexidade pelo **Flog**, uma variação ponderada do ABC, e só lista os métodos com Flog ≥ 25. O ABC exato (vetor `<Assignments, Branches, Conditions>`) vem do cálculo do cop `Metrics/AbcSize` do RuboCop. Esse cop fica desligado no estilo `omakase` do projeto, por isso o "RuboCop limpo" não diz nada sobre complexidade. A tarefa `qualidade:metodos` junta as duas medidas para cada `def` de `app/`.
+- **Contagens:** 57 métodos têm nota ≥ 20 (saída de `qualidade:metodos[20]`), e todos eles têm Flog ≥ 20. Na mesma saída, 30 têm também ABC ≥ 20, e nenhum passa de 20 só no ABC.
+- **Responsável:** cada arquivo foi atribuído pelo caminho, de acordo com as listas da [seção 4](#4-distribuição-por-integrante).
+- **Cobertura:** corresponde ao percentual de linhas que o SimpleCov registra para cada arquivo durante o `bundle exec rspec`. O Cucumber não entra nessa conta.
+
+#### Resultado de cada ferramenta
+
+| Ferramenta | Critério | Resultado no commit `575ba8c` |
+|---|---|---|
+| RSpec | C2, C3 | 507 exemplos, 0 falhas |
+| Cucumber | C3 | 163 cenários e 1456 passos, todos passando |
+| RuboCop | — | 222 arquivos, nenhuma ofensa |
+| `qualidade:metodos` (Flog e ABC) | C1 | 82 métodos com nota ≥ 15: **57 para refatorar** (nota ≥ 20) e 25 para revisar. Maior nota: `Catracas::Operar#ler`, com Flog 67,65 e ABC 54,90 |
+| RubyCritic | C1 | Nota geral **85,37**. Dos 79 arquivos de `app/`: 49 A, 19 B, 6 C, 5 D e nenhum E ou F. 384 smells, 502 pontos de duplicação em 13 arquivos e 40 métodos com Flog ≥ 25 |
+| SimpleCov | C2 | **99,27%** no total (2049 de 2064 linhas). Só 1 controller ou model fica com 90% ou menos: `controle/terminal_controller.rb`, com 83,33% |
+| RDoc | C4 | **17,01%** documentado. 305 dos 369 métodos estão sem comentário |
+
+A contagem de 40 métodos do RubyCritic difere da tabela abaixo, que tem 39 métodos com Flog ≥ 25. A diferença é `Relatorios::AcessosOperacao#montar_acesso`, que a tarefa mede com 24,83 e o RubyCritic sinaliza como ≥ 25. De qualquer forma, o método já está na lista para refatorar.
+
+#### Resumo por responsável
+
+| Responsável | Métodos com nota ≥ 20 (refatorar) | Métodos com nota entre 15 e 20 (revisar) | Controllers e models com cobertura ≤ 90% |
+|---|---|---|---|
+| Luis | 12 | 6 | nenhum |
+| Weldo | 2 | 4 | nenhum |
+| Daniel | 8 | 4 | `terminal_controller.rb` |
+| Leonardo | 6 | 2 | nenhum |
+| Tarsila | 29 | 9 | nenhum |
+| **Total** | **57** | **25** | **1** |
+
+“Nota” é a maior entre Flog e ABC. Um método só está pronto com as duas abaixo de 20.
+
+#### Métodos com Flog ou ABC ≥ 15
+
+| Responsável | Método | Arquivo:linha | Flog | ABC `<A, B, C>` | Situação |
+|---|---|---|---|---|---|
+| Luis | `Pagamentos::GatewaySimulado#copia_e_cola` | `app/services/pagamentos/gateway_simulado.rb:26` | 49,39 | 28,44 `<5, 28, 0>` | **Refatorar** |
+| Luis | `SolicitacaoRecarga#salvar` | `app/forms/solicitacao_recarga.rb:76` | 45,87 | 30,03 `<6, 29, 5>` | **Refatorar** |
+| Luis | `DadosCartao#validade_futura` | `app/forms/dados_cartao.rb:35` | 29,95 | 19,75 `<2, 19, 5>` | **Refatorar** |
+| Luis | `SessoesEstudanteController#create` | `app/controllers/sessoes_estudante_controller.rb:10` | 28,44 | 25,24 `<5, 24, 6>` | **Refatorar** |
+| Luis | `MovimentacaoSaldo#validar_credito` | `app/models/movimentacao_saldo.rb:45` | 28,12 | 22,14 `<0, 21, 7>` | **Refatorar** |
+| Luis | `RecargasController#pagar_cartao` | `app/controllers/recargas_controller.rb:31` | 26,70 | 24,54 `<3, 23, 8>` | **Refatorar** |
+| Luis | `MovimentacaoSaldo#validar_debito` | `app/models/movimentacao_saldo.rb:56` | 26,61 | 21,19 `<0, 20, 7>` | **Refatorar** |
+| Luis | `RecargasHelper#qr_padrao_localizacao` | `app/helpers/recargas_helper.rb:54` | 26,17 | 19,10 `<10, 12, 11>` | **Refatorar** |
+| Luis | `RecargasController#create` | `app/controllers/recargas_controller.rb:14` | 26,07 | 19,75 `<2, 19, 5>` | **Refatorar** |
+| Luis | `ExtratosController#show` | `app/controllers/extratos_controller.rb:7` | 25,09 | 19,47 `<3, 19, 3>` | **Refatorar** |
+| Luis | `TarifaRefeicao#sem_sobreposicao_de_vigencia` | `app/models/tarifa_refeicao.rb:35` | 21,68 | 17,58 `<2, 17, 4>` | **Refatorar** |
+| Luis | `Pagamentos::GatewaySimulado#crc16` | `app/services/pagamentos/gateway_simulado.rb:47` | 21,35 | 13,08 `<7, 11, 1>` | **Refatorar** |
+| Luis | `Extratos::Consulta#refeicoes` | `app/services/extratos/consulta.rb:33` | 18,19 | 13,34 `<3, 12, 5>` | Revisar |
+| Luis | `AutenticacaoEstudante#exigir_estudante!` | `app/controllers/concerns/autenticacao_estudante.rb:34` | 16,43 | 15,39 `<4, 14, 5>` | Revisar |
+| Luis | `Pagamento#confirmar!` | `app/models/pagamento.rb:34` | 15,69 | 12,41 `<1, 12, 3>` | Revisar |
+| Luis | `DadosCartao#luhn_valido?` | `app/forms/dados_cartao.rb:49` | 15,68 | 11,53 `<6, 9, 4>` | Revisar |
+| Luis | `RecargasHelper#qr_modulos` | `app/helpers/recargas_helper.rb:35` | 15,57 | 12,25 `<5, 11, 2>` | Revisar |
+| Luis | `MovimentacaoSaldo#descricao` | `app/models/movimentacao_saldo.rb:23` | 15,21 | 12,08 `<1, 9, 8>` | Revisar |
+| Weldo | `Controle::HistoricoController#create` | `app/controllers/controle/historico_controller.rb:18` | 30,17 | 25,40 `<4, 25, 2>` | **Refatorar** |
+| Weldo | `Controle::SessoesController#create` | `app/controllers/controle/sessoes_controller.rb:12` | 25,52 | 22,91 `<4, 22, 5>` | **Refatorar** |
+| Weldo | `CadastroEstudante#salvar` | `app/forms/cadastro_estudante.rb:29` | 18,78 | 13,30 `<2, 13, 2>` | Revisar |
+| Weldo | `ControleHelper#item_nav_controle` | `app/helpers/controle_helper.rb:5` | 17,13 | 13,64 `<4, 11, 7>` | Revisar |
+| Weldo | `CadastroEstudante#validar_email` | `app/forms/cadastro_estudante.rb:67` | 16,99 | 13,34 `<0, 13, 3>` | Revisar |
+| Weldo | `Controle::HistoricoController#historico_liberado?` | `app/controllers/controle/historico_controller.rb:39` | 16,27 | 10,82 `<1, 10, 4>` | Revisar |
+| Daniel | `Catracas::Operar#ler` | `app/services/catracas/operar.rb:10` | 67,65 | 54,90 `<15, 50, 17>` | **Refatorar** |
+| Daniel | `RateioConsumo#origens_e_limites` | `app/models/rateio_consumo.rb:11` | 59,79 | 43,12 `<3, 41, 13>` | **Refatorar** |
+| Daniel | `Catracas::Operar#passar` | `app/services/catracas/operar.rb:50` | 40,28 | 26,27 `<4, 25, 7>` | **Refatorar** |
+| Daniel | `PontosAcesso::Configurar::call` | `app/services/pontos_acesso/configurar.rb:5` | 39,34 | 29,31 `<7, 27, 9>` | **Refatorar** |
+| Daniel | `RegistroAcesso#coerencia_da_passagem` | `app/models/registro_acesso.rb:31` | 31,21 | 22,83 `<0, 20, 11>` | **Refatorar** |
+| Daniel | `Catracas::Operar#ratear!` | `app/services/catracas/operar.rb:118` | 30,18 | 22,20 `<6, 21, 4>` | **Refatorar** |
+| Daniel | `ConfiguracaoPontoAcesso#disponivel?` | `app/models/configuracao_ponto_acesso.rb:20` | 29,08 | 18,38 `<0, 17, 7>` | **Refatorar** |
+| Daniel | `Controle::PontosAcessoController#create` | `app/controllers/controle/pontos_acesso_controller.rb:3` | 27,68 | 21,19 `<2, 21, 2>` | **Refatorar** |
+| Daniel | `Catracas::Operar#confirmar_liberacao` | `app/services/catracas/operar.rb:76` | 17,17 | 12,81 `<2, 12, 4>` | Revisar |
+| Daniel | `Controle::TerminalController#passagem` | `app/controllers/controle/terminal_controller.rb:19` | 17,09 | 12,21 `<2, 12, 1>` | Revisar |
+| Daniel | `Catracas::Operar#expirar_pendentes!` | `app/services/catracas/operar.rb:96` | 16,94 | 12,08 `<1, 12, 1>` | Revisar |
+| Daniel | `Controle::TerminalController#ler` | `app/controllers/controle/terminal_controller.rb:12` | 16,69 | 12,21 `<2, 12, 1>` | Revisar |
+| Leonardo | `ServicoRefeicao#sem_sobreposicao_de_horario` | `app/models/servico_refeicao.rb:40` | 29,09 | 21,63 `<2, 20, 8>` | **Refatorar** |
+| Leonardo | `Cardapios::ImportadorJson#importar` | `app/services/cardapios/importador_json.rb:25` | 28,72 | 20,25 `<13, 15, 4>` | **Refatorar** |
+| Leonardo | `Restaurante#atualizar_com_pisos` | `app/models/restaurante.rb:49` | 26,90 | 17,38 `<3, 17, 2>` | **Refatorar** |
+| Leonardo | `Admin::CatracasController#salvar` | `app/controllers/admin/catracas_controller.rb:43` | 21,25 | 23,19 `<9, 21, 4>` | **Refatorar** |
+| Leonardo | `CardapiosController#show` | `app/controllers/cardapios_controller.rb:3` | 22,75 | 19,72 `<8, 17, 6>` | **Refatorar** |
+| Leonardo | `Catraca#identificacao_unica_no_restaurante` | `app/models/catraca.rb:30` | 21,43 | 15,33 `<1, 15, 3>` | **Refatorar** |
+| Leonardo | `Cardapios::ImportadorJson#importar_cardapio` | `app/services/cardapios/importador_json.rb:58` | 18,05 | 16,67 `<10, 13, 3>` | Revisar |
+| Leonardo | `Cardapios::ImportadorJson#itens_da_dieta` | `app/services/cardapios/importador_json.rb:73` | 17,15 | 16,03 `<8, 12, 7>` | Revisar |
+| Tarsila | `Relatorios::AcessosOperacaoPdf#corpo_agrupado` | `app/services/relatorios/acessos_operacao_pdf.rb:57` | 45,84 | 28,23 `<3, 28, 2>` | **Refatorar** |
+| Tarsila | `Relatorios::AcessosOperacao#initialize` | `app/services/relatorios/acessos_operacao.rb:22` | 45,77 | 37,43 `<14, 34, 7>` | **Refatorar** |
+| Tarsila | `Relatorios::AcessosOperacaoPdf#cabecalho` | `app/services/relatorios/acessos_operacao_pdf.rb:42` | 37,04 | 28,04 `<1, 28, 1>` | **Refatorar** |
+| Tarsila | `Relatorios::OperacaoGlobalCsv#render` | `app/services/relatorios/operacao_global_csv.rb:15` | 34,02 | 19,13 `<2, 19, 1>` | **Refatorar** |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#indicadores` | `app/services/relatorios/operacao_global_pdf.rb:51` | 33,83 | 25,02 `<1, 25, 0>` | **Refatorar** |
+| Tarsila | `Extratos::Relatorio#paginas_visiveis` | `app/services/extratos/relatorio.rb:112` | 31,48 | 19,10 `<4, 18, 5>` | **Refatorar** |
+| Tarsila | `Extratos::Pdf#resumo` | `app/services/extratos/pdf.rb:54` | 30,58 | 22,02 `<1, 22, 0>` | **Refatorar** |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#cabecalho` | `app/services/relatorios/operacao_global_pdf.rb:39` | 29,70 | 22,02 `<1, 22, 0>` | **Refatorar** |
+| Tarsila | `Extratos::Pdf#cabecalho` | `app/services/extratos/pdf.rb:40` | 28,52 | 22,09 `<2, 22, 0>` | **Refatorar** |
+| Tarsila | `Relatorios::OperacaoGlobal#initialize` | `app/services/relatorios/operacao_global.rb:29` | 28,47 | 23,02 `<9, 20, 7>` | **Refatorar** |
+| Tarsila | `Relatorios::AcessosOperacao#grupos` | `app/services/relatorios/acessos_operacao.rb:67` | 27,87 | 17,61 `<6, 15, 7>` | **Refatorar** |
+| Tarsila | `Relatorios::AcessosOperacao#consulta` | `app/services/relatorios/acessos_operacao.rb:139` | 26,67 | 19,34 `<3, 19, 2>` | **Refatorar** |
+| Tarsila | `Extratos::Relatorio#lancamento_de_refeicao` | `app/services/extratos/relatorio.rb:204` | 26,17 | 20,32 `<4, 19, 6>` | **Refatorar** |
+| Tarsila | `Extratos::Pdf#tabela` | `app/services/extratos/pdf.rb:65` | 25,88 | 22,83 `<6, 22, 1>` | **Refatorar** |
+| Tarsila | `Relatorios::AcessosOperacaoPdf#tabela` | `app/services/relatorios/acessos_operacao_pdf.rb:74` | 25,52 | 23,11 `<7, 22, 1>` | **Refatorar** |
+| Tarsila | `Extratos::Relatorio#initialize` | `app/services/extratos/relatorio.rb:46` | 25,38 | 21,68 `<11, 18, 5>` | **Refatorar** |
+| Tarsila | `Relatorios::AcessosOperacao#montar_acesso` | `app/services/relatorios/acessos_operacao.rb:150` | 24,83 | 19,47 `<3, 19, 3>` | **Refatorar** |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#consolidacao` | `app/services/relatorios/operacao_global_pdf.rb:62` | 24,05 | 18,28 `<3, 18, 1>` | **Refatorar** |
+| Tarsila | `Relatorios::OperacaoGlobal#distribuicao_por_refeicao` | `app/services/relatorios/operacao_global.rb:94` | 23,77 | 18,60 `<9, 16, 3>` | **Refatorar** |
+| Tarsila | `ExportacaoRelatorio#validar_conclusao` | `app/models/exportacao_relatorio.rb:71` | 22,92 | 17,72 `<0, 17, 5>` | **Refatorar** |
+| Tarsila | `ExportacoesExtratoController#create` | `app/controllers/exportacoes_extrato_controller.rb:5` | 22,61 | 18,22 `<2, 18, 2>` | **Refatorar** |
+| Tarsila | `Relatorios::OperacaoGlobal#horarios_das_refeicoes` | `app/services/relatorios/operacao_global.rb:160` | 22,24 | 16,03 `<6, 14, 5>` | **Refatorar** |
+| Tarsila | `Extratos::PlanilhaCsv#render` | `app/services/extratos/planilha_csv.rb:16` | 21,88 | 13,19 `<2, 13, 1>` | **Refatorar** |
+| Tarsila | `Relatorios::OperacaoGlobal#acessos` | `app/services/relatorios/operacao_global.rb:175` | 21,55 | 15,33 `<1, 15, 3>` | **Refatorar** |
+| Tarsila | `Relatorios::ExportarAcessosOperacao#call` | `app/services/relatorios/exportar_acessos_operacao.rb:27` | 20,88 | 15,65 `<2, 15, 4>` | **Refatorar** |
+| Tarsila | `Relatorios::AcessosOperacaoPdf#render` | `app/services/relatorios/acessos_operacao_pdf.rb:26` | 20,63 | 15,07 `<1, 15, 1>` | **Refatorar** |
+| Tarsila | `Relatorios::OperacaoGlobal#linhas` | `app/services/relatorios/operacao_global.rb:39` | 20,33 | 16,40 `<8, 14, 3>` | **Refatorar** |
+| Tarsila | `Extratos::Relatorio#corresponde?` | `app/services/extratos/relatorio.rb:178` | 20,23 | 14,90 `<1, 11, 10>` | **Refatorar** |
+| Tarsila | `Admin::RelatoriosGlobaisController#exportar` | `app/controllers/admin/relatorios_globais_controller.rb:10` | 20,03 | 16,25 `<2, 16, 2>` | **Refatorar** |
+| Tarsila | `Relatorios::OperacaoGlobal#liquidacoes` | `app/services/relatorios/operacao_global.rb:65` | 18,94 | 13,15 `<5, 12, 2>` | Revisar |
+| Tarsila | `Relatorios::ExportarAcessosOperacao#concluir` | `app/services/relatorios/exportar_acessos_operacao.rb:50` | 17,34 | 14,32 `<3, 14, 0>` | Revisar |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#liquidacao` | `app/services/relatorios/operacao_global_pdf.rb:69` | 16,77 | 13,38 `<3, 13, 1>` | Revisar |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#tabela` | `app/services/relatorios/operacao_global_pdf.rb:87` | 15,00 | 16,67 `<9, 14, 1>` | Revisar |
+| Tarsila | `Extratos::Exportar#concluir` | `app/services/extratos/exportar.rb:58` | 16,43 | 13,60 `<4, 13, 0>` | Revisar |
+| Tarsila | `Extratos::Relatorio#refeicoes_por_tipo` | `app/services/extratos/relatorio.rb:86` | 16,32 | 10,95 `<2, 10, 4>` | Revisar |
+| Tarsila | `Admin::AcessosOperacaoController#exportar` | `app/controllers/admin/acessos_operacao_controller.rb:10` | 16,16 | 13,30 `<2, 13, 2>` | Revisar |
+| Tarsila | `Relatorios::ExportarOperacaoGlobal#call` | `app/services/relatorios/exportar_operacao_global.rb:30` | 15,01 | 11,58 `<2, 11, 3>` | Revisar |
+| Tarsila | `Extratos::Exportar#call` | `app/services/extratos/exportar.rb:39` | 15,01 | 11,58 `<2, 11, 3>` | Revisar |
+
+#### Cobertura de controllers e models (RSpec)
+
+| Responsável | Arquivo | Cobertura | Linhas cobertas |
+|---|---|---|---|
+| Luis | `app/controllers/concerns/autenticacao_estudante.rb` | 100,00% | 34/34 |
+| Luis | `app/controllers/extratos_controller.rb` | 100,00% | 8/8 |
+| Luis | `app/controllers/portal_estudante_controller.rb` | 100,00% | 2/2 |
+| Luis | `app/controllers/recargas_controller.rb` | 100,00% | 47/47 |
+| Luis | `app/controllers/sessoes_estudante_controller.rb` | 100,00% | 24/24 |
+| Luis | `app/models/item_recarga.rb` | 100,00% | 16/16 |
+| Luis | `app/models/movimentacao_saldo.rb` | 97,37% | 37/38 |
+| Luis | `app/models/pagamento.rb` | 100,00% | 42/42 |
+| Luis | `app/models/recarga.rb` | 100,00% | 27/27 |
+| Luis | `app/models/tarifa_refeicao.rb` | 95,65% | 22/23 |
+| Weldo | `app/controllers/application_controller.rb` | 100,00% | 5/5 |
+| Weldo | `app/controllers/cadastros_controller.rb` | 100,00% | 11/11 |
+| Weldo | `app/controllers/concerns/autenticacao_funcionario.rb` | 100,00% | 36/36 |
+| Weldo | `app/controllers/controle/base_controller.rb` | 100,00% | 15/15 |
+| Weldo | `app/controllers/controle/historico_controller.rb` | 100,00% | 25/25 |
+| Weldo | `app/controllers/controle/painel_controller.rb` | 100,00% | 4/4 |
+| Weldo | `app/controllers/controle/sessoes_controller.rb` | 100,00% | 26/26 |
+| Weldo | `app/controllers/paginas_controller.rb` | 100,00% | 2/2 |
+| Weldo | `app/models/application_record.rb` | 100,00% | 2/2 |
+| Weldo | `app/models/estudante.rb` | 100,00% | 12/12 |
+| Weldo | `app/models/papel.rb` | 100,00% | 9/9 |
+| Weldo | `app/models/sessao_autenticacao.rb` | 100,00% | 32/32 |
+| Weldo | `app/models/usuario.rb` | 100,00% | 33/33 |
+| Weldo | `app/models/usuario_papel.rb` | 100,00% | 4/4 |
+| Daniel | `app/controllers/controle/pontos_acesso_controller.rb` | 100,00% | 16/16 |
+| Daniel | `app/controllers/controle/terminal_controller.rb` | **83,33%** | 20/24 |
+| Daniel | `app/models/configuracao_ponto_acesso.rb` | 100,00% | 20/20 |
+| Daniel | `app/models/rateio_consumo.rb` | 100,00% | 17/17 |
+| Daniel | `app/models/registro_acesso.rb` | 96,15% | 25/26 |
+| Leonardo | `app/controllers/admin/base_controller.rb` | 100,00% | 8/8 |
+| Leonardo | `app/controllers/admin/catracas_controller.rb` | 100,00% | 37/37 |
+| Leonardo | `app/controllers/admin/restaurantes_controller.rb` | 100,00% | 26/26 |
+| Leonardo | `app/controllers/cardapios_controller.rb` | 100,00% | 20/20 |
+| Leonardo | `app/controllers/controle/catracas_controller.rb` | 100,00% | 5/5 |
+| Leonardo | `app/models/cardapio.rb` | 100,00% | 12/12 |
+| Leonardo | `app/models/catraca.rb` | 100,00% | 25/25 |
+| Leonardo | `app/models/item_cardapio.rb` | 100,00% | 5/5 |
+| Leonardo | `app/models/opcao_cardapio.rb` | 100,00% | 8/8 |
+| Leonardo | `app/models/piso.rb` | 100,00% | 7/7 |
+| Leonardo | `app/models/restaurante.rb` | 100,00% | 57/57 |
+| Leonardo | `app/models/servico_refeicao.rb` | 100,00% | 27/27 |
+| Leonardo | `app/models/tipo_refeicao.rb` | 100,00% | 9/9 |
+| Leonardo | `app/models/unidade_gestora.rb` | 100,00% | 8/8 |
+| Tarsila | `app/controllers/admin/acessos_operacao_controller.rb` | 100,00% | 14/14 |
+| Tarsila | `app/controllers/admin/relatorios_base_controller.rb` | 100,00% | 12/12 |
+| Tarsila | `app/controllers/admin/relatorios_globais_controller.rb` | 100,00% | 13/13 |
+| Tarsila | `app/controllers/exportacoes_extrato_controller.rb` | 100,00% | 10/10 |
+| Tarsila | `app/models/exportacao_relatorio.rb` | 100,00% | 38/38 |
+
+Fora de controllers e models, ficaram abaixo de 100%: `app/forms/cadastro_estudante.rb` (95,56%), `app/forms/solicitacao_recarga.rb` (97,01%), `app/helpers/controle_helper.rb` (88,89%) e `app/services/catracas/operar.rb` (97,67%).
+
+#### Documentação (RDoc)
+
+`bin/rails qualidade:rdoc` em `app/` (inclui métodos privados):
+
+| Item | Total | Sem documentação |
+|---|---|---|
+| Classes | 70 | 43 |
+| Módulos | 20 | 10 |
+| Constantes | 142 | 136 |
+| Atributos | 34 | 33 |
+| **Métodos** | **369** | **305** |
+| Total | 635 | 527 (17,01% documentado) |
+
+#### Relatório do RubyCritic
+
+`bundle exec rubycritic` (relatório em `tmp/rubycritic/overview.html`). Arquivos com nota C ou D:
+
+| Nota | Arquivo | Complexidade (Flog do arquivo) | Duplicação | Smells |
 |---|---|---|---|---|
-| | | | | |
+| D | `app/services/extratos/relatorio.rb` | 289,0 | 0 | 21 |
+| D | `app/services/relatorios/operacao_global.rb` | 228,4 | 0 | 14 |
+| D | `app/services/relatorios/acessos_operacao.rb` | 221,0 | 0 | 23 |
+| D | `app/services/extratos/exportar.rb` | 51,2 | 110 | 10 |
+| D | `app/services/relatorios/exportar_operacao_global.rb` | 49,9 | 135 | 11 |
+| C | `app/services/catracas/operar.rb` | 189,8 | 0 | 30 |
+| C | `app/services/relatorios/operacao_global_pdf.rb` | 153,5 | 0 | 13 |
+| C | `app/services/relatorios/acessos_operacao_pdf.rb` | 148,5 | 33 | 18 |
+| C | `app/services/extratos/pdf.rb` | 101,8 | 33 | 11 |
+| C | `app/forms/solicitacao_recarga.rb` | 101,0 | 0 | 7 |
+| C | `app/services/relatorios/exportar_acessos_operacao.rb` | 48,9 | 41 | 8 |
 
-### Cobertura (SimpleCov)
+Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem comentário), `DuplicateMethodCall` (56), `TooManyStatements` (44), `HighComplexity` e `VeryHighComplexity` (40, Flog ≥ 25), `NilCheck` (29), `InstanceVariableAssumption` (28), `UtilityFunction` (28), `FeatureEnvy` (25) e `DuplicateCode` (21, do Flay). A duplicação se concentra entre os serviços de exportação: `Extratos::Exportar` e `Relatorios::ExportarOperacaoGlobal` têm 110 e 135 pontos.
+
+#### Por que essas correções são necessárias
+
+- **C1, complexidade (57 métodos para refatorar e 25 para revisar):** quanto maiores o Flog e o ABC, mais atribuições, chamadas e condições o método acumula. Um método assim é mais difícil de ler, testar por partes e alterar sem efeito colateral. O enunciado exige ABC < 20 e pede que os métodos próximos de 20 também sejam refatorados. O grupo exige também Flog < 20 porque é essa a medida que o RubyCritic mostra a quem avalia: 27 dos 57 métodos passariam só pelo ABC e continuariam com complexidade alta no relatório. O trabalho se concentra nos serviços de relatórios e extratos (F09, F11 e F12: 29 métodos) e em `Catracas::Operar` (F05 e F06), que também são os arquivos com nota C e D no RubyCritic.
+- **Duplicação:** os serviços de exportação repetem o mesmo fluxo de criar, gerar e concluir a exportação. Extrair esse fluxo comum reduz a complexidade dos dois de uma vez e evita que uma correção feita em um deles falte no outro.
+- **C2, cobertura (1 arquivo abaixo da meta):** o projeto já tem 99,27% de cobertura, mas `controle/terminal_controller.rb` tem 83,33% e precisa de testes para as 4 linhas não cobertas. A cobertura alta é também o que garante que a refatoração não muda o comportamento: antes de mexer num método, os testes que passam por ele precisam existir.
+- **C3, happy path e sad path:** não há ferramenta que meça isso. Cada integrante confere, unidade por unidade, se há um caso de sucesso e um de falha. Como os `.feature` não podem mudar, o caso que faltar entra em RSpec.
+- **C4, documentação (305 de 369 métodos sem RDoc):** é o maior volume de trabalho da sprint. Sem descrição, argumentos, retorno e efeitos colaterais, quem chega ao código precisa ler a implementação inteira para saber o que um método faz e o que ele altera. O smell `IrresponsibleModule` (60 ocorrências) aponta a mesma falta nas classes e módulos.
+
+### 6.2 Antes e depois
+
+> Preenchido por cada integrante na etapa 6, a partir da medição de antes (6.1). Uma linha por método refatorado e uma por controller ou model do escopo.
+
+#### Complexidade por método
+
+| Responsável | Classe#método | Flog antes | Flog depois | ABC antes | ABC depois | Refatoração aplicada |
+|---|---|---|---|---|---|---|
+| | | | | | | |
+
+#### Cobertura (SimpleCov)
 
 | Responsável | Controller / model | Cobertura antes | Cobertura depois |
 |---|---|---|---|
 | | | | |
 
-### Resumo do projeto
+#### Resumo do projeto
 
 | Métrica | Antes | Depois |
 |---|---|---|
-| Métodos com ABC ≥ 20 | | |
-| Maior ABC Score | | |
-| Nota geral do RubyCritic | | |
-| Cobertura total (SimpleCov) | | |
-| Exemplos RSpec | 501 | |
+| Métodos com Flog ≥ 20 | 57 | |
+| Métodos com ABC ≥ 20 | 30 | |
+| Maior Flog | 67,65 (`Catracas::Operar#ler`) | |
+| Maior ABC | 54,90 (`Catracas::Operar#ler`) | |
+| Nota geral do RubyCritic | 85,37 | |
+| Cobertura total (SimpleCov, RSpec) | 99,27% | |
+| Controllers e models com cobertura ≤ 90% | 1 | |
+| Exemplos RSpec | 507 (501 da Sprint 2 + 6 das ferramentas) | |
 | Cenários Cucumber | 163 | |
-| Métodos sem documentação RDoc | | |
+| Métodos sem documentação RDoc | 305 de 369 | |
 
 ---
 

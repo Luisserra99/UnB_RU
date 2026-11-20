@@ -44,6 +44,10 @@ group :development, :test do
 
   # Lint com o estilo padrão do Rails [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Sprint 3 — qualidade do código: complexidade (Flog, Reek, Flay) e documentação.
+  gem "rubycritic", require: false
+  gem "rdoc", require: false
 end
 
 group :test do
@@ -51,4 +55,5 @@ group :test do
   gem "cucumber-rails", require: false
   gem "database_cleaner-active_record"
   gem "pdf-reader" # lê o texto dos PDFs exportados nos testes
+  gem "simplecov", require: false # cobertura do RSpec (Sprint 3)
 end

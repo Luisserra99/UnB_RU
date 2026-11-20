@@ -15,3 +15,6 @@
 /config/*.key
 /coverage
 .env*
+
+# Sprint 3: documentação gerada pelo RDoc (bin/rails documentacao)
+/doc/
