@@ -6,6 +6,11 @@ RSpec.describe ItemRecarga, type: :model do
     expect(item.subtotal).to eq(BigDecimal("12.50"))
   end
 
+  it "tem subtotal zero enquanto a quantidade ou o valor unitário não estão preenchidos" do
+    expect(described_class.new(quantidade: nil, valor_unitario: BigDecimal("2.50")).subtotal).to eq(0)
+    expect(described_class.new(quantidade: 5, valor_unitario: nil).subtotal).to eq(0)
+  end
+
   it "exige quantidade inteira positiva" do
     item = build(:item_recarga, quantidade: 0)
     expect(item).not_to be_valid
