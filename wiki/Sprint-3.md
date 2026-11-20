@@ -199,7 +199,54 @@ Tarefas transversais viram issues próprias do responsável (`[S3][T0] Ferrament
 
 ### Padrão de RDoc
 
-> A ser publicado por Luis ao fim do piloto (etapa 4), com um método real do escopo F02/F03 como exemplo dos itens (a)–(d). Os demais integrantes seguem o mesmo formato na etapa 5.
+Definido no piloto (F02, F03 e login do Portal do Estudante). Vale para **todo método**, público ou privado, inclusive ações de controller e validações. Cada comentário fica logo acima do `def` e responde aos itens (a)–(d) do enunciado com três rótulos fixos, que o RDoc mostra como uma lista de definições:
+
+```ruby
+# <(a) O que o método faz, numa frase no presente.>
+#
+# Argumentos:: <(b) +nome+ (Tipo): significado. Ou "nenhum.">
+# Retorno:: <(c) Tipo e significado; se houver mais de uma possibilidade, todas, separadas por ";">
+# Efeitos colaterais:: <(d) banco, sessão, flash, redirecionamento, render, exceções. Ou "nenhum.">
+```
+
+Exemplo real ([`app/forms/solicitacao_recarga.rb`](../app/forms/solicitacao_recarga.rb)):
+
+```ruby
+# Valida o formulário e grava a recarga com seus itens e o pagamento pendente (RN02.2).
+#
+# Argumentos:: nenhum.
+# Retorno:: true quando a recarga foi gravada (disponível em #recarga); false quando o formulário
+#           é inválido ou o banco rejeita a gravação (os motivos ficam em #errors).
+# Efeitos colaterais:: grava Recarga, ItemRecarga e Pagamento numa única transação; para PIX,
+#                      gera o código Copia e Cola. Não credita saldo.
+def salvar
+```
+
+Regras:
+
+- **Os quatro itens sempre aparecem**, mesmo quando a resposta é "nenhum": assim o leitor sabe que o item foi pensado, não esquecido.
+- Nomes de código entre `+...+` (`+params[:id]+`, `+new+`). Classes e métodos do projeto escritos por extenso (`Pagamento#confirmar!`, `DadosCartao`) viram links no HTML.
+- Continuação de linha alinhada com o texto do rótulo, como no exemplo.
+- **Ação de controller:** a primeira linha diz a rota (`POST /recargas: ...`); os argumentos são os `params` lidos; o retorno é "nenhum (ação de controller)"; os efeitos colaterais listam cada `render` e `redirect_to` com a condição de cada um.
+- **Validação:** o retorno é "nenhum relevante"; os efeitos colaterais dizem em qual atributo o erro é adicionado.
+- **Classes, módulos e constantes** também recebem uma linha de comentário. Numa classe dentro de módulo (`module Pagamentos` / `class ProcessarRetorno`), o comentário fica logo acima da classe, dentro do módulo; acima do `module` ele documentaria o módulo.
+- Conferir com `bin/rails "qualidade:rdoc[<arquivos do escopo>]"`, que deve dar 100%, e ver o resultado com `bin/rails documentacao` (abre em `doc/app/index.html`).
+
+### Padrão de refatoração e testes do piloto
+
+| Situação | O que o piloto fez | Exemplo |
+|---|---|---|
+| Método longo com várias etapas | *Extract method*, com nomes que dizem a intenção | `SolicitacaoRecarga#salvar` → `montar_recarga`, `adicionar_item`, `adicionar_pagamento` |
+| Muitas chamadas repetidas com dados diferentes | Trocar o código repetido por uma lista de dados percorrida por um laço | `GatewaySimulado#copia_e_cola` → `campos_br_code` |
+| Condição composta no meio de uma ação | Predicado privado com nome de regra de negócio | `RecargasController#cobranca_cartao_em_aberto?`, `ExtratosController#extrato_de_outro_estudante?` |
+| Consulta montada no meio de uma validação | Scopes nomeados no model | `TarifaRefeicao.nao_encerradas_em` e `.iniciadas_antes_de` |
+| Formatação de erro feita no controller | Mover para o objeto que tem os erros | `SolicitacaoRecarga#mensagem_erro` |
+| Validação com vários `if` encadeados | Separar em uma validação por regra, com `return` antecipado | `MovimentacaoSaldo#validar_recarga_do_credito` e `#validar_passagem_do_debito` |
+
+- **Comportamento idêntico:** os `.feature` não mudam e o RSpec e o Cucumber continuam passando. Quando a saída é um texto gerado (código PIX, SVG do QR Code), o piloto comparou a saída antes e depois byte a byte.
+- **"Próximo de 20":** o piloto deixou todo método abaixo de **18** (90% do limite) nas duas medidas. Métodos entre 15 e 18 foram revistos e mantidos quando dividi-los não deixava o código mais claro (ex.: `DadosCartao#luhn_valido?`, 15,68).
+- **Happy path e sad path:** para cada unidade testada (model, form, service, helper, request), há ao menos um caso de sucesso e um de falha. O que faltava foi adicionado em RSpec, no `describe` da própria unidade, por exemplo o banco rejeitando a recarga em `SolicitacaoRecarga#salvar` e o logout sem sessão.
+- **Antes e depois:** cada método refatorado ganha uma linha na seção 6.2 com Flog e ABC de antes (da 6.1) e de depois (`bin/rails "qualidade:metodos[0,<arquivo>]"`), e com a técnica usada.
 
 ### Branches
 
