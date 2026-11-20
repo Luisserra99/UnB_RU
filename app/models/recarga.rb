@@ -15,21 +15,43 @@ class Recarga < ApplicationRecord
   validates :confirmada_em, presence: true, if: :confirmada?
   validate :valor_total_igual_a_soma_dos_itens
 
+  # Recargas da mais nova para a mais antiga.
   scope :recentes, -> { order(solicitada_em: :desc, id: :desc) }
 
+  # Devolve a tentativa de pagamento mais recente.
+  #
+  # Argumentos:: nenhum.
+  # Retorno:: Pagamento, ou nil se a recarga ainda não tem pagamento.
+  # Efeitos colaterais:: consulta o banco se os pagamentos não estiverem carregados.
   def pagamento_atual
     pagamentos.last
   end
 
+  # Busca o item de um tipo de refeição.
+  #
+  # Argumentos:: +codigo+ (String): código do tipo, ex.: TipoRefeicao::ALMOCO.
+  # Retorno:: ItemRecarga, ou nil se a recarga não tem esse tipo.
+  # Efeitos colaterais:: carrega os itens e os tipos, se ainda não carregados.
   def item_do_tipo(codigo)
     itens.find { |item| item.tipo_refeicao.codigo == codigo }
   end
 
+  # Subtotal de um tipo de refeição.
+  #
+  # Argumentos:: +codigo+ (String): código do tipo.
+  # Retorno:: BigDecimal; zero se a recarga não tem esse tipo.
+  # Efeitos colaterais:: os de #item_do_tipo.
   def subtotal_do_tipo(codigo)
     item_do_tipo(codigo)&.subtotal || BigDecimal("0")
   end
 
-  # Chamado por Pagamento#confirmar!, dentro da mesma transação.
+  # Confirma a recarga e credita o valor no saldo. Chamado por Pagamento#confirmar!, dentro da
+  # mesma transação.
+  #
+  # Argumentos:: +em+ (Time): momento da confirmação.
+  # Retorno:: a MovimentacaoSaldo de crédito criada.
+  # Efeitos colaterais:: grava a recarga como confirmada e cria o crédito no saldo do estudante;
+  #                      levanta ActiveRecord::RecordInvalid se algum dos dois for inválido.
   def confirmar!(em:)
     update!(status: :confirmada, confirmada_em: em)
     MovimentacaoSaldo.create!(estudante: estudante, recarga: self, natureza: :credito_recarga,
@@ -38,6 +60,11 @@ class Recarga < ApplicationRecord
 
   private
 
+  # Validação: o valor total deve ser a soma dos subtotais dos itens (RN02.5).
+  #
+  # Argumentos:: nenhum.
+  # Retorno:: nenhum relevante.
+  # Efeitos colaterais:: adiciona erro em +valor_total+ quando a soma não confere.
   def valor_total_igual_a_soma_dos_itens
     return if valor_total.nil? || itens.empty?
 

@@ -9,6 +9,11 @@ class ItemRecarga < ApplicationRecord
   validates :tipo_refeicao_id, uniqueness: { scope: :recarga_id }
   validate :tarifa_do_mesmo_tipo
 
+  # Calcula o valor do item: quantidade × valor unitário.
+  #
+  # Argumentos:: nenhum.
+  # Retorno:: BigDecimal; zero se a quantidade ou o valor unitário não estiverem preenchidos.
+  # Efeitos colaterais:: nenhum.
   def subtotal
     return BigDecimal("0") if quantidade.nil? || valor_unitario.nil?
 
@@ -17,6 +22,11 @@ class ItemRecarga < ApplicationRecord
 
   private
 
+  # Validação: a tarifa deve ser do mesmo tipo de refeição do item.
+  #
+  # Argumentos:: nenhum.
+  # Retorno:: nenhum relevante.
+  # Efeitos colaterais:: adiciona erro em +tarifa_refeicao+ quando os tipos não conferem.
   def tarifa_do_mesmo_tipo
     return if tarifa_refeicao.nil? || tipo_refeicao_id.nil?
     return if tarifa_refeicao.tipo_refeicao_id == tipo_refeicao_id
