@@ -229,6 +229,58 @@ Commits seguem o padrão do grupo; para esta sprint, use também `refactor` (mud
 
 > Medida em 18/11/2026 no commit `575ba8c` (T0, branch `sprint-3-chore-Luis/ferramentas`), antes de qualquer refatoração, com os comandos da [seção 3](#como-rodar-as-ferramentas-t0). O responsável de cada arquivo é quem o criou na Sprint 2, conforme a [distribuição](#4-distribuição-por-integrante).
 
+Esta é a medição de partida da sprint: os números abaixo servem de "antes" na [seção 6.2](#62-antes-e-depois) e definem quais métodos e arquivos cada integrante precisa corrigir.
+
+#### Como a medição foi feita
+
+**Ambiente:** Linux, Ruby 3.3.4, Rails 8.1.4.1, banco SQLite de teste. Versões das ferramentas (do `Gemfile.lock`): RubyCritic 5.0.0 (com Flog 4.9.4, Reek 6.5.0 e Flay 2.14.5), RuboCop 1.92.2, SimpleCov 1.3.2 e RDoc 8.1.0.
+
+**Comandos, na ordem em que foram rodados:**
+
+```bash
+git checkout 575ba8c          # commit da T0, sem nenhuma refatoração
+bundle install
+
+# Testes: confirmam que o ponto de partida está verde e geram a cobertura
+bundle exec rspec                       # gera coverage/coverage.json (SimpleCov)
+bundle exec cucumber --format progress
+bundle exec rubocop
+
+# C1: complexidade por método
+bin/rails "qualidade:metodos[15]"       # todos os métodos com Flog ou ABC >= 15
+bin/rails "qualidade:metodos[20]"       # só os que estão acima do limite
+bundle exec rubycritic                  # nota geral, smells e duplicação
+
+# C2: cobertura, lida do coverage.json do RSpec acima
+bin/rails qualidade:cobertura                                     # controllers e models
+bin/rails "qualidade:cobertura[app/forms app/helpers app/services]"
+
+# C4: documentação
+bin/rails qualidade:rdoc
+```
+
+**Como os números foram consolidados:**
+
+- **Nota do método:** é a maior entre o Flog e o ABC que a tarefa `qualidade:metodos` imprime. Os métodos com nota ≥ 20 estão marcados como **Refatorar** (violam o C1) e os que têm nota entre 15 e 20 como **Revisar** ("próximos de 20", como pede o enunciado).
+- **Por que duas medidas:** o RubyCritic, ferramenta indicada pelo enunciado, mede a complexidade pelo **Flog**, uma variação ponderada do ABC, e só lista os métodos com Flog ≥ 25. O ABC exato (vetor `<Assignments, Branches, Conditions>`) vem do cálculo do cop `Metrics/AbcSize` do RuboCop. Esse cop fica desligado no estilo `omakase` do projeto, por isso o "RuboCop limpo" não diz nada sobre complexidade. A tarefa `qualidade:metodos` junta as duas medidas para cada `def` de `app/`.
+- **Contagens:** 57 métodos têm nota ≥ 20 (saída de `qualidade:metodos[20]`), e todos eles têm Flog ≥ 20. Na mesma saída, 30 têm também ABC ≥ 20, e nenhum passa de 20 só no ABC.
+- **Responsável:** cada arquivo foi atribuído pelo caminho, de acordo com as listas da [seção 4](#4-distribuição-por-integrante).
+- **Cobertura:** corresponde ao percentual de linhas que o SimpleCov registra para cada arquivo durante o `bundle exec rspec`. O Cucumber não entra nessa conta.
+
+#### Resultado de cada ferramenta
+
+| Ferramenta | Critério | Resultado no commit `575ba8c` |
+|---|---|---|
+| RSpec | C2, C3 | 507 exemplos, 0 falhas |
+| Cucumber | C3 | 163 cenários e 1456 passos, todos passando |
+| RuboCop | — | 222 arquivos, nenhuma ofensa |
+| `qualidade:metodos` (Flog e ABC) | C1 | 82 métodos com nota ≥ 15: **57 para refatorar** (nota ≥ 20) e 25 para revisar. Maior nota: `Catracas::Operar#ler`, com Flog 67,65 e ABC 54,90 |
+| RubyCritic | C1 | Nota geral **85,37**. Dos 79 arquivos de `app/`: 49 A, 19 B, 6 C, 5 D e nenhum E ou F. 384 smells, 502 pontos de duplicação em 13 arquivos e 40 métodos com Flog ≥ 25 |
+| SimpleCov | C2 | **99,27%** no total (2049 de 2064 linhas). Só 1 controller ou model fica com 90% ou menos: `controle/terminal_controller.rb`, com 83,33% |
+| RDoc | C4 | **17,01%** documentado. 305 dos 369 métodos estão sem comentário |
+
+A contagem de 40 métodos do RubyCritic difere da tabela abaixo, que tem 39 métodos com Flog ≥ 25. A diferença é `Relatorios::AcessosOperacao#montar_acesso`, que a tarefa mede com 24,83 e o RubyCritic sinaliza como ≥ 25. De qualquer forma, o método já está na lista para refatorar.
+
 #### Resumo por responsável
 
 | Responsável | Métodos com nota ≥ 20 (refatorar) | Métodos com nota entre 15 e 20 (revisar) | Controllers e models com cobertura ≤ 90% |
@@ -396,6 +448,34 @@ Fora de controllers e models, ficaram abaixo de 100%: `app/forms/cadastro_estuda
 | Atributos | 34 | 33 |
 | **Métodos** | **369** | **305** |
 | Total | 635 | 527 (17,01% documentado) |
+
+#### Relatório do RubyCritic
+
+`bundle exec rubycritic` (relatório em `tmp/rubycritic/overview.html`). Arquivos com nota C ou D:
+
+| Nota | Arquivo | Complexidade (Flog do arquivo) | Duplicação | Smells |
+|---|---|---|---|---|
+| D | `app/services/extratos/relatorio.rb` | 289,0 | 0 | 21 |
+| D | `app/services/relatorios/operacao_global.rb` | 228,4 | 0 | 14 |
+| D | `app/services/relatorios/acessos_operacao.rb` | 221,0 | 0 | 23 |
+| D | `app/services/extratos/exportar.rb` | 51,2 | 110 | 10 |
+| D | `app/services/relatorios/exportar_operacao_global.rb` | 49,9 | 135 | 11 |
+| C | `app/services/catracas/operar.rb` | 189,8 | 0 | 30 |
+| C | `app/services/relatorios/operacao_global_pdf.rb` | 153,5 | 0 | 13 |
+| C | `app/services/relatorios/acessos_operacao_pdf.rb` | 148,5 | 33 | 18 |
+| C | `app/services/extratos/pdf.rb` | 101,8 | 33 | 11 |
+| C | `app/forms/solicitacao_recarga.rb` | 101,0 | 0 | 7 |
+| C | `app/services/relatorios/exportar_acessos_operacao.rb` | 48,9 | 41 | 8 |
+
+Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem comentário), `DuplicateMethodCall` (56), `TooManyStatements` (44), `HighComplexity` e `VeryHighComplexity` (40, Flog ≥ 25), `NilCheck` (29), `InstanceVariableAssumption` (28), `UtilityFunction` (28), `FeatureEnvy` (25) e `DuplicateCode` (21, do Flay). A duplicação se concentra entre os serviços de exportação: `Extratos::Exportar` e `Relatorios::ExportarOperacaoGlobal` têm 110 e 135 pontos.
+
+#### Por que essas correções são necessárias
+
+- **C1, complexidade (57 métodos para refatorar e 25 para revisar):** quanto maiores o Flog e o ABC, mais atribuições, chamadas e condições o método acumula. Um método assim é mais difícil de ler, testar por partes e alterar sem efeito colateral. O enunciado exige ABC < 20 e pede que os métodos próximos de 20 também sejam refatorados. O grupo exige também Flog < 20 porque é essa a medida que o RubyCritic mostra a quem avalia: 27 dos 57 métodos passariam só pelo ABC e continuariam com complexidade alta no relatório. O trabalho se concentra nos serviços de relatórios e extratos (F09, F11 e F12: 29 métodos) e em `Catracas::Operar` (F05 e F06), que também são os arquivos com nota C e D no RubyCritic.
+- **Duplicação:** os serviços de exportação repetem o mesmo fluxo de criar, gerar e concluir a exportação. Extrair esse fluxo comum reduz a complexidade dos dois de uma vez e evita que uma correção feita em um deles falte no outro.
+- **C2, cobertura (1 arquivo abaixo da meta):** o projeto já tem 99,27% de cobertura, mas `controle/terminal_controller.rb` tem 83,33% e precisa de testes para as 4 linhas não cobertas. A cobertura alta é também o que garante que a refatoração não muda o comportamento: antes de mexer num método, os testes que passam por ele precisam existir.
+- **C3, happy path e sad path:** não há ferramenta que meça isso. Cada integrante confere, unidade por unidade, se há um caso de sucesso e um de falha. Como os `.feature` não podem mudar, o caso que faltar entra em RSpec.
+- **C4, documentação (305 de 369 métodos sem RDoc):** é o maior volume de trabalho da sprint. Sem descrição, argumentos, retorno e efeitos colaterais, quem chega ao código precisa ler a implementação inteira para saber o que um método faz e o que ele altera. O smell `IrresponsibleModule` (60 ocorrências) aponta a mesma falta nas classes e módulos.
 
 ### 6.2 Antes e depois
 
