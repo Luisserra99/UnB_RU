@@ -10,18 +10,14 @@ class SessoesEstudanteController < ApplicationController
   def create
     @matricula = params[:matricula].to_s.strip
     senha = params[:senha].to_s
-
-    @campos_obrigatorios = []
-    @campos_obrigatorios << "Matrícula" if @matricula.blank?
-    @campos_obrigatorios << "Senha" if senha.blank?
+    @campos_obrigatorios = campos_em_branco(senha)
     return render_falha if @campos_obrigatorios.any?
 
     usuario = Usuario.autenticar(@matricula, senha)
     return render_falha(MSG_FALHA) if usuario.nil?
     return render_falha(MSG_SOMENTE_ESTUDANTES) if usuario.estudante.nil?
 
-    retorno = iniciar_sessao_estudante(usuario)
-    redirect_to retorno.presence || new_recarga_path, notice: "Bem-vindo(a), #{usuario.nome}."
+    entrar(usuario)
   end
 
   def destroy
@@ -30,6 +26,15 @@ class SessoesEstudanteController < ApplicationController
   end
 
   private
+
+  def campos_em_branco(senha)
+    { "Matrícula" => @matricula, "Senha" => senha }.select { |_campo, valor| valor.blank? }.keys
+  end
+
+  def entrar(usuario)
+    retorno = iniciar_sessao_estudante(usuario)
+    redirect_to retorno.presence || new_recarga_path, notice: "Bem-vindo(a), #{usuario.nome}."
+  end
 
   def render_falha(mensagem = nil)
     flash.now[:alert] = mensagem if mensagem
