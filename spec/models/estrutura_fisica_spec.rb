@@ -12,6 +12,11 @@ RSpec.describe UnidadeGestora, type: :model do
     expect(UnidadeGestora.padrao).to eq(unidade)
   end
 
+  it "não encontra a unidade padrão quando ela não está cadastrada" do
+    create(:unidade_gestora, nome: "Campus Gama")
+    expect(UnidadeGestora.padrao).to be_nil
+  end
+
   it "não pode ser removida enquanto tiver restaurantes" do
     unidade = create(:restaurante).unidade_gestora
     expect(unidade.destroy).to be(false)

@@ -1,6 +1,11 @@
+# Opção de um cardápio para uma dieta (F10), com os itens na ordem de apresentação.
+# Cada cardápio tem no máximo uma opção por dieta.
 class OpcaoCardapio < ApplicationRecord
+  # Código da dieta padrão.
   PADRAO = "padrao".freeze
+  # Código da dieta ovolactovegetariana.
   OVOLACTOVEGETARIANA = "ovolactovegetariana".freeze
+  # Código da dieta vegetariana estrita.
   VEGETARIANA_ESTRITA = "vegetariana_estrita".freeze
 
   # Código da dieta => rótulo exibido, na ordem de apresentação.

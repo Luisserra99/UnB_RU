@@ -118,5 +118,10 @@ RSpec.describe "Gestão de restaurantes (F08)", type: :request do
       expect(flash[:alert]).to eq("Remova as catracas do restaurante antes de excluí-lo")
       expect(Restaurante.exists?(restaurante.id)).to be(true)
     end
+
+    it "responde 404 para restaurante inexistente" do
+      get edit_admin_restaurante_path(id: 0)
+      expect(response).to have_http_status(:not_found)
+    end
   end
 end

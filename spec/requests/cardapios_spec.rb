@@ -71,6 +71,14 @@ RSpec.describe "Cardápio (F10)", type: :request do
       end
     end
 
+    it "trata refeição desconhecida como consulta sem refeição" do
+      travel_to Time.zone.local(2026, 11, 4, 12, 0) do
+        get cardapio_path, params: { refeicao: "lanche" }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Frango")
+      end
+    end
+
     it "trata data inválida como hoje" do
       travel_to Time.zone.local(2026, 11, 4, 12, 0) do
         get cardapio_path, params: { data: "nao-e-data" }
