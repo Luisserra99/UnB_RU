@@ -537,7 +537,7 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 
 No escopo do Daniel, foram acrescentados **59 exemplos RSpec** (547 → 606 no projeto), cobrindo sucesso e recusa da seleção, rollback da reconfiguração, sessão/perfil/cadastros indisponíveis, dados obrigatórios da passagem, limites financeiros e atualização do próprio rateio, entradas inválidas, perda de vínculo entre leitura e passagem, crédito esgotado no FIFO, rollback por falta de créditos e respostas de erro/expiração do terminal. Os sete arquivos têm **100% de cobertura** e **100% de documentação RDoc** (61 métodos; 74 itens). Nenhum método tem Flog ou ABC ≥ 18.
 
-Os resultados do Daniel foram medidos localmente a partir da `sprint-3` (`5ad39cb`), em **23/11/2026**, com Ruby **3.4.10** no macOS. As alterações estão na branch `sprint-3-refactor-Daniel/catracas`; a revisão por outro integrante e a integração ainda são pendentes. As linhas vazias dos demais escopos e o resumo final permanecem para preenchimento após a integração e a medição de todos; o estado parcial está na seção 6.3.
+Os resultados do Daniel foram medidos localmente a partir da `sprint-3` (`5ad39cb`), em **23/11/2026**, com Ruby **3.4.10** no macOS. As alterações estão na branch `sprint-3-refactor-Daniel/catracas`, com integração acompanhada no [PR #68](https://github.com/Luisserra99/UnB_RU/pull/68). Daniel informou que revisou e aprovou seu escopo e autorizou sua finalização em **23/11/2026**. As linhas vazias dos demais escopos e o resumo final permanecem para preenchimento após a integração e a medição de todos; o estado parcial está na seção 6.3.
 
 #### Complexidade por método
 
@@ -717,7 +717,7 @@ Verificação do checkout local da `sprint-3` (base `5ad39cb` mais as alteraçõ
 
 - **T4:** incorporar os resultados medidos dos demais escopos depois dos merges e preencher o resumo final. O PR [#52 (Weldo)](https://github.com/Luisserra99/UnB_RU/pull/52) está aberto; seus resultados ainda não fazem parte desta medição da `sprint-3`.
 - **T5:** repetir os comandos da seção 3 após integrar todos os escopos; conferir C1–C4 e obter a revisão de outro integrante antes do aceite. A cobertura de linhas, por si só, não substitui a revisão dos happy paths e sad paths.
-- **T6:** Home atualizada com os papéis, a branch e os resultados parciais. Abrir **`Grupo 02 - Sprint 3`**, de `Luisserra99:sprint-3` para `neatzzy/UnB_RU:main`, após concluir T4/T5 e receber o `.txt` da T3 (Weldo). O PR final e o aceite das issues permanecem pendentes.
+- **T6:** Home atualizada com os papéis, a branch e os resultados parciais. Abrir **`Grupo 02 - Sprint 3`**, de `Luisserra99:sprint-3` para `neatzzy/UnB_RU:main`, após concluir T4/T5 e receber o `.txt` da T3 (Weldo). O PR final e o aceite dos escopos restantes permanecem pendentes. F05/F06 foram revisadas e aprovadas pelo Daniel em 23/11/2026; as issues #61–#64 registram essa entrega e T4/T5/T6 continuam abertas para a consolidação do grupo.
 
 **Issues do Daniel**, atribuídas a `Debzzan`, com labels e estimativas iniciais:
 
@@ -752,6 +752,6 @@ Cada integrante registra aqui, na etapa 6, se usou IA no seu escopo, no mesmo fo
 |---|---|---|---|
 | Luis Eduardo Curi Serra | Claude Code (Claude Opus 5.5) | Ferramentas da T0 (configuração e tarefas `qualidade:*`, com specs); medição de antes (T1) e de depois do escopo; refatoração da F02, da F03 e do login do portal; testes RSpec de happy path e sad path; comentários RDoc de todo o escopo; padrão de RDoc e de refatoração da seção 5; texto das issues do Luis (criadas por ele no GitHub) | Verificação automática a cada passo: RSpec (547 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop e RDoc a 100% no escopo. O código PIX e o SVG do QR Code foram comparados byte a byte antes e depois da refatoração. Revisão do código e dos textos pelo Luis antes do push e dos PRs |
 | Weldo Gonçalves da Silva Junior | | | |
-| Daniel Dezan Baby | Codex (GPT-6) | Refatoração de F05/F06; 59 exemplos RSpec de sucesso, falha e rollback; RDoc dos sete arquivos do escopo; medições de complexidade e cobertura; consolidação parcial da wiki, atualização da Home e registro das issues | Verificação automatizada: 606 exemplos RSpec, 163 cenários Cucumber, RuboCop sem ocorrências; 100% de cobertura e RDoc no escopo, Flog e ABC < 18; `.feature` existentes preservados. Revisão humana do Daniel e revisão por outro integrante pendentes antes do aceite |
+| Daniel Dezan Baby | Codex (GPT-6) | Refatoração de F05/F06; 59 exemplos RSpec de sucesso, falha e rollback; RDoc dos sete arquivos do escopo; medições de complexidade e cobertura; consolidação parcial da wiki, atualização da Home e registro das issues | Verificação automatizada: 606 exemplos RSpec, 163 cenários Cucumber, RuboCop sem ocorrências; 100% de cobertura e RDoc no escopo, Flog e ABC < 18; `.feature` existentes preservados. Daniel confirmou sua revisão humana, aprovou o resultado e autorizou a finalização do seu escopo em 23/11/2026 |
 | Leonardo Tome Sampaio | | | |
 | Tarsila Marques de Oliveira Alves | | | |

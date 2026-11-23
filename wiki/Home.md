@@ -102,7 +102,7 @@ O modelo de dados segue o diagrama ER da [segunda etapa da Sprint 1](../docs/spr
 
 Os specs RSpec cobrem models, form objects, services, helpers e requests, incluindo regras de segurança (acesso por papel, dados de cartão, parâmetros malformados) e a geração dos arquivos PDF e CSV.
 
-Os resultados acima incluem as alterações de F05/F06 sobre `5ad39cb`, na branch `sprint-3-refactor-Daniel/catracas`, ainda pendentes de revisão e integração na `sprint-3`. Na Sprint 3, também são executadas as tarefas de complexidade, cobertura e RDoc descritas na [wiki da sprint](Sprint-3.md#como-rodar-as-ferramentas-t0). Os `.feature` existentes permanecem idênticos aos da Sprint 2.
+Os resultados acima incluem as alterações de F05/F06 sobre `5ad39cb`, na branch `sprint-3-refactor-Daniel/catracas`. Daniel revisou e aprovou seu escopo em 23/11/2026 e autorizou sua finalização; a integração é acompanhada no [PR #68](https://github.com/Luisserra99/UnB_RU/pull/68). Na Sprint 3, também são executadas as tarefas de complexidade, cobertura e RDoc descritas na [wiki da sprint](Sprint-3.md#como-rodar-as-ferramentas-t0). Os `.feature` existentes permanecem idênticos aos da Sprint 2.
 
 ### Integração contínua (CI)
 
