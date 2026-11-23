@@ -44,6 +44,48 @@ RSpec.describe "Terminal de validação (F06)", type: :request do
     follow_redirect!
     expect(response.body).to include("Identificação desconhecida")
   end
+
+  it "apresenta erro de referência inválida sem gravar leitura" do
+    configurar
+    post controle_leitura_terminal_path, params: { identificacao: "251033574", referencia_evento: "" }
+    expect(response).to redirect_to(controle_terminal_path)
+    expect(flash[:alert]).to eq("Referência de evento inválida")
+    expect(RegistroAcesso.count).to eq(0)
+  end
+
+  it "redireciona ao painel quando o serviço recusa a passagem" do
+    configurar
+    registro = create(:registro_acesso, configuracao_ponto_acesso: ConfiguracaoPontoAcesso.last)
+    operador = instance_double(Catracas::Operar)
+    allow(Catracas::Operar).to receive(:new).and_return(operador)
+    allow(operador).to receive(:passar).and_raise(Catracas::Operar::Invalido, "Créditos indisponíveis para rateio")
+
+    post controle_passagem_terminal_path(registro)
+    expect(response).to redirect_to(controle_root_path)
+    expect(flash[:alert]).to eq("Créditos indisponíveis para rateio")
+    expect(MovimentacaoSaldo.debitos).to be_empty
+  end
+
+  it "expira uma liberação vencida via HTTP sem cobrar refeição" do
+    configurar
+    registro = create(:registro_acesso, configuracao_ponto_acesso: ConfiguracaoPontoAcesso.last,
+      estado: :liberado, passagem_em: nil, bloqueado_em: nil)
+    travel 6.seconds do
+      post controle_expirar_terminal_path(registro)
+      expect(response).to redirect_to(controle_terminal_path(registro_id: registro.id))
+      expect(registro.reload).to be_cancelado
+      expect(registro.bloqueado_em).to eq(registro.limite_em)
+      expect(MovimentacaoSaldo.debitos).to be_empty
+    end
+  end
+
+  it "recusa expiração de um registro de outra sessão" do
+    configurar
+    registro = create(:registro_acesso)
+    post controle_expirar_terminal_path(registro)
+    expect(response).to have_http_status(:not_found)
+    expect(registro.reload).to be_realizado
+  end
 end
 
 RSpec.describe "Integração recarga, catraca e extrato", type: :request do

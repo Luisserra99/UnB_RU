@@ -11,7 +11,7 @@
 | **Período** | 18/11/2026 a 27/11/2026 |
 | **Entrega** | **27/11/2026** |
 | **Branch de integração e entrega** | [`sprint-3`](https://github.com/Luisserra99/UnB_RU/tree/sprint-3) |
-| **Kanban** | GitHub Project — Sprint 3 (Backlog, Doing, Done, Accepted) |
+| **Kanban** | [Project do grupo — Sprint 3](https://github.com/users/Luisserra99/projects/1) (Backlog, Doing, Done, Accepted; no quadro atual, Doing = In progress, com In review antes de Done) |
 
 ### Integrantes e papéis
 
@@ -528,6 +528,17 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 
 > As colunas de antes já vêm da medição de antes (6.1). Na etapa 6, cada integrante preenche nas suas linhas o depois (`bin/rails "qualidade:metodos[0,<arquivo>]"` e `bin/rails qualidade:cobertura`) e a refatoração aplicada. Métodos entre 15 e 20 que forem mantidos recebem "Revisto e mantido" e o motivo.
 
+#### O que foi refatorado
+
+| Integrante | Alterações verificadas |
+|---|---|
+| Luis | Piloto integrado: separação da criação de recargas, validações monetárias, geração do PIX e autenticação do estudante; testes e RDoc conforme as linhas abaixo |
+| Daniel | F05: seleção e confirmação do ponto separadas em validação da sessão, localização dos cadastros e gravação transacional; reconfiguração do controller compartilhada por `create` e `edit`. F06: leitura, avaliação de estudante/refeição, passagem, débito e consumo FIFO separados em métodos com intenção explícita; validações de passagem e limites do rateio divididas por regra. Mantidos locks, rollback, idempotência, mensagens e prazo inclusivo de cinco segundos |
+
+No escopo do Daniel, foram acrescentados **59 exemplos RSpec** (547 → 606 no projeto), cobrindo sucesso e recusa da seleção, rollback da reconfiguração, sessão/perfil/cadastros indisponíveis, dados obrigatórios da passagem, limites financeiros e atualização do próprio rateio, entradas inválidas, perda de vínculo entre leitura e passagem, crédito esgotado no FIFO, rollback por falta de créditos e respostas de erro/expiração do terminal. Os sete arquivos têm **100% de cobertura** e **100% de documentação RDoc** (61 métodos; 74 itens). Nenhum método tem Flog ou ABC ≥ 18.
+
+Os resultados do Daniel foram medidos localmente a partir da `sprint-3` (`5ad39cb`), em **23/11/2026**, com Ruby **3.4.10** no macOS. As alterações estão na branch `sprint-3-refactor-Daniel/catracas`, com integração acompanhada no [PR #68](https://github.com/Luisserra99/UnB_RU/pull/68). Daniel informou que revisou e aprovou seu escopo e autorizou sua finalização em **23/11/2026**. As linhas vazias dos demais escopos e o resumo final permanecem para preenchimento após a integração e a medição de todos; o estado parcial está na seção 6.3.
+
 #### Complexidade por método
 
 | Responsável | Classe#método | Flog antes | Flog depois | ABC antes | ABC depois | Refatoração aplicada |
@@ -556,18 +567,18 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 | Weldo | `ControleHelper#item_nav_controle` | 17,13 | | 13,64 | | |
 | Weldo | `CadastroEstudante#validar_email` | 16,99 | | 13,34 | | |
 | Weldo | `Controle::HistoricoController#historico_liberado?` | 16,27 | | 10,82 | | |
-| Daniel | `Catracas::Operar#ler` | 67,65 | | 54,90 | | |
-| Daniel | `RateioConsumo#origens_e_limites` | 59,79 | | 43,12 | | |
-| Daniel | `Catracas::Operar#passar` | 40,28 | | 26,27 | | |
-| Daniel | `PontosAcesso::Configurar::call` | 39,34 | | 29,31 | | |
-| Daniel | `RegistroAcesso#coerencia_da_passagem` | 31,21 | | 22,83 | | |
-| Daniel | `Catracas::Operar#ratear!` | 30,18 | | 22,20 | | |
-| Daniel | `ConfiguracaoPontoAcesso#disponivel?` | 29,08 | | 18,38 | | |
-| Daniel | `Controle::PontosAcessoController#create` | 27,68 | | 21,19 | | |
-| Daniel | `Catracas::Operar#confirmar_liberacao` | 17,17 | | 12,81 | | |
-| Daniel | `Controle::TerminalController#passagem` | 17,09 | | 12,21 | | |
-| Daniel | `Catracas::Operar#expirar_pendentes!` | 16,94 | | 12,08 | | |
-| Daniel | `Controle::TerminalController#ler` | 16,69 | | 12,21 | | |
+| Daniel | `Catracas::Operar#ler` | 67,65 | 8,38 | 54,90 | 7,68 | *Extract method*: validação da entrada, referência idempotente, disponibilidade e avaliação da leitura |
+| Daniel | `RateioConsumo#origens_e_limites` | 59,79 | 9,98 | 43,12 | 8,94 | Origens, crédito da recarga e limite do débito separados; somas excluem o próprio rateio |
+| Daniel | `Catracas::Operar#passar` | 40,28 | 14,07 | 26,27 | 10,63 | Extraídos `cobrar_passagem!`, `estudante_apto?` e `debitar!`, preservando os locks e a transação |
+| Daniel | `PontosAcesso::Configurar::call` | 39,34 | 2,20 | 29,31 | 3,61 | Fachada delega ao serviço de instância; sessão, restaurante, catraca e confirmação isolados (método de instância: Flog 6,36 / ABC 6,40) |
+| Daniel | `RegistroAcesso#coerencia_da_passagem` | 31,21 | 2,00 | 22,83 | 2,00 | Separadas a completude dos dados e a janela de passagem, com predicados nomeados |
+| Daniel | `Catracas::Operar#ratear!` | 30,18 | 9,71 | 22,20 | 9,43 | Extraídos a consulta FIFO e o consumo de cada crédito, preservando soma e rollback |
+| Daniel | `ConfiguracaoPontoAcesso#disponivel?` | 29,08 | 5,24 | 18,38 | 4,47 | Predicados `sessao_disponivel?` e `cadastros_disponiveis?` |
+| Daniel | `Controle::PontosAcessoController#create` | 27,68 | 13,58 | 21,19 | 10,10 | Preparação compartilhada da reconfiguração e apresentação de erro extraídas |
+| Daniel | `Catracas::Operar#confirmar_liberacao` | 17,17 | 17,17 | 12,81 | 12,81 | Revisto e mantido: abaixo de 18 nas duas medidas; fluxo curto de confirmação, expiração e idempotência |
+| Daniel | `Controle::TerminalController#passagem` | 17,09 | 17,09 | 12,21 | 12,21 | Revisto e mantido: abaixo de 18; ação curta com resposta HTTP de sucesso e erro, ambas testadas |
+| Daniel | `Catracas::Operar#expirar_pendentes!` | 16,94 | 10,75 | 12,08 | 8,12 | Consulta de liberações vencidas extraída para `liberacoes_vencidas` |
+| Daniel | `Controle::TerminalController#ler` | 16,69 | 16,69 | 12,21 | 12,21 | Revisto e mantido: abaixo de 18; delegação da leitura e tratamento HTTP de erro documentados e testados |
 | Leonardo | `ServicoRefeicao#sem_sobreposicao_de_horario` | 29,09 | | 21,63 | | |
 | Leonardo | `Cardapios::ImportadorJson#importar` | 28,72 | | 20,25 | | |
 | Leonardo | `Restaurante#atualizar_com_pisos` | 26,90 | | 17,38 | | |
@@ -643,11 +654,11 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 | Weldo | `app/models/sessao_autenticacao.rb` | 100,00% | |
 | Weldo | `app/models/usuario.rb` | 100,00% | |
 | Weldo | `app/models/usuario_papel.rb` | 100,00% | |
-| Daniel | `app/controllers/controle/pontos_acesso_controller.rb` | 100,00% | |
-| Daniel | `app/controllers/controle/terminal_controller.rb` | 83,33% | |
-| Daniel | `app/models/configuracao_ponto_acesso.rb` | 100,00% | |
-| Daniel | `app/models/rateio_consumo.rb` | 100,00% | |
-| Daniel | `app/models/registro_acesso.rb` | 96,15% | |
+| Daniel | `app/controllers/controle/pontos_acesso_controller.rb` | 100,00% | 100,00% |
+| Daniel | `app/controllers/controle/terminal_controller.rb` | 83,33% | 100,00% |
+| Daniel | `app/models/configuracao_ponto_acesso.rb` | 100,00% | 100,00% |
+| Daniel | `app/models/rateio_consumo.rb` | 100,00% | 100,00% |
+| Daniel | `app/models/registro_acesso.rb` | 96,15% | 100,00% |
 | Leonardo | `app/controllers/admin/base_controller.rb` | 100,00% | |
 | Leonardo | `app/controllers/admin/catracas_controller.rb` | 100,00% | |
 | Leonardo | `app/controllers/admin/restaurantes_controller.rb` | 100,00% | |
@@ -685,6 +696,43 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 
 ---
 
+### 6.3 Verificação parcial do PO — 23/11/2026 (T4, T5 e T6)
+
+Verificação do checkout local da `sprint-3` (base `5ad39cb` mais as alterações de F05/F06). **A entrega final ainda não está liberada:** a etapa 7 depende dos merges e das medições dos demais integrantes. Os números abaixo não substituem a coluna final de depois da seção 6.2.
+
+| Verificação | Resultado parcial |
+|---|---|
+| RSpec | **606 exemplos, 0 falhas**; SimpleCov com 2169/2173 linhas (99,82%, arredondado pela tarefa `qualidade:cobertura`) |
+| Cucumber | **163 cenários, 1456 passos**, todos passando |
+| Features existentes | Sem diferenças contra `origin/sprint-3` e `origin/sprint-2` |
+| RuboCop | **227 arquivos, nenhuma ocorrência** |
+| C1 no escopo Daniel | 61 métodos, todos com Flog e ABC < 18; maior Flog 17,17 e maior ABC 12,81 |
+| C2 no escopo Daniel | Sete arquivos com **100%**; nenhum controller/model do projeto com cobertura ≤ 90% |
+| C4 no escopo Daniel | **100%** dos 74 itens documentados, incluindo os 61 métodos públicos e privados |
+| C1 no projeto | **37 métodos com Flog ≥ 20**, dos quais **17 também com ABC ≥ 20**; faltam os escopos Weldo (2), Leonardo (6) e Tarsila (29) |
+| RubyCritic | Relatório gerado em `tmp/rubycritic/overview.html`; nota geral **85,47** |
+| C4 no projeto | HTML gerado por `bin/rails documentacao` em `doc/app/index.html`; ainda **216 de 434 métodos sem comentário**, fora do escopo Daniel |
+
+**Pendências para concluir as tarefas do PO:**
+
+- **T4:** incorporar os resultados medidos dos demais escopos depois dos merges e preencher o resumo final. O PR [#52 (Weldo)](https://github.com/Luisserra99/UnB_RU/pull/52) está aberto; seus resultados ainda não fazem parte desta medição da `sprint-3`.
+- **T5:** repetir os comandos da seção 3 após integrar todos os escopos; conferir C1–C4 e obter a revisão de outro integrante antes do aceite. A cobertura de linhas, por si só, não substitui a revisão dos happy paths e sad paths.
+- **T6:** Home atualizada com os papéis, a branch e os resultados parciais. Abrir **`Grupo 02 - Sprint 3`**, de `Luisserra99:sprint-3` para `neatzzy/UnB_RU:main`, após concluir T4/T5 e receber o `.txt` da T3 (Weldo). O PR final e o aceite dos escopos restantes permanecem pendentes. F05/F06 foram revisadas e aprovadas pelo Daniel em 23/11/2026; as issues #61–#64 registram essa entrega e T4/T5/T6 continuam abertas para a consolidação do grupo.
+
+**Issues do Daniel**, atribuídas a `Debzzan`, com labels e estimativas iniciais:
+
+| Critério/tarefa | Issue | Pontos |
+|---|---|---|
+| C1 — Refatoração F05/F06 | [#61](https://github.com/Luisserra99/UnB_RU/issues/61) | 5 |
+| C2 — Cobertura F05/F06 | [#62](https://github.com/Luisserra99/UnB_RU/issues/62) | 3 |
+| C3 — Happy path e sad path | [#63](https://github.com/Luisserra99/UnB_RU/issues/63) | 3 |
+| C4 — RDoc F05/F06 | [#64](https://github.com/Luisserra99/UnB_RU/issues/64) | 3 |
+| T4 — Consolidação da wiki | [#65](https://github.com/Luisserra99/UnB_RU/issues/65) | 2 |
+| T5 — Verificação final | [#66](https://github.com/Luisserra99/UnB_RU/issues/66) | 3 |
+| T6 — Home e PR da disciplina | [#67](https://github.com/Luisserra99/UnB_RU/issues/67) | 2 |
+
+---
+
 ## 7. Uso de IA na sprint
 
 ### Planejamento da sprint
@@ -704,6 +752,6 @@ Cada integrante registra aqui, na etapa 6, se usou IA no seu escopo, no mesmo fo
 |---|---|---|---|
 | Luis Eduardo Curi Serra | Claude Code (Claude Opus 5.5) | Ferramentas da T0 (configuração e tarefas `qualidade:*`, com specs); medição de antes (T1) e de depois do escopo; refatoração da F02, da F03 e do login do portal; testes RSpec de happy path e sad path; comentários RDoc de todo o escopo; padrão de RDoc e de refatoração da seção 5; texto das issues do Luis (criadas por ele no GitHub) | Verificação automática a cada passo: RSpec (547 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop e RDoc a 100% no escopo. O código PIX e o SVG do QR Code foram comparados byte a byte antes e depois da refatoração. Revisão do código e dos textos pelo Luis antes do push e dos PRs |
 | Weldo Gonçalves da Silva Junior | | | |
-| Daniel Dezan Baby | | | |
+| Daniel Dezan Baby | Codex (GPT-6) | Refatoração de F05/F06; 59 exemplos RSpec de sucesso, falha e rollback; RDoc dos sete arquivos do escopo; medições de complexidade e cobertura; consolidação parcial da wiki, atualização da Home e registro das issues | Verificação automatizada: 606 exemplos RSpec, 163 cenários Cucumber, RuboCop sem ocorrências; 100% de cobertura e RDoc no escopo, Flog e ABC < 18; `.feature` existentes preservados. Daniel confirmou sua revisão humana, aprovou o resultado e autorizou a finalização do seu escopo em 23/11/2026 |
 | Leonardo Tome Sampaio | | | |
 | Tarsila Marques de Oliveira Alves | | | |
