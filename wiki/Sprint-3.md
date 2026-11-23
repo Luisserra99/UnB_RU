@@ -550,12 +550,12 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 | Luis | `DadosCartao#luhn_valido?` | 15,68 | 15,68 | 11,53 | 11,53 | Revisto e mantido: algoritmo de Luhn em um só bloco |
 | Luis | `RecargasHelper#qr_modulos` | 15,57 | 15,57 | 12,25 | 12,25 | Revisto e mantido: um laço sobre a grade do QR Code |
 | Luis | `MovimentacaoSaldo#descricao` | 15,21 | 7,86 | 12,08 | 6,32 | Descrição do crédito extraída para `descricao_do_credito` |
-| Weldo | `Controle::HistoricoController#create` | 30,17 | | 25,40 | | |
-| Weldo | `Controle::SessoesController#create` | 25,52 | | 22,91 | | |
-| Weldo | `CadastroEstudante#salvar` | 18,78 | | 13,30 | | |
-| Weldo | `ControleHelper#item_nav_controle` | 17,13 | | 13,64 | | |
-| Weldo | `CadastroEstudante#validar_email` | 16,99 | | 13,34 | | |
-| Weldo | `Controle::HistoricoController#historico_liberado?` | 16,27 | | 10,82 | | |
+| Weldo | `Controle::HistoricoController#create` | 30,17 | 5,58 | 25,40 | 5,20 | *Extract method*: `credencial_valida?`, `liberar_historico` e `recusar_credencial` |
+| Weldo | `Controle::SessoesController#create` | 25,52 | 13,28 | 22,91 | 11,45 | *Extract method*: `campos_em_branco` (como no login do estudante), `autenticar`, `motivo_da_recusa` e `entrar` |
+| Weldo | `CadastroEstudante#salvar` | 18,78 | 8,22 | 13,30 | 6,40 | Gravação de Usuario, Estudante e papel extraída para `criar_conta!` |
+| Weldo | `ControleHelper#item_nav_controle` | 17,13 | 6,45 | 13,64 | 7,07 | Predicado `item_nav_ativo?` e item desabilitado extraído para `item_nav_desabilitado`, com `return` antecipado |
+| Weldo | `CadastroEstudante#validar_email` | 16,99 | 9,83 | 13,34 | 8,25 | Condição composta virou o predicado `email_institucional?`; no mesmo padrão, `validar_matricula` (14,17 → 9,92) ganhou `matricula_ja_cadastrada?` |
+| Weldo | `Controle::HistoricoController#historico_liberado?` | 16,27 | 4,62 | 10,82 | 4,24 | Conferência do ponto de acesso e do prazo extraída para o predicado `liberacao_vigente?` |
 | Daniel | `Catracas::Operar#ler` | 67,65 | | 54,90 | | |
 | Daniel | `RateioConsumo#origens_e_limites` | 59,79 | | 43,12 | | |
 | Daniel | `Catracas::Operar#passar` | 40,28 | | 26,27 | | |
@@ -629,20 +629,20 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 | Luis | `app/models/pagamento.rb` | 100,00% | 100,00% |
 | Luis | `app/models/recarga.rb` | 100,00% | 100,00% |
 | Luis | `app/models/tarifa_refeicao.rb` | 95,65% | 100,00% |
-| Weldo | `app/controllers/application_controller.rb` | 100,00% | |
-| Weldo | `app/controllers/cadastros_controller.rb` | 100,00% | |
-| Weldo | `app/controllers/concerns/autenticacao_funcionario.rb` | 100,00% | |
-| Weldo | `app/controllers/controle/base_controller.rb` | 100,00% | |
-| Weldo | `app/controllers/controle/historico_controller.rb` | 100,00% | |
-| Weldo | `app/controllers/controle/painel_controller.rb` | 100,00% | |
-| Weldo | `app/controllers/controle/sessoes_controller.rb` | 100,00% | |
-| Weldo | `app/controllers/paginas_controller.rb` | 100,00% | |
-| Weldo | `app/models/application_record.rb` | 100,00% | |
-| Weldo | `app/models/estudante.rb` | 100,00% | |
-| Weldo | `app/models/papel.rb` | 100,00% | |
-| Weldo | `app/models/sessao_autenticacao.rb` | 100,00% | |
-| Weldo | `app/models/usuario.rb` | 100,00% | |
-| Weldo | `app/models/usuario_papel.rb` | 100,00% | |
+| Weldo | `app/controllers/application_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/cadastros_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/concerns/autenticacao_funcionario.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/controle/base_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/controle/historico_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/controle/painel_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/controle/sessoes_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/paginas_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/models/application_record.rb` | 100,00% | 100,00% |
+| Weldo | `app/models/estudante.rb` | 100,00% | 100,00% |
+| Weldo | `app/models/papel.rb` | 100,00% | 100,00% |
+| Weldo | `app/models/sessao_autenticacao.rb` | 100,00% | 100,00% |
+| Weldo | `app/models/usuario.rb` | 100,00% | 100,00% |
+| Weldo | `app/models/usuario_papel.rb` | 100,00% | 100,00% |
 | Daniel | `app/controllers/controle/pontos_acesso_controller.rb` | 100,00% | |
 | Daniel | `app/controllers/controle/terminal_controller.rb` | 83,33% | |
 | Daniel | `app/models/configuracao_ponto_acesso.rb` | 100,00% | |
@@ -703,7 +703,7 @@ Cada integrante registra aqui, na etapa 6, se usou IA no seu escopo, no mesmo fo
 | Integrante | Ferramenta e modelo | Uso | Revisão |
 |---|---|---|---|
 | Luis Eduardo Curi Serra | Claude Code (Claude Opus 5.5) | Ferramentas da T0 (configuração e tarefas `qualidade:*`, com specs); medição de antes (T1) e de depois do escopo; refatoração da F02, da F03 e do login do portal; testes RSpec de happy path e sad path; comentários RDoc de todo o escopo; padrão de RDoc e de refatoração da seção 5; texto das issues do Luis (criadas por ele no GitHub) | Verificação automática a cada passo: RSpec (547 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop e RDoc a 100% no escopo. O código PIX e o SVG do QR Code foram comparados byte a byte antes e depois da refatoração. Revisão do código e dos textos pelo Luis antes do push e dos PRs |
-| Weldo Gonçalves da Silva Junior | | | |
+| Weldo Gonçalves da Silva Junior | Claude Code (Claude Opus 5.5) | Medição de antes e depois do escopo (F01, F04, F07 e base de identidade); refatoração dos 6 métodos com nota ≥ 15; comentários RDoc de todo o escopo (21 arquivos, 100% documentado); testes RSpec de happy path e sad path (specs novos de `ControleHelper`, `IconesHelper` e da página inicial; banco rejeitando o cadastro; papel inexistente; ponto de acesso e encerramento da sessão; logout sem sessão; escolha de restaurante no painel) | Verificação automática a cada passo: RSpec (593 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop e RDoc a 100% no escopo, nenhum método do escopo com nota ≥ 15. Revisão do código e dos textos pelo Weldo antes do push e do PR |
 | Daniel Dezan Baby | | | |
 | Leonardo Tome Sampaio | | | |
 | Tarsila Marques de Oliveira Alves | | | |
