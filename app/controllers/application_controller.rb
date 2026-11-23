@@ -1,3 +1,4 @@
+# Base de todos os controllers: inclui a autenticação de funcionário (F04) e de estudante (F02/F03).
 class ApplicationController < ActionController::Base
   include AutenticacaoFuncionario
   include AutenticacaoEstudante
