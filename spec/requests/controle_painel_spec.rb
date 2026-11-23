@@ -38,4 +38,29 @@ RSpec.describe "Proteção das funções de controle (F04)", type: :request do
     get controle_root_path
     expect(response).to redirect_to(controle_login_path)
   end
+
+  describe "escolha do restaurante" do
+    let!(:catraca) { create(:catraca, identificacao: "CAT-01") }
+    let(:restaurante) { catraca.restaurante }
+
+    before { login_controle(funcionario) }
+
+    it "lista as catracas disponíveis do restaurante escolhido" do
+      create(:catraca, identificacao: "CAT-INATIVA", ativa: false, piso: catraca.piso)
+
+      get controle_root_path(restaurante_id: restaurante.id)
+      expect(response.body).to include('id="catracas-disponiveis"', "CAT-01")
+      expect(response.body).not_to include("CAT-INATIVA")
+    end
+
+    it "não lista catracas quando o restaurante não existe ou está inativo" do
+      get controle_root_path(restaurante_id: 0)
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include('id="catracas-disponiveis"')
+
+      restaurante.update!(ativo: false)
+      get controle_root_path(restaurante_id: restaurante.id)
+      expect(response.body).not_to include('id="catracas-disponiveis"')
+    end
+  end
 end

@@ -12,14 +12,34 @@ RSpec.describe HistoricoHelper, type: :helper do
   end
 
   it "deixa vazios os campos sem valor" do
+    expect(helper.data_registro(nil)).to be_nil
     expect(helper.hora_registro(nil)).to be_nil
     expect(helper.saldo_registro(nil)).to be_nil
+    expect(helper.sim_nao(nil)).to eq("N")
+  end
+
+  it "usa ponto como separador de milhar no saldo" do
+    expect(helper.saldo_registro(BigDecimal("1234.5"))).to eq("1.234,50")
   end
 
   it "descreve a situação de cada estado" do
     expect(helper.situacao_registro(build(:registro_acesso, estado: "realizado")).first).to eq("Liberado (passagem confirmada)")
     expect(helper.situacao_registro(build(:registro_acesso, estado: "cancelado")).first).to eq("Liberado sem passagem")
-    expect(helper.situacao_registro(build(:registro_acesso, estado: "recusado", mensagem: "Saldo insuficiente")).first)
-      .to eq("Bloqueado (Saldo insuficiente)")
+    expect(helper.situacao_registro(build(:registro_acesso, estado: "liberado")))
+      .to eq([ "Aguardando passagem", "situacao-info" ])
+    expect(helper.situacao_registro(build(:registro_acesso, estado: "recusado", mensagem: "Saldo insuficiente")))
+      .to eq([ "Bloqueado (Saldo insuficiente)", "situacao-erro" ])
+  end
+
+  describe "#linha_bloqueada?" do
+    it "destaca as leituras recusadas e as liberadas sem passagem" do
+      expect(helper.linha_bloqueada?(build(:registro_acesso, estado: "recusado"))).to be(true)
+      expect(helper.linha_bloqueada?(build(:registro_acesso, estado: "cancelado"))).to be(true)
+    end
+
+    it "não destaca as passagens realizadas nem as que aguardam passagem" do
+      expect(helper.linha_bloqueada?(build(:registro_acesso, estado: "realizado"))).to be(false)
+      expect(helper.linha_bloqueada?(build(:registro_acesso, estado: "liberado"))).to be(false)
+    end
   end
 end
