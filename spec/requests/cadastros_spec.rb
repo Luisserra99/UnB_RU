@@ -26,4 +26,18 @@ RSpec.describe "Cadastro de estudante (F01)", type: :request do
     expect(response).to have_http_status(:unprocessable_content)
     expect(response.body).to include("Senha inválida")
   end
+
+  it "re-exibe o formulário quando a matrícula já está cadastrada" do
+    post cadastro_path, params: params_validos
+    params_validos[:cadastro_estudante][:email] = "outro@aluno.unb.br"
+
+    expect { post cadastro_path, params: params_validos }.not_to change(Usuario, :count)
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(response.body).to include("Matrícula já cadastrada")
+  end
+
+  it "responde 400 quando o formulário não é enviado" do
+    expect { post cadastro_path, params: {} }.not_to change(Usuario, :count)
+    expect(response).to have_http_status(:bad_request)
+  end
 end

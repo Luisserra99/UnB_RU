@@ -75,5 +75,30 @@ RSpec.describe Usuario, type: :model do
       funcionario = create(:funcionario)
       expect { funcionario.atribuir_papel!(Papel::FUNCIONARIO) }.not_to change(UsuarioPapel, :count)
     end
+
+    it "atribui um papel novo" do
+      funcionario = create(:funcionario)
+      create(:papel, codigo: Papel::ADMINISTRADOR)
+      expect { funcionario.atribuir_papel!(Papel::ADMINISTRADOR) }.to change(UsuarioPapel, :count).by(1)
+      expect(funcionario).to be_administrador
+    end
+
+    it "lança erro ao atribuir papel inexistente" do
+      usuario = create(:usuario)
+      expect { usuario.atribuir_papel!("papel_inexistente") }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(usuario.papeis).to be_empty
+    end
+
+    it "usuário sem papel não acessa nada" do
+      expect(create(:usuario)).to have_attributes(
+        estudante?: false, funcionario?: false, administrador?: false, pode_acessar_controle?: false
+      )
+    end
+
+    it "consulta um papel pelo código" do
+      funcionario = create(:funcionario)
+      expect(funcionario.possui_papel?(Papel::FUNCIONARIO)).to be(true)
+      expect(funcionario.possui_papel?(Papel::ESTUDANTE)).to be(false)
+    end
   end
 end
