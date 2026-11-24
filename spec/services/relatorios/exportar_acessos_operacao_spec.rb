@@ -76,4 +76,17 @@ RSpec.describe Relatorios::ExportarAcessosOperacao do
     expect(resultado.mensagem).to eq("A data inicial deve ser anterior ou igual à data final")
     expect(ExportacaoRelatorio.count).to eq(0)
   end
+
+  # Sprint 3 — sad path: o pedido nem chega a ser gravado.
+  it "informa a falha, sem arquivo e sem registro, quando o pedido não pode ser gravado" do
+    allow(ExportacaoRelatorio).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
+
+    resultado = exportar
+
+    expect(resultado).not_to be_sucesso
+    expect(resultado.conteudo).to be_nil
+    expect(resultado.exportacao).to be_nil
+    expect(resultado.mensagem).to eq("Não foi possível gerar o PDF. Tente novamente")
+    expect(ExportacaoRelatorio.count).to eq(0)
+  end
 end
