@@ -88,4 +88,16 @@ RSpec.describe "Acessos do Relatório de Operação e exportação em PDF (F12)"
       expect(ExportacaoRelatorio.count).to eq(0)
     end
   end
+
+  # Sprint 3 — sad path: a geração do PDF falha.
+  it "volta à lista com a mensagem de falha e não baixa arquivo quando a exportação quebra" do
+    entrar_no_controle(administrador)
+    allow(ExportacaoRelatorio).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
+
+    post exportar_admin_acessos_relatorio_global_path, params: periodo
+
+    expect(response).to redirect_to(admin_acessos_relatorio_global_path(periodo))
+    expect(flash[:alert]).to eq("Não foi possível gerar o PDF. Tente novamente")
+    expect(response.headers["Content-Disposition"]).to be_nil
+  end
 end

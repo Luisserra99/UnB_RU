@@ -117,4 +117,16 @@ RSpec.describe "Relatório Global de Operação (F09)", type: :request do
       expect(flash[:alert]).to eq("Nenhum acesso encontrado")
     end
   end
+
+  # Sprint 3 — sad path: a geração do arquivo falha.
+  it "volta ao relatório com a mensagem de falha e não baixa arquivo quando a exportação quebra" do
+    entrar_no_controle(administrador)
+    allow(ExportacaoRelatorio).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
+
+    post exportar_admin_relatorio_global_path, params: { formato: "csv", data: "2025-01-01" }
+
+    expect(response).to redirect_to(admin_relatorio_global_path(data: "2025-01-01", turno: "todos", unidade_id: unidade.id))
+    expect(flash[:alert]).to eq("Não foi possível gerar o arquivo. Tente novamente")
+    expect(response.headers["Content-Disposition"]).to be_nil
+  end
 end

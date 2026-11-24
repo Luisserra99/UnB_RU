@@ -76,4 +76,24 @@ RSpec.describe Relatorios::ExportarOperacaoGlobal do
       expect(resultado.exportacao.reload).to be_sem_dados
     end
   end
+
+  # Sprint 3 — sad path: formato fora da lista.
+  it "usa PDF quando o formato pedido não é suportado" do
+    resultado = exportar("docx")
+
+    expect(resultado.exportacao.formato).to eq("pdf")
+  end
+
+  # Sprint 3 — sad path: o pedido nem chega a ser gravado.
+  it "informa a falha, sem arquivo e sem registro, quando o pedido não pode ser gravado" do
+    allow(ExportacaoRelatorio).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
+
+    resultado = exportar("pdf")
+
+    expect(resultado).not_to be_sucesso
+    expect(resultado.conteudo).to be_nil
+    expect(resultado.exportacao).to be_nil
+    expect(resultado.mensagem).to eq("Não foi possível gerar o arquivo. Tente novamente")
+    expect(ExportacaoRelatorio.count).to eq(0)
+  end
 end

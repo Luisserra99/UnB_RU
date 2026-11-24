@@ -119,4 +119,16 @@ RSpec.describe "Exportação do extrato do estudante (F11)", type: :request do
       expect(ExportacaoRelatorio.count).to eq(0)
     end
   end
+
+  # Sprint 3 — sad path: a geração do arquivo falha.
+  it "volta ao extrato com a mensagem de falha e não baixa arquivo quando a exportação quebra" do
+    login_estudante(aluno)
+    allow(ExportacaoRelatorio).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
+
+    post exportacoes_extrato_path, params: { formato: "pdf" }
+
+    expect(response).to redirect_to(extrato_path(tipo: "todas", periodo: "30_dias"))
+    expect(flash[:alert]).to eq("Não foi possível gerar o arquivo. Tente novamente")
+    expect(response.headers["Content-Disposition"]).to be_nil
+  end
 end

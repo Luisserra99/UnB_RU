@@ -6,6 +6,8 @@ Projeto da disciplina de **Engenharia de Software** (UnB), da professora Genaina
 
 > **Sprint 2 concluída:** as 12 funcionalidades especificadas na Sprint 1 estão implementadas na branch [`sprint-2`](https://github.com/Luisserra99/UnB_RU/tree/sprint-2), com **163 cenários BDD** (Cucumber) e **501 exemplos RSpec**, todos passando, verificados a cada push pelo CI no GitHub Actions.
 
+> **Sprint 3 em andamento:** refatoração e documentação na branch [`sprint-3`](https://github.com/Luisserra99/UnB_RU/tree/sprint-3), com entrega em **27/11/2026**. No checkout local verificado em **23/11/2026** (base `5ad39cb` mais F05/F06), passam **606 exemplos RSpec** e os **163 cenários BDD** existentes. F05/F06 têm 100% de cobertura e RDoc; a verificação final depende da integração dos demais escopos. Veja as [medições e pendências do PO](Sprint-3.md#63-verificação-parcial-do-po--23112026-t4-t5-e-t6).
+
 ---
 
 ## Identificação
@@ -15,26 +17,26 @@ Projeto da disciplina de **Engenharia de Software** (UnB), da professora Genaina
 | **Grupo** | 02 |
 | **Repositório da disciplina** | [neatzzy/UnB_RU](https://github.com/neatzzy/UnB_RU) |
 | **Fork do grupo** | [Luisserra99/UnB_RU](https://github.com/Luisserra99/UnB_RU) |
-| **Branch de entrega (release)** | [`sprint-2`](https://github.com/Luisserra99/UnB_RU/tree/sprint-2) |
-| **Kanban** | [GitHub Project — Sprint 2](https://github.com/users/Luisserra99/projects/1) (Backlog, Doing, Done, Accepted) |
+| **Branch de entrega (release)** | [`sprint-3`](https://github.com/Luisserra99/UnB_RU/tree/sprint-3) |
+| **Kanban** | [Project do grupo — Sprint 3](https://github.com/users/Luisserra99/projects/1), compartilhado com o histórico da Sprint 2 |
 | **Stack** | Ruby 3.3, Rails 8.1, SQLite, RSpec, Cucumber + Capybara, Prawn (PDF) |
 
 ## Equipe
 
-| Integrante | Matrícula | Papel na Sprint 2 | Funcionalidades |
+| Integrante | Matrícula | Papel na Sprint 3 | Funcionalidades |
 |---|---|---|---|
-| Luis Eduardo Curi Serra | 251033574 | Scrum Master | F02, F03 |
-| Tarsila Marques de Oliveira Alves | 242012029 | Product Owner | F09, F11, F12 |
-| Daniel Dezan Baby | 232046097 | Desenvolvedor | F05, F06 |
+| Luis Eduardo Curi Serra | 251033574 | Desenvolvedor | F02, F03 e ferramentas |
+| Tarsila Marques de Oliveira Alves | 242012029 | Desenvolvedora | F09, F11, F12 |
+| Daniel Dezan Baby | 232046097 | Product Owner | F05, F06 |
 | Leonardo Tome Sampaio | 222005448 | Desenvolvedor | F08, F10 |
-| Weldo Gonçalves da Silva Junior | 222014133 | Desenvolvedor | F01, F04, F07 |
+| Weldo Gonçalves da Silva Junior | 222014133 | Scrum Master | F01, F04, F07 e identidade |
 
 | Papel Scrum | Responsável | Atribuições |
 |---|---|---|
-| **Scrum Master** | Luis Eduardo Curi Serra | Montar o GitHub Project com as quatro lanes e revisar as issues de todos: criadas, com responsável e na lane certa |
-| **Product Owner** | Tarsila Marques de Oliveira Alves | Manter esta wiki, aceitar as issues (mover para Accepted) e conduzir a entrega |
+| **Scrum Master** | Weldo Gonçalves da Silva Junior | Organizar o Project, conferir as issues e os prazos e preparar o `.txt` da entrega (T2/T3) |
+| **Product Owner** | Daniel Dezan Baby | Consolidar a wiki, verificar C1–C4, aceitar as issues e abrir o PR de entrega (T4/T5/T6) |
 
-Na [Sprint 1](Sprint-1.md), Daniel foi Scrum Master e Leonardo foi Product Owner.
+Na [Sprint 1](Sprint-1.md), Daniel foi Scrum Master e Leonardo foi Product Owner. Na Sprint 2, Luis foi Scrum Master e Tarsila foi Product Owner. O [planejamento da Sprint 3](Sprint-3.md) detalha o rodízio e os critérios de aceite.
 
 ---
 
@@ -92,13 +94,15 @@ O modelo de dados segue o diagrama ER da [segunda etapa da Sprint 1](../docs/spr
 
 ## Testes
 
-| Suíte | Comando | Resultado na `sprint-2` |
+| Suíte | Comando | Resultado local na `sprint-3` em 23/11/2026 |
 |---|---|---|
 | Cenários BDD (Cucumber) | `bundle exec cucumber` | 163 cenários, 1456 passos, todos passando |
-| Testes unitários e de integração (RSpec) | `bundle exec rspec` | 501 exemplos, 0 falhas |
-| Lint (RuboCop, estilo `rubocop-rails-omakase`) | `bundle exec rubocop` | 0 ocorrências |
+| Testes unitários e de integração (RSpec) | `bundle exec rspec` | 606 exemplos, 0 falhas |
+| Lint (RuboCop, estilo `rubocop-rails-omakase`) | `bundle exec rubocop` | 227 arquivos, 0 ocorrências |
 
 Os specs RSpec cobrem models, form objects, services, helpers e requests, incluindo regras de segurança (acesso por papel, dados de cartão, parâmetros malformados) e a geração dos arquivos PDF e CSV.
+
+Os resultados acima incluem as alterações de F05/F06 sobre `5ad39cb`, na branch `sprint-3-refactor-Daniel/catracas`. Daniel revisou e aprovou seu escopo em 23/11/2026 e autorizou sua finalização; a integração é acompanhada no [PR #68](https://github.com/Luisserra99/UnB_RU/pull/68). Na Sprint 3, também são executadas as tarefas de complexidade, cobertura e RDoc descritas na [wiki da sprint](Sprint-3.md#como-rodar-as-ferramentas-t0). Os `.feature` existentes permanecem idênticos aos da Sprint 2.
 
 ### Integração contínua (CI)
 
@@ -108,14 +112,14 @@ O workflow [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) roda no Git
 
 ## Kanban
 
-O [GitHub Project da Sprint 2](https://github.com/users/Luisserra99/projects/1) tem uma issue por funcionalidade, com o responsável atribuído, distribuídas nas lanes:
+Na Sprint 3, cada integrante cria suas issues de refatoração, cobertura, caminhos de teste e RDoc, conforme o [planejamento](Sprint-3.md#5-issues-branches-e-padrões). O [Project do grupo](https://github.com/users/Luisserra99/projects/1) reúne as tarefas da Sprint 3 e o histórico da Sprint 2. No quadro atual, `In progress` corresponde a Doing e `In review` registra o trabalho aguardando revisão antes de Done.
 
 | Lane | Significado |
 |---|---|
 | **Backlog** | Issue criada, ainda não iniciada |
-| **Doing** | Em desenvolvimento na branch da funcionalidade |
-| **Done** | PR mergeado na `sprint-2`, com RSpec e Cucumber passando |
-| **Accepted** | Revisada e aceita pela Product Owner |
+| **Doing** | Em desenvolvimento na branch do escopo |
+| **Done** | PR revisado e mergeado na `sprint-3`, com C1–C4 verificados |
+| **Accepted** | Revisada e aceita pelo Product Owner |
 
 ---
 
@@ -171,6 +175,8 @@ A lista completa de usuários está em [Identidade e Acesso](Sprint-2-Identidade
 | `docs` | Documentação |
 | `style` | Formatação, sem mudança de lógica |
 | `test` | Testes |
+| `refactor` | Mudança de estrutura sem mudar comportamento |
+| `chore` | Configuração e ferramentas |
 
 Exemplo: `feat(cardapio): adiciona listagem do cardápio do dia`.
 
@@ -180,6 +186,7 @@ Exemplo: `feat(cardapio): adiciona listagem do cardápio do dia`.
 - `sprint-N`: branch de integração e de entrega da sprint. Depois do PR para o repositório da disciplina, não recebe mais commits.
 - `sprint-N-feature-<integrante>/<nome-curto>`: uma branch por funcionalidade, criada a partir de `sprint-N`.
 - `sprint-N-fix-<integrante>/<nome-curto>`: correções, criada a partir de `sprint-N`.
+- `sprint-3-refactor-<integrante>/<escopo>`: refatoração, testes e RDoc, criada após o merge do piloto.
 
 ### Revisão
 
@@ -192,18 +199,20 @@ Exemplo: `feat(cardapio): adiciona listagem do cardápio do dia`.
 
 ## Entrega
 
-A branch de entrega é a [`sprint-2`](https://github.com/Luisserra99/UnB_RU/tree/sprint-2) do fork do grupo. O Pull Request vai do fork para o repositório da disciplina:
+A branch de entrega é a [`sprint-3`](https://github.com/Luisserra99/UnB_RU/tree/sprint-3) do fork do grupo. Após integrar todos os escopos e verificar C1–C4, o Product Owner abre o Pull Request para o repositório da disciplina:
 
 - **base:** `neatzzy/UnB_RU`, branch `main`
-- **head:** `Luisserra99/UnB_RU`, branch `sprint-2`
-- **título:** `Grupo 02 - Sprint 2`
-- **descrição:** nome e matrícula dos integrantes e as funcionalidades de cada um
+- **head:** `Luisserra99/UnB_RU`, branch `sprint-3`
+- **título:** `Grupo 02 - Sprint 3`
+- **descrição:** nome e matrícula dos integrantes, escopos refatorados, resultados finais e link da wiki
+
+Entrega em **27/11/2026**, incluindo o `.txt` preparado pelo SM. O [estado parcial da verificação](Sprint-3.md#63-verificação-parcial-do-po--23112026-t4-t5-e-t6) registra as pendências para abrir esse PR; o aceite final permanece pendente.
 
 ---
 
 ## Uso de IA
 
-O grupo usou o **Claude Code** (Anthropic) como apoio. O código gerado foi revisado pelo responsável de cada funcionalidade e só entrou na `sprint-2` com os testes passando.
+Na Sprint 2, o grupo usou o **Claude Code** (Anthropic) como apoio. O código gerado foi revisado pelo responsável de cada funcionalidade e só entrou na `sprint-2` com os testes passando.
 
 | Uso | Funcionalidades |
 |---|---|
