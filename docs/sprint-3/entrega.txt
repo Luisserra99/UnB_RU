@@ -1,0 +1,13 @@
+UnB RU - Grupo 02 - Sprint 3 (Refatoração e documentação)
+
+Repositório: https://github.com/Luisserra99/UnB_RU
+Branch de entrega: sprint-3
+Wiki da Sprint 3: https://github.com/Luisserra99/UnB_RU/wiki/Sprint-3
+
+Integrantes:
+Nome                                  Matrícula
+Luis Eduardo Curi Serra               251033574
+Weldo Gonçalves da Silva Junior       222014133
+Daniel Dezan Baby                     232046097
+Leonardo Tome Sampaio                 222005448
+Tarsila Marques de Oliveira Alves     242012029
