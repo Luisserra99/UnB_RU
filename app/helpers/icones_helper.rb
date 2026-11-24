@@ -1,6 +1,7 @@
 # Ícones SVG inline (traço), no estilo das telas do Figma.
 # Uso: <%= icone(:usuario) %>  ou  <%= icone(:cadeado, tamanho: 18, classe: "icone-campo") %>
 module IconesHelper
+  # Desenho (elementos SVG internos, em grade 24x24) de cada ícone, pelo nome.
   ICONES = {
     usuario: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
     cadeado: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><path d="M12 15v2"/>',
@@ -27,6 +28,13 @@ module IconesHelper
     carteira: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 14.5h2"/>'
   }.freeze
 
+  # Desenha um ícone SVG inline, decorativo (escondido de leitores de tela).
+  #
+  # Argumentos:: +nome+ (Symbol): chave de ICONES, ex.: +:usuario+; +tamanho+ (Integer, opcional):
+  #              largura e altura em pixels, 20 por padrão; +classe+ (String, opcional): classe CSS,
+  #              "icone" por padrão.
+  # Retorno:: ActiveSupport::SafeBuffer com a tag +svg+.
+  # Efeitos colaterais:: lança KeyError se +nome+ não estiver em ICONES.
   def icone(nome, tamanho: 20, classe: "icone")
     tag.svg(
       ICONES.fetch(nome).html_safe,

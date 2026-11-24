@@ -139,4 +139,96 @@ RSpec.describe Catracas::Operar do
     expect(estudante.movimentacoes_saldo.debitos).to be_empty
     expect(RateioConsumo.count).to eq(0)
   end
+
+  [ nil, "", "   ", "x" * 65, 123 ].each do |referencia|
+    it "rejeita referência inválida #{referencia.inspect} antes de gravar leitura" do
+      expect { ler(referencia) }.to raise_error(described_class::Invalido, "Referência de evento inválida")
+      expect(ponto.registros_acesso).to be_empty
+    end
+  end
+
+  it "rejeita identificação com mais de 100 caracteres" do
+    expect { operador.ler(identificacao: "1" * 101, referencia: SecureRandom.uuid) }
+      .to raise_error(described_class::Invalido, "Identificação inválida")
+    expect(ponto.registros_acesso).to be_empty
+  end
+
+  it "remove espaços da matrícula antes de identificar o estudante" do
+    registro = operador.ler(identificacao: "  #{estudante.matricula}  ", referencia: SecureRandom.uuid)
+    expect(registro).to be_liberado
+    expect(registro.identificacao_lida).to eq(estudante.matricula)
+  end
+
+  it "recusa estudante com vínculo inativo" do
+    estudante.update!(vinculo_ativo: false)
+    expect(ler.mensagem).to eq("Identificação desconhecida")
+    expect(estudante.saldo).to eq(10)
+  end
+
+  it "recusa estudante com usuário inativo" do
+    estudante.usuario.update!(ativo: false)
+    expect(ler.mensagem).to eq("Identificação desconhecida")
+  end
+
+  it "recusa leitura com saldo insuficiente sem debitar" do
+    TarifaRefeicao.vigente_para(servico.tipo_refeicao).update!(valor: 11)
+    registro = ler
+    expect(registro).to be_recusado
+    expect(registro.mensagem).to eq("Saldo insuficiente")
+    expect(registro.liberado_em).to be_nil
+    expect(operador.passar(registro)).to eq(registro)
+    expect(estudante.saldo).to eq(10)
+  end
+
+  it "recusa serviço sem tarifa vigente" do
+    TarifaRefeicao.vigente_para(servico.tipo_refeicao).update!(vigente_ate: agora - 1.second)
+    expect(ler.mensagem).to eq("Nenhuma refeição disponível neste horário")
+  end
+
+  %i[vinculo usuario].each do |cadastro|
+    it "revalida #{cadastro} desativado entre leitura e passagem" do
+      registro = ler
+      cadastro == :vinculo ? estudante.update!(vinculo_ativo: false) : estudante.usuario.update!(ativo: false)
+      operador.passar(registro)
+      expect(registro.reload).to be_cancelado
+      expect(registro.mensagem).to eq("Saldo insuficiente")
+      expect(estudante.movimentacoes_saldo.debitos).to be_empty
+    end
+  end
+
+  it "expira pendência vencida ao receber uma nova leitura" do
+    anterior = ler
+    travel 6.seconds
+    novo = ler
+    expect(anterior.reload).to be_cancelado
+    expect(anterior.bloqueado_em).to eq(agora + 5.seconds)
+    expect(novo).to be_liberado
+    expect(estudante.saldo).to eq(10)
+  end
+
+  it "ignora crédito esgotado ao ratear uma nova passagem em FIFO" do
+    TarifaRefeicao.vigente_para(servico.tipo_refeicao).update!(valor: 10)
+    operador.passar(ler)
+    travel 1.second
+    SaldoInicialFactory.creditar(estudante, 3)
+    TarifaRefeicao.vigente_para(servico.tipo_refeicao).update!(valor: 2.5)
+
+    registro = ler
+    operador.passar(registro)
+    expect(registro).to be_realizado
+    expect(registro.movimentacao_saldo.rateios_consumo.pluck(:valor)).to eq([ BigDecimal("2.5") ])
+    expect(estudante.saldo).to eq(0.5)
+  end
+
+  it "reverte a passagem se o saldo informado não tiver créditos disponíveis para rateio" do
+    registro = ler
+    # Simula indisponibilidade dos créditos depois da leitura, preservando a defesa transacional.
+    allow(operador).to receive(:creditos_no_fifo).and_return([])
+    expect { operador.passar(registro) }
+      .to raise_error(described_class::Invalido, "Créditos indisponíveis para rateio")
+    expect(registro.reload).to be_liberado
+    expect(estudante.saldo).to eq(10)
+    expect(estudante.movimentacoes_saldo.debitos).to be_empty
+    expect(RateioConsumo.count).to eq(0)
+  end
 end
