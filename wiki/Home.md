@@ -6,7 +6,7 @@ Projeto da disciplina de **Engenharia de Software** (UnB), da professora Genaina
 
 > **Sprint 2 concluída:** as 12 funcionalidades especificadas na Sprint 1 estão implementadas na branch [`sprint-2`](https://github.com/Luisserra99/UnB_RU/tree/sprint-2), com **163 cenários BDD** (Cucumber) e **501 exemplos RSpec**, todos passando, verificados a cada push pelo CI no GitHub Actions.
 
-> **Sprint 3 — preparação da entrega:** os cinco escopos foram integrados à [`sprint-3`](https://github.com/Luisserra99/UnB_RU/tree/sprint-3), e o [`.txt` do Weldo](../docs/sprint-3/entrega.txt) foi conferido. A verificação completa de **25/11/2026** registra **687 exemplos RSpec**, **163 cenários BDD**, 100% de cobertura em cada controller/model e 100% de RDoc. A descrição do PR está [preparada para análise](../docs/sprint-3/pr-final.md); a abertura para a disciplina aguarda autorização do Daniel. Entrega em **27/11/2026**. Veja a [verificação consolidada do PO](Sprint-3.md#64-verificação-consolidada-do-po--25112026).
+> **Sprint 3 — preparação da entrega:** os cinco escopos foram integrados à [`sprint-3`](https://github.com/Luisserra99/UnB_RU/tree/sprint-3), e o [`.txt` do Weldo](../docs/sprint-3/entrega.txt) foi conferido. A verificação completa de **25/11/2026** registra **687 exemplos RSpec**, **163 cenários BDD**, 100% de cobertura em cada controller/model e 100% de RDoc. A [descrição do PR](../docs/sprint-3/pr-final.md) está concluída, e Daniel autorizou a integração do fechamento e a abertura para a disciplina em **25/11/2026**. Entrega em **27/11/2026**. Veja a [verificação consolidada do PO](Sprint-3.md#64-verificação-consolidada-do-po--25112026).
 
 ---
 
@@ -108,7 +108,7 @@ Os resultados acima correspondem aos cinco escopos integrados até `e6c17a4`, co
 
 O workflow [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) roda no GitHub Actions a cada push e pull request, com três jobs em paralelo no Ubuntu: **Lint (RuboCop)**, **Testes (RSpec)** e **Cenários BDD (Cucumber)**. Os resultados ficam na aba [Actions](https://github.com/Luisserra99/UnB_RU/actions) do fork.
 
-Na preparação de 25/11/2026, o GitHub não apresentou checks novos para o [PR interno #74](https://github.com/Luisserra99/UnB_RU/pull/74). Os resultados atuais foram verificados localmente; a observação e a decisão pendente de integração estão registradas no [relatório do PO](../docs/sprint-3/verificacao-final.md#estado-do-ci-remoto-em-25112026).
+Na preparação de 25/11/2026, o GitHub não apresentou checks novos para o [PR interno #74](https://github.com/Luisserra99/UnB_RU/pull/74). Os resultados atuais foram verificados localmente; a observação e a autorização do Daniel para integrar com a validação local estão registradas no [relatório do PO](../docs/sprint-3/verificacao-final.md#estado-do-ci-remoto-em-25112026).
 
 ---
 
@@ -208,7 +208,7 @@ A branch de entrega é a [`sprint-3`](https://github.com/Luisserra99/UnB_RU/tree
 - **título:** `Grupo 02 - Sprint 3`
 - **descrição:** nome e matrícula dos integrantes, escopos refatorados, resultados finais e link da wiki
 
-Entrega em **27/11/2026**. O [`.txt` do SM](../docs/sprint-3/entrega.txt) está integrado e conferido. A [verificação consolidada](Sprint-3.md#64-verificação-consolidada-do-po--25112026) e a [descrição do PR](../docs/sprint-3/pr-final.md) estão preparadas. A abertura do PR final para a disciplina aguarda análise e autorização do Daniel.
+Entrega em **27/11/2026**. O [`.txt` do SM](../docs/sprint-3/entrega.txt) está integrado e conferido. A [verificação consolidada](Sprint-3.md#64-verificação-consolidada-do-po--25112026) e a [descrição do PR](../docs/sprint-3/pr-final.md) estão preparadas. A abertura do PR final para a disciplina foi autorizada pelo Daniel em **25/11/2026**; o link da submissão fica registrado na [issue #67](https://github.com/Luisserra99/UnB_RU/issues/67) e na wiki pública.
 
 ---
 

@@ -15,7 +15,7 @@ Os cinco escopos estão integrados na `sprint-3` até o commit `e6c17a474620496c
 | Leonardo — F08/F10 | PR #72 |
 | Weldo — arquivo `.txt` | PR #70, commit `b440032` |
 
-O PR final **`Grupo 02 - Sprint 3`** será aberto de **`Luisserra99:sprint-3`** para **`neatzzy/UnB_RU:main`** após a análise e autorização do Daniel. Sua descrição está preparada em [pr-final.md](pr-final.md). A consolidação deve estar integrada e publicada na wiki antes dessa abertura.
+O PR final **`Grupo 02 - Sprint 3`**, de **`Luisserra99:sprint-3`** para **`neatzzy/UnB_RU:main`**, teve sua abertura autorizada pelo Daniel em **25/11/2026**, junto à integração do fechamento com a validação local. A descrição está em [pr-final.md](pr-final.md); o link da submissão fica registrado na [issue #67](https://github.com/Luisserra99/UnB_RU/issues/67) e na wiki pública. A consolidação e a wiki são publicadas antes da abertura.
 
 ## Conferência do arquivo do Scrum Master
 
@@ -76,7 +76,7 @@ Os relatórios gerados ficam em `coverage/index.html`, `tmp/rubycritic/overview.
 
 O [PR interno #74](https://github.com/Luisserra99/UnB_RU/pull/74) contém esta consolidação. O GitHub não apresentou checks novos para esse PR; a consulta à API de workflows retornou uma lista vazia, e o arquivo `.github/workflows/ci.yml` não foi encontrado na branch padrão `main`. O arquivo existe na `sprint-3` e na branch de consolidação. A causa da ausência de execução não foi confirmada e nenhuma configuração do Actions foi alterada.
 
-Os resultados desta verificação foram obtidos localmente. A integração do fechamento foi submetida ao Daniel para decisão, mantendo a abertura do PR final para a disciplina sob autorização separada. As últimas execuções históricas disponíveis no GitHub pertencem a commits anteriores e não foram apresentadas como checks do PR #74.
+Os resultados desta verificação foram obtidos localmente. Daniel autorizou em 25/11/2026 a integração do fechamento com essa validação local e a abertura do PR final para a disciplina. As últimas execuções históricas disponíveis no GitHub pertencem a commits anteriores e não foram apresentadas como checks do PR #74.
 
 Os cenários BDD originais foram comparados com a `origin/sprint-2` e estão preservados. Os testes acrescentados exercitam, entre outros, validação de formulários, autenticação e papéis, autorização por sessão, prazos, idempotência, rollback, limites de rateio, gestão de cadastros, filtros inválidos e falhas de exportação. A cobertura de linhas complementa essa verificação dos caminhos de sucesso e recusa.
 
@@ -84,9 +84,9 @@ Os cenários BDD originais foram comparados com a `origin/sprint-2` e estão pre
 
 - **T4 — #65:** tabelas dos cinco integrantes, resumo global, refatorações e uso de IA consolidados. A publicação e o encerramento da tarefa são registrados na issue #65.
 - **T5 — #66:** critérios C1–C4 conferidos no conjunto completo; relatórios HTML gerados. O CI da consolidação complementa a verificação; o encerramento é registrado na issue #66.
-- **T6 — #67:** Home e README atualizados; título, destino e descrição do PR final preparados. **Abertura pendente de análise e autorização do Daniel.**
+- **T6 — #67:** Home e README atualizados; título, destino e descrição do PR final preparados. **Abertura autorizada pelo Daniel em 25/11/2026**; o link da submissão fica registrado na issue #67 e na wiki pública.
 
-Nenhum PR final para o repositório da disciplina foi aberto nesta preparação. A análise pode usar a [descrição pronta](pr-final.md), a [wiki fonte](../../wiki/Sprint-3.md) e o [arquivo de entrega](entrega.txt).
+A preparação e a submissão usam a [descrição final](pr-final.md), a [wiki fonte](../../wiki/Sprint-3.md) e o [arquivo de entrega](entrega.txt). A autorização do Daniel foi recebida em 25/11/2026.
 
 ## Cobertura por controller e model
 

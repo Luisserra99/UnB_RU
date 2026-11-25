@@ -111,4 +111,4 @@ docs/sprint-1/          Relatório da Sprint 1 (modelo ER)
 
 - **Sprint 1:** [especificação das funcionalidades e cenários BDD](wiki/Sprint-1.md) e [relatório do modelo ER](docs/sprint-1/relatorio-etapa-2.md) ([PDF](docs/sprint-1/relatorio-etapa-2.pdf))
 - **Sprint 2:** implementação das 12 funcionalidades com testes RSpec e Cucumber ([wiki](wiki/Home.md))
-- **Sprint 3:** [refatoração, documentação e medições consolidadas](wiki/Sprint-3.md), [verificação final](docs/sprint-3/verificacao-final.md) e [arquivo de entrega](docs/sprint-3/entrega.txt). A descrição do [PR final](docs/sprint-3/pr-final.md) está preparada para análise antes da abertura.
+- **Sprint 3:** [refatoração, documentação e medições consolidadas](wiki/Sprint-3.md), [verificação final](docs/sprint-3/verificacao-final.md) e [arquivo de entrega](docs/sprint-3/entrega.txt). A [descrição do PR final](docs/sprint-3/pr-final.md) registra a equipe, os resultados e os entregáveis da sprint.
