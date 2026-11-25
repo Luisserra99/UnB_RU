@@ -72,6 +72,12 @@ git diff origin/sprint-2 -- 'features/*.feature'
 
 Os relatórios gerados ficam em `coverage/index.html`, `tmp/rubycritic/overview.html` e `doc/app/index.html`, fora do versionamento. Os logs da verificação local estão em `tmp/sprint-3-final-*.log`.
 
+### Estado do CI remoto em 25/11/2026
+
+O [PR interno #74](https://github.com/Luisserra99/UnB_RU/pull/74) contém esta consolidação. O GitHub não apresentou checks novos para esse PR; a consulta à API de workflows retornou uma lista vazia, e o arquivo `.github/workflows/ci.yml` não foi encontrado na branch padrão `main`. O arquivo existe na `sprint-3` e na branch de consolidação. A causa da ausência de execução não foi confirmada e nenhuma configuração do Actions foi alterada.
+
+Os resultados desta verificação foram obtidos localmente. A integração do fechamento foi submetida ao Daniel para decisão, mantendo a abertura do PR final para a disciplina sob autorização separada. As últimas execuções históricas disponíveis no GitHub pertencem a commits anteriores e não foram apresentadas como checks do PR #74.
+
 Os cenários BDD originais foram comparados com a `origin/sprint-2` e estão preservados. Os testes acrescentados exercitam, entre outros, validação de formulários, autenticação e papéis, autorização por sessão, prazos, idempotência, rollback, limites de rateio, gestão de cadastros, filtros inválidos e falhas de exportação. A cobertura de linhas complementa essa verificação dos caminhos de sucesso e recusa.
 
 ## Tarefas do PO e aprovação da entrega

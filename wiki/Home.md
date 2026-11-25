@@ -108,6 +108,8 @@ Os resultados acima correspondem aos cinco escopos integrados até `e6c17a4`, co
 
 O workflow [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) roda no GitHub Actions a cada push e pull request, com três jobs em paralelo no Ubuntu: **Lint (RuboCop)**, **Testes (RSpec)** e **Cenários BDD (Cucumber)**. Os resultados ficam na aba [Actions](https://github.com/Luisserra99/UnB_RU/actions) do fork.
 
+Na preparação de 25/11/2026, o GitHub não apresentou checks novos para o [PR interno #74](https://github.com/Luisserra99/UnB_RU/pull/74). Os resultados atuais foram verificados localmente; a observação e a decisão pendente de integração estão registradas no [relatório do PO](../docs/sprint-3/verificacao-final.md#estado-do-ci-remoto-em-25112026).
+
 ---
 
 ## Kanban

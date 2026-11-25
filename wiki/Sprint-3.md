@@ -759,13 +759,14 @@ Validação local em macOS, Ruby 3.4.10, com as versões do `Gemfile.lock`. O ú
 | C4 — Formato dos comentários | Conferência das 539 definições Ruby | Todas possuem `Argumentos::`, `Retorno::` e `Efeitos colaterais::`, além da descrição |
 | Estilo | RuboCop | 235 arquivos, nenhuma ocorrência |
 | Consolidado | Tabelas da seção 6.2 | 82 linhas de complexidade conferidas; coberturas e uso de IA dos cinco integrantes preenchidos |
+| CI remoto | Consulta do PR interno #74 em 25/11/2026 | Nenhum check novo apresentado pelo GitHub; resultados desta verificação obtidos localmente |
 
 A única linha sem cobertura é a declaração da classe-base `ApplicationJob`, que não contém métodos nem é usada pelos fluxos atuais. A meta C2 se aplica a controllers e models, todos com 100%. A tarefa de complexidade conta definições no AST; o RDoc organiza 534 itens do tipo método. Os dois relatórios estão completos no seu respectivo escopo.
 
 **Estado das tarefas do PO:**
 
 - **T4 (#65):** cinco escopos, tabelas e uso de IA consolidados; a publicação e o encerramento da tarefa são registrados na issue #65.
-- **T5 (#66):** verificação completa C1–C4 concluída, com HTML de RDoc e RubyCritic gerados. O CI da consolidação complementa essa evidência; o encerramento da tarefa é registrado na issue #66.
+- **T5 (#66):** verificação completa C1–C4 concluída localmente, com HTML de RDoc e RubyCritic gerados. O GitHub não apresentou checks novos do [PR interno #74](https://github.com/Luisserra99/UnB_RU/pull/74); a integração do fechamento foi submetida ao Daniel para decisão. O encerramento da tarefa é registrado na issue #66.
 - **T6 (#67):** Home e README atualizados e descrição do PR preparada em [`docs/sprint-3/pr-final.md`](../docs/sprint-3/pr-final.md). **A abertura do PR final permanece aguardando a análise e autorização do Daniel**, conforme solicitado.
 
 A documentação da verificação está em [`docs/sprint-3/verificacao-final.md`](../docs/sprint-3/verificacao-final.md). A entrega prevista para **27/11/2026** será o PR `Grupo 02 - Sprint 3`, de `Luisserra99:sprint-3` para `neatzzy/UnB_RU:main`, acompanhado do `.txt` e do link da wiki.

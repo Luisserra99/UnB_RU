@@ -32,4 +32,4 @@ Antes da refatoração havia 57 métodos com Flog ≥ 20, 30 com ABC ≥ 20, um 
 - [Verificação final do PO, comandos e cobertura por arquivo](https://github.com/Luisserra99/UnB_RU/blob/sprint-3/docs/sprint-3/verificacao-final.md).
 - [Home do projeto: papéis, execução e resultados](https://github.com/Luisserra99/UnB_RU/blob/sprint-3/wiki/Home.md).
 
-Validação local em 25/11/2026, no macOS com Ruby 3.4.10 e as dependências do `Gemfile.lock`: RSpec, Cucumber, RuboCop, Flog/ABC, SimpleCov e RDoc. O workflow do repositório também executa RSpec, Cucumber e RuboCop no Ubuntu com Ruby 3.3. Os relatórios HTML são gerados por `bundle exec rubycritic` e `bin/rails documentacao`.
+Validação local em 25/11/2026, no macOS com Ruby 3.4.10 e as dependências do `Gemfile.lock`: RSpec, Cucumber, RuboCop, Flog/ABC, SimpleCov e RDoc. Há um workflow configurado para RSpec, Cucumber e RuboCop no Ubuntu com Ruby 3.3, mas nenhuma execução nova foi apresentada pelo GitHub nesta preparação; os resultados acima são locais. O estado observado do CI está registrado no relatório de verificação. Os relatórios HTML são gerados por `bundle exec rubycritic` e `bin/rails documentacao`.
