@@ -6,7 +6,7 @@ Projeto da disciplina de **Engenharia de Software** (UnB), da professora Genaina
 
 > **Sprint 2 concluída:** as 12 funcionalidades especificadas na Sprint 1 estão implementadas na branch [`sprint-2`](https://github.com/Luisserra99/UnB_RU/tree/sprint-2), com **163 cenários BDD** (Cucumber) e **501 exemplos RSpec**, todos passando, verificados a cada push pelo CI no GitHub Actions.
 
-> **Sprint 3 em andamento:** refatoração e documentação na branch [`sprint-3`](https://github.com/Luisserra99/UnB_RU/tree/sprint-3), com entrega em **27/11/2026**. No checkout local verificado em **23/11/2026** (base `5ad39cb` mais F05/F06), passam **606 exemplos RSpec** e os **163 cenários BDD** existentes. F05/F06 têm 100% de cobertura e RDoc; a verificação final depende da integração dos demais escopos. Veja as [medições e pendências do PO](Sprint-3.md#63-verificação-parcial-do-po--23112026-t4-t5-e-t6).
+> **Sprint 3 — preparação da entrega:** os cinco escopos foram integrados à [`sprint-3`](https://github.com/Luisserra99/UnB_RU/tree/sprint-3), e o [`.txt` do Weldo](../docs/sprint-3/entrega.txt) foi conferido. A verificação completa de **25/11/2026** registra **687 exemplos RSpec**, **163 cenários BDD**, 100% de cobertura em cada controller/model e 100% de RDoc. A descrição do PR está [preparada para análise](../docs/sprint-3/pr-final.md); a abertura para a disciplina aguarda autorização do Daniel. Entrega em **27/11/2026**. Veja a [verificação consolidada do PO](Sprint-3.md#64-verificação-consolidada-do-po--25112026).
 
 ---
 
@@ -94,15 +94,15 @@ O modelo de dados segue o diagrama ER da [segunda etapa da Sprint 1](../docs/spr
 
 ## Testes
 
-| Suíte | Comando | Resultado local na `sprint-3` em 23/11/2026 |
+| Suíte | Comando | Resultado do conjunto completo em 25/11/2026 |
 |---|---|---|
 | Cenários BDD (Cucumber) | `bundle exec cucumber` | 163 cenários, 1456 passos, todos passando |
-| Testes unitários e de integração (RSpec) | `bundle exec rspec` | 606 exemplos, 0 falhas |
-| Lint (RuboCop, estilo `rubocop-rails-omakase`) | `bundle exec rubocop` | 227 arquivos, 0 ocorrências |
+| Testes unitários e de integração (RSpec) | `bundle exec rspec` | 687 exemplos, 0 falhas |
+| Lint (RuboCop, estilo `rubocop-rails-omakase`) | `bundle exec rubocop` | 235 arquivos, 0 ocorrências |
 
 Os specs RSpec cobrem models, form objects, services, helpers e requests, incluindo regras de segurança (acesso por papel, dados de cartão, parâmetros malformados) e a geração dos arquivos PDF e CSV.
 
-Os resultados acima incluem as alterações de F05/F06 sobre `5ad39cb`, na branch `sprint-3-refactor-Daniel/catracas`. Daniel revisou e aprovou seu escopo em 23/11/2026 e autorizou sua finalização; a integração é acompanhada no [PR #68](https://github.com/Luisserra99/UnB_RU/pull/68). Na Sprint 3, também são executadas as tarefas de complexidade, cobertura e RDoc descritas na [wiki da sprint](Sprint-3.md#como-rodar-as-ferramentas-t0). Os `.feature` existentes permanecem idênticos aos da Sprint 2.
+Os resultados acima correspondem aos cinco escopos integrados até `e6c17a4`, com a documentação final da classe-base `ApplicationJob`. Os 49 controllers e models têm 100% de cobertura, e todos os métodos ficam abaixo de 18 em Flog e ABC. O [relatório da verificação](../docs/sprint-3/verificacao-final.md) registra os comandos e a evidência; os `.feature` existentes permanecem idênticos aos da Sprint 2.
 
 ### Integração contínua (CI)
 
@@ -206,7 +206,7 @@ A branch de entrega é a [`sprint-3`](https://github.com/Luisserra99/UnB_RU/tree
 - **título:** `Grupo 02 - Sprint 3`
 - **descrição:** nome e matrícula dos integrantes, escopos refatorados, resultados finais e link da wiki
 
-Entrega em **27/11/2026**, incluindo o `.txt` preparado pelo SM. O [estado parcial da verificação](Sprint-3.md#63-verificação-parcial-do-po--23112026-t4-t5-e-t6) registra as pendências para abrir esse PR; o aceite final permanece pendente.
+Entrega em **27/11/2026**. O [`.txt` do SM](../docs/sprint-3/entrega.txt) está integrado e conferido. A [verificação consolidada](Sprint-3.md#64-verificação-consolidada-do-po--25112026) e a [descrição do PR](../docs/sprint-3/pr-final.md) estão preparadas. A abertura do PR final para a disciplina aguarda análise e autorização do Daniel.
 
 ---
 

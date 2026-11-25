@@ -1,6 +1,6 @@
 # UnB RU
 
-[![CI](https://github.com/Luisserra99/UnB_RU/actions/workflows/ci.yml/badge.svg?branch=sprint-2)](https://github.com/Luisserra99/UnB_RU/actions/workflows/ci.yml)
+[![CI](https://github.com/Luisserra99/UnB_RU/actions/workflows/ci.yml/badge.svg?branch=sprint-3)](https://github.com/Luisserra99/UnB_RU/actions/workflows/ci.yml)
 
 Sistema de gestão do Restaurante Universitário da UnB, desenvolvido pelo **Grupo 02** na disciplina de Engenharia de Software (UnB), da professora Genaina Nunes Rodrigues.
 
@@ -11,8 +11,8 @@ Sistema de gestão do Restaurante Universitário da UnB, desenvolvido pelo **Gru
 | | |
 |---|---|
 | **Wiki** | [Home](wiki/Home.md): equipe, funcionalidades, arquitetura, testes e padrões do grupo |
-| **Kanban** | [GitHub Project — Sprint 2](https://github.com/users/Luisserra99/projects/1) |
-| **Branch de entrega** | `sprint-2` |
+| **Kanban** | [GitHub Project — Sprint 3](https://github.com/users/Luisserra99/projects/1) |
+| **Branch de entrega** | `sprint-3` |
 | **Repositório da disciplina** | [neatzzy/UnB_RU](https://github.com/neatzzy/UnB_RU) |
 
 ## Funcionalidades
@@ -73,7 +73,7 @@ No PIX, o botão "Simular pagamento" confirma o pagamento (só em desenvolviment
 ## Testes
 
 ```bash
-bundle exec rspec           # 501 exemplos: models, forms, services, helpers e requests
+bundle exec rspec           # 687 exemplos: models, forms, services, helpers e requests
 bundle exec cucumber        # 163 cenários BDD das 12 funcionalidades
 bundle exec rubocop         # lint (estilo padrão do Rails, rubocop-rails-omakase)
 ```
@@ -99,15 +99,16 @@ docs/sprint-1/          Relatório da Sprint 1 (modelo ER)
 
 ## Equipe
 
-| Integrante | Matrícula | Papel |
+| Integrante | Matrícula | Papel na Sprint 3 |
 |---|---|---|
-| Luis Eduardo Curi Serra | 251033574 | Scrum Master |
-| Tarsila Marques de Oliveira Alves | 242012029 | Product Owner |
-| Daniel Dezan Baby | 232046097 | Desenvolvedor |
+| Luis Eduardo Curi Serra | 251033574 | Desenvolvedor |
+| Tarsila Marques de Oliveira Alves | 242012029 | Desenvolvedora |
+| Daniel Dezan Baby | 232046097 | Product Owner |
 | Leonardo Tome Sampaio | 222005448 | Desenvolvedor |
-| Weldo Gonçalves da Silva Junior | 222014133 | Desenvolvedor |
+| Weldo Gonçalves da Silva Junior | 222014133 | Scrum Master |
 
 ## Sprints
 
 - **Sprint 1:** [especificação das funcionalidades e cenários BDD](wiki/Sprint-1.md) e [relatório do modelo ER](docs/sprint-1/relatorio-etapa-2.md) ([PDF](docs/sprint-1/relatorio-etapa-2.pdf))
 - **Sprint 2:** implementação das 12 funcionalidades com testes RSpec e Cucumber ([wiki](wiki/Home.md))
+- **Sprint 3:** [refatoração, documentação e medições consolidadas](wiki/Sprint-3.md), [verificação final](docs/sprint-3/verificacao-final.md) e [arquivo de entrega](docs/sprint-3/entrega.txt). A descrição do [PR final](docs/sprint-3/pr-final.md) está preparada para análise antes da abertura.
