@@ -70,6 +70,31 @@ RSpec.describe "Gestão de catracas (F08)", type: :request do
       expect([ catraca.identificacao, catraca.piso.numero, catraca.ativa ]).to eq([ "Catraca 09", 2, false ])
     end
 
+    it "rejeita edição inválida sem alterar a catraca" do
+      catraca = piso_1.catracas.create!(identificacao: "Catraca 01")
+
+      patch admin_catraca_path(catraca), params: { catraca: dados(identificacao: "", piso_numero: 2) }
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Identificação da catraca é obrigatória")
+      expect(catraca.reload.identificacao).to eq("Catraca 01")
+    end
+
+    it "rejeita edição para restaurante inexistente sem alterar a catraca" do
+      catraca = piso_1.catracas.create!(identificacao: "Catraca 01")
+
+      patch admin_catraca_path(catraca), params: { catraca: dados(restaurante_id: 0) }
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Restaurante não encontrado")
+      expect(catraca.reload.piso).to eq(piso_1)
+    end
+
+    it "mantém a situação da catraca quando o campo ativa não é enviado" do
+      catraca = piso_1.catracas.create!(identificacao: "Catraca 01", ativa: false)
+
+      patch admin_catraca_path(catraca), params: { catraca: dados(identificacao: "Catraca 02") }
+      expect(catraca.reload).to have_attributes(identificacao: "Catraca 02", ativa: false)
+    end
+
     it "pede confirmação e remove a catraca" do
       catraca = piso_1.catracas.create!(identificacao: "Catraca 01")
       get remover_admin_catraca_path(catraca)
@@ -87,6 +112,12 @@ RSpec.describe "Gestão de catracas (F08)", type: :request do
       delete admin_catraca_path(catraca)
       expect(flash[:alert]).to eq("Não é possível remover uma catraca em operação")
       expect(Catraca.exists?(catraca.id)).to be(true)
+    end
+
+    it "responde 404 para catraca inexistente, sem remover nada" do
+      piso_1.catracas.create!(identificacao: "Catraca 01")
+      expect { delete admin_catraca_path(id: 0) }.not_to change(Catraca, :count)
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

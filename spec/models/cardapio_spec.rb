@@ -83,6 +83,27 @@ RSpec.describe Cardapio, type: :model do
     Cardapio.create!(servico_refeicao: servico, data_referencia: Date.new(2026, 11, 4))
     expect(Cardapio.new(servico_refeicao: servico, data_referencia: Date.new(2026, 11, 4))).not_to be_valid
   end
+
+  it "exige a data de referência" do
+    cardapio = Cardapio.new(servico_refeicao: servico)
+    expect(cardapio).not_to be_valid
+    expect(cardapio.errors[:data_referencia]).to be_present
+  end
+
+  describe "#opcao_de" do
+    let(:cardapio) { Cardapio.create!(servico_refeicao: servico, data_referencia: Date.new(2026, 11, 4)) }
+
+    it "devolve a opção da dieta pedida" do
+      padrao = cardapio.opcoes.create!(dieta: OpcaoCardapio::PADRAO)
+      cardapio.opcoes.create!(dieta: OpcaoCardapio::VEGETARIANA_ESTRITA)
+      expect(cardapio.reload.opcao_de(OpcaoCardapio::PADRAO)).to eq(padrao)
+    end
+
+    it "devolve nil quando o cardápio não tem a dieta" do
+      cardapio.opcoes.create!(dieta: OpcaoCardapio::PADRAO)
+      expect(cardapio.reload.opcao_de(OpcaoCardapio::OVOLACTOVEGETARIANA)).to be_nil
+    end
+  end
 end
 
 RSpec.describe OpcaoCardapio, type: :model do

@@ -108,6 +108,18 @@ RSpec.describe Cardapios::ImportadorJson do
       expect(Cardapio.count).to eq(0)
     end
 
+    it "rejeita uma refeição desconhecida sem gravar nada" do
+      expect { importar_json("quarta-feira" => { almoco: campos, lanche: campos }) }
+        .to raise_error(KeyError, /lanche/)
+      expect(Cardapio.count).to eq(0)
+    end
+
+    it "propaga o erro quando o arquivo não existe, sem gravar nada" do
+      importador = Cardapios::ImportadorJson.new(semana: semana, caminho: Rails.root.join("tmp", "nao_existe.json"))
+      expect { importador.importar }.to raise_error(Errno::ENOENT)
+      expect(Cardapio.count).to eq(0)
+    end
+
     it "importa para todos os restaurantes ativos e ignora os inativos" do
       outro = create(:restaurante)
       inativo = create(:restaurante, ativo: false)

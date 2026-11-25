@@ -47,6 +47,19 @@ RSpec.describe Catraca, type: :model do
     expect(Catraca.disponiveis).to eq([ ativa ])
   end
 
+  describe ".do_restaurante" do
+    it "reúne as catracas de todos os pisos do restaurante" do
+      primeira = create(:catraca, piso: piso_1)
+      segunda = create(:catraca, piso: piso_2)
+      expect(Catraca.do_restaurante(restaurante.id)).to contain_exactly(primeira, segunda)
+    end
+
+    it "não traz catracas de outro restaurante" do
+      create(:catraca, piso: create(:restaurante).pisos.first)
+      expect(Catraca.do_restaurante(restaurante.id)).to be_empty
+    end
+  end
+
   describe "remoção" do
     let(:catraca) { create(:catraca, piso: piso_1) }
 

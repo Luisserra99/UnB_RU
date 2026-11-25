@@ -534,6 +534,7 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 |---|---|
 | Luis | Piloto integrado: separação da criação de recargas, validações monetárias, geração do PIX e autenticação do estudante; testes e RDoc conforme as linhas abaixo |
 | Daniel | F05: seleção e confirmação do ponto separadas em validação da sessão, localização dos cadastros e gravação transacional; reconfiguração do controller compartilhada por `create` e `edit`. F06: leitura, avaliação de estudante/refeição, passagem, débito e consumo FIFO separados em métodos com intenção explícita; validações de passagem e limites do rateio divididas por regra. Mantidos locks, rollback, idempotência, mensagens e prazo inclusivo de cinco segundos |
+| Leonardo | F08: validações de sobreposição de horário e de identificação de catraca divididas em predicados com nome de regra (`horario_completo?`, `sobrepoe?`, `identificacao_repetida?`) e scope `Catraca.do_restaurante`; acréscimo de pisos e gravação da catraca separados em métodos de uma etapa. F10: importação do cardápio separada por restaurante, refeição e opção da dieta; montagem da tela do cardápio em `carregar_restaurante`, `carregar_refeicao` e `cardapio_consultado`. Remoção de restaurante e de catraca unificada em `Admin::BaseController#remover_e_voltar_a_lista` (eliminou a duplicação apontada pelo Flay). Mantidas as transações, as mensagens e a idempotência da importação. RubyCritic no escopo: nota 92,86 → 93,76 e smells 63 → 40 |
 
 No escopo do Daniel, foram acrescentados **59 exemplos RSpec** (547 → 606 no projeto), cobrindo sucesso e recusa da seleção, rollback da reconfiguração, sessão/perfil/cadastros indisponíveis, dados obrigatórios da passagem, limites financeiros e atualização do próprio rateio, entradas inválidas, perda de vínculo entre leitura e passagem, crédito esgotado no FIFO, rollback por falta de créditos e respostas de erro/expiração do terminal. Os sete arquivos têm **100% de cobertura** e **100% de documentação RDoc** (61 métodos; 74 itens). Nenhum método tem Flog ou ABC ≥ 18.
 
@@ -581,14 +582,14 @@ No escopo da Tarsila (F09, F11 e F12): depois da refatoração, a maior nota do 
 | Daniel | `Controle::TerminalController#passagem` | 17,09 | 17,09 | 12,21 | 12,21 | Revisto e mantido: abaixo de 18; ação curta com resposta HTTP de sucesso e erro, ambas testadas |
 | Daniel | `Catracas::Operar#expirar_pendentes!` | 16,94 | 10,75 | 12,08 | 8,12 | Consulta de liberações vencidas extraída para `liberacoes_vencidas` |
 | Daniel | `Controle::TerminalController#ler` | 16,69 | 16,69 | 12,21 | 12,21 | Revisto e mantido: abaixo de 18; delegação da leitura e tratamento HTTP de erro documentados e testados |
-| Leonardo | `ServicoRefeicao#sem_sobreposicao_de_horario` | 29,09 | | 21,63 | | |
-| Leonardo | `Cardapios::ImportadorJson#importar` | 28,72 | | 20,25 | | |
-| Leonardo | `Restaurante#atualizar_com_pisos` | 26,90 | | 17,38 | | |
-| Leonardo | `Admin::CatracasController#salvar` | 21,25 | | 23,19 | | |
-| Leonardo | `CardapiosController#show` | 22,75 | | 19,72 | | |
-| Leonardo | `Catraca#identificacao_unica_no_restaurante` | 21,43 | | 15,33 | | |
-| Leonardo | `Cardapios::ImportadorJson#importar_cardapio` | 18,05 | | 16,67 | | |
-| Leonardo | `Cardapios::ImportadorJson#itens_da_dieta` | 17,15 | | 16,03 | | |
+| Leonardo | `ServicoRefeicao#sem_sobreposicao_de_horario` | 29,09 | 11,05 | 21,63 | 9,90 | Predicados `horario_completo?` (reusado em `inicio_antes_do_fim`) e `sobrepoe?`; consulta extraída para `servicos_do_mesmo_dia` |
+| Leonardo | `Cardapios::ImportadorJson#importar` | 28,72 | 10,56 | 20,25 | 8,94 | *Extract method*: laços por dia e refeição em `importar_restaurante` (Flog 6,80 / ABC 11,58) e busca do serviço em `importar_refeicao`; contadores num Hash passado ao `Resultado` |
+| Leonardo | `Restaurante#atualizar_com_pisos` | 26,90 | 7,25 | 17,38 | 5,48 | *Extract method*: `acrescentar_pisos_faltantes` e `numeros_dos_pisos_faltantes` (Flog 12,26 / ABC 10,20) |
+| Leonardo | `Admin::CatracasController#salvar` | 21,25 | 12,33 | 23,19 | 13,00 | *Extract method*: `params_catraca`, `preencher_catraca` e `recusar_restaurante_inexistente` |
+| Leonardo | `CardapiosController#show` | 22,75 | 9,45 | 19,72 | 8,31 | *Extract method*: `carregar_restaurante`, `carregar_refeicao` e `cardapio_consultado` |
+| Leonardo | `Catraca#identificacao_unica_no_restaurante` | 21,43 | 8,73 | 15,33 | 7,62 | Consulta extraída para o predicado `identificacao_repetida?`, com o scope `Catraca.do_restaurante` |
+| Leonardo | `Cardapios::ImportadorJson#importar_cardapio` | 18,05 | 9,62 | 16,67 | 10,20 | Gravação da opção e dos itens extraída para `criar_opcao` |
+| Leonardo | `Cardapios::ImportadorJson#itens_da_dieta` | 17,15 | 8,35 | 16,03 | 8,77 | Predicados `possui_item_proprio?` e `campo_da_dieta?` ||
 | Tarsila | `Relatorios::AcessosOperacaoPdf#corpo_agrupado` | 45,84 | 4,81 | 28,23 | 4,58 | *Extract method*: `bloco_do_restaurante`, `bloco_da_catraca` e `resumo` |
 | Tarsila | `Relatorios::AcessosOperacao#initialize` | 45,77 | 9,02 | 37,43 | 8,54 | *Extract method*, uma etapa por grupo de filtros: `definir_periodo`, `definir_locais`, `definir_exibicao`, `interpretar_por_pagina` e `encontrar_por_id` |
 | Tarsila | `Relatorios::AcessosOperacaoPdf#cabecalho` | 37,04 | 9,80 | 28,04 | 8,06 | Linhas do cabeçalho viram listas de dados (`linhas_de_titulo`, `linhas_de_emissao`, `linhas_de_filtros`) escritas por `ComposicaoPdf#escrever_linhas` |
@@ -661,25 +662,26 @@ No escopo da Tarsila (F09, F11 e F12): depois da refatoração, a maior nota do 
 | Daniel | `app/models/configuracao_ponto_acesso.rb` | 100,00% | 100,00% |
 | Daniel | `app/models/rateio_consumo.rb` | 100,00% | 100,00% |
 | Daniel | `app/models/registro_acesso.rb` | 96,15% | 100,00% |
-| Leonardo | `app/controllers/admin/base_controller.rb` | 100,00% | |
-| Leonardo | `app/controllers/admin/catracas_controller.rb` | 100,00% | |
-| Leonardo | `app/controllers/admin/restaurantes_controller.rb` | 100,00% | |
-| Leonardo | `app/controllers/cardapios_controller.rb` | 100,00% | |
-| Leonardo | `app/controllers/controle/catracas_controller.rb` | 100,00% | |
-| Leonardo | `app/models/cardapio.rb` | 100,00% | |
-| Leonardo | `app/models/catraca.rb` | 100,00% | |
-| Leonardo | `app/models/item_cardapio.rb` | 100,00% | |
-| Leonardo | `app/models/opcao_cardapio.rb` | 100,00% | |
-| Leonardo | `app/models/piso.rb` | 100,00% | |
-| Leonardo | `app/models/restaurante.rb` | 100,00% | |
-| Leonardo | `app/models/servico_refeicao.rb` | 100,00% | |
-| Leonardo | `app/models/tipo_refeicao.rb` | 100,00% | |
-| Leonardo | `app/models/unidade_gestora.rb` | 100,00% | |
+| Leonardo | `app/controllers/admin/base_controller.rb` | 100,00% | 100,00% |
+| Leonardo | `app/controllers/admin/catracas_controller.rb` | 100,00% | 100,00% |
+| Leonardo | `app/controllers/admin/restaurantes_controller.rb` | 100,00% | 100,00% |
+| Leonardo | `app/controllers/cardapios_controller.rb` | 100,00% | 100,00% |
+| Leonardo | `app/controllers/controle/catracas_controller.rb` | 100,00% | 100,00% |
+| Leonardo | `app/models/cardapio.rb` | 100,00% | 100,00% |
+| Leonardo | `app/models/catraca.rb` | 100,00% | 100,00% |
+| Leonardo | `app/models/item_cardapio.rb` | 100,00% | 100,00% |
+| Leonardo | `app/models/opcao_cardapio.rb` | 100,00% | 100,00% |
+| Leonardo | `app/models/piso.rb` | 100,00% | 100,00% |
+| Leonardo | `app/models/restaurante.rb` | 100,00% | 100,00% |
+| Leonardo | `app/models/servico_refeicao.rb` | 100,00% | 100,00% |
+| Leonardo | `app/models/tipo_refeicao.rb` | 100,00% | 100,00% |
+| Leonardo | `app/models/unidade_gestora.rb` | 100,00% | 100,00% |
 | Tarsila | `app/controllers/admin/acessos_operacao_controller.rb` | 100,00% | 100,00% |
 | Tarsila | `app/controllers/admin/relatorios_base_controller.rb` | 100,00% | 100,00% |
 | Tarsila | `app/controllers/admin/relatorios_globais_controller.rb` | 100,00% | 100,00% |
 | Tarsila | `app/controllers/exportacoes_extrato_controller.rb` | 100,00% | 100,00% |
 | Tarsila | `app/models/exportacao_relatorio.rb` | 100,00% | 100,00% |
+
 
 #### Resumo do projeto
 
@@ -755,5 +757,6 @@ Cada integrante registra aqui, na etapa 6, se usou IA no seu escopo, no mesmo fo
 | Luis Eduardo Curi Serra | Claude Code (Claude Opus 5.5) | Ferramentas da T0 (configuração e tarefas `qualidade:*`, com specs); medição de antes (T1) e de depois do escopo; refatoração da F02, da F03 e do login do portal; testes RSpec de happy path e sad path; comentários RDoc de todo o escopo; padrão de RDoc e de refatoração da seção 5; texto das issues do Luis (criadas por ele no GitHub) | Verificação automática a cada passo: RSpec (547 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop e RDoc a 100% no escopo. O código PIX e o SVG do QR Code foram comparados byte a byte antes e depois da refatoração. Revisão do código e dos textos pelo Luis antes do push e dos PRs |
 | Weldo Gonçalves da Silva Junior | Claude Code (Claude Opus 5.5) | Medição de antes e depois do escopo (F01, F04, F07 e base de identidade); refatoração dos 6 métodos com nota ≥ 15; comentários RDoc de todo o escopo (21 arquivos, 100% documentado); testes RSpec de happy path e sad path (specs novos de `ControleHelper`, `IconesHelper` e da página inicial; banco rejeitando o cadastro; papel inexistente; ponto de acesso e encerramento da sessão; logout sem sessão; escolha de restaurante no painel) | Verificação automática a cada passo: RSpec (593 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop e RDoc a 100% no escopo, nenhum método do escopo com nota ≥ 15. Revisão do código e dos textos pelo Weldo antes do push e do PR |
 | Daniel Dezan Baby | Codex (GPT-6) | Refatoração de F05/F06; 59 exemplos RSpec de sucesso, falha e rollback; RDoc dos sete arquivos do escopo; medições de complexidade e cobertura; consolidação parcial da wiki, atualização da Home e registro das issues | Verificação automatizada: 606 exemplos RSpec, 163 cenários Cucumber, RuboCop sem ocorrências; 100% de cobertura e RDoc no escopo, Flog e ABC < 18; `.feature` existentes preservados. Daniel confirmou sua revisão humana, aprovou o resultado e autorizou a finalização do seu escopo em 23/11/2026 |
-| Leonardo Tome Sampaio | | | |
+| Leonardo Tome Sampaio | Claude Code (Claude Opus 5.5) | Refatoração de F08 e F10; 16 exemplos RSpec de happy path e sad path; comentários RDoc de todo o escopo; medição de antes e depois do escopo; teste visual das telas de F08 e F10 no navegador (agent-browser) | Verificação automática: RSpec (622 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop sem ocorrências, RDoc a 100% no escopo e todos os métodos com Flog e ABC < 18. Revisão do código e dos textos pelo Leonardo antes do push e do PR |
 | Tarsila Marques de Oliveira Alves | Claude (Claude Fable 5.2) | Medição do escopo com `qualidade:metodos`; refatoração dos 38 métodos de F09, F11 e F12; specs de sad path das exportações e specs dos módulos novos; comentários RDoc de todo o escopo; texto das issues (criadas por ela no GitHub) | Saída dos PDFs e CSVs comparada byte a byte antes e depois da refatoração; RSpec (566 exemplos), Cucumber (163 cenários, `.feature` inalterados), RuboCop sem ocorrências e `qualidade:rdoc` em 100%; código lido e conferido pela responsável antes do PR |
+

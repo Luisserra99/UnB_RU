@@ -1,3 +1,5 @@
+# Item de uma opção do cardápio (F10), como o prato principal ou a salada. A +categoria+ vem do
+# campo do cardapio.json e a +ordem+ define a posição na opção.
 class ItemCardapio < ApplicationRecord
   belongs_to :opcao_cardapio
 
