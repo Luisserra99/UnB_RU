@@ -2,6 +2,8 @@
 
 > Planejamento e distribuição de tarefas da Sprint 3: **refatoração e documentação do código** (Capítulo 9 do ESaaS, Edição 1.2.1). Aqui ficam a divisão do trabalho, a ordem de execução e, ao final da sprint, a tabela de antes e depois da refatoração. A especificação está na [Sprint 1](Sprint-1.md) e a implementação na [Home](Home.md) (Sprint 2).
 
+> **Consolidação em 25/11/2026:** os cinco escopos foram integrados à `sprint-3`. A seção [6.4](#64-verificação-consolidada-do-po--25112026) apresenta a verificação completa de C1–C4 e os entregáveis. Daniel autorizou a integração do fechamento e a abertura do PR final para a disciplina em **25/11/2026**.
+
 ## Identificação
 
 | | |
@@ -526,19 +528,21 @@ Smells mais frequentes (Reek): `IrresponsibleModule` (60, classe ou módulo sem 
 
 ### 6.2 Antes e depois
 
-> As colunas de antes já vêm da medição de antes (6.1). Na etapa 6, cada integrante preenche nas suas linhas o depois (`bin/rails "qualidade:metodos[0,<arquivo>]"` e `bin/rails qualidade:cobertura`) e a refatoração aplicada. Métodos entre 15 e 20 que forem mantidos recebem "Revisto e mantido" e o motivo.
+> Antes: medição T1 no commit `575ba8c`. Depois: conjunto completo integrado até `e6c17a4`, verificado em 25/11/2026 na branch de consolidação. As 82 linhas de complexidade foram conferidas contra a medição atual; todos os controllers e models listados ficaram com 100% de cobertura. Métodos mantidos entre 15 e 18 têm justificativa na tabela.
 
 #### O que foi refatorado
 
 | Integrante | Alterações verificadas |
 |---|---|
 | Luis | Piloto integrado: separação da criação de recargas, validações monetárias, geração do PIX e autenticação do estudante; testes e RDoc conforme as linhas abaixo |
+| Weldo | F01/F04/F07 e identidade: separação das etapas de cadastro e autenticação, conferência e liberação do histórico; predicados nos helpers e validações, testes de sucesso e recusa e RDoc da base de identidade |
 | Daniel | F05: seleção e confirmação do ponto separadas em validação da sessão, localização dos cadastros e gravação transacional; reconfiguração do controller compartilhada por `create` e `edit`. F06: leitura, avaliação de estudante/refeição, passagem, débito e consumo FIFO separados em métodos com intenção explícita; validações de passagem e limites do rateio divididas por regra. Mantidos locks, rollback, idempotência, mensagens e prazo inclusivo de cinco segundos |
 | Leonardo | F08: validações de sobreposição de horário e de identificação de catraca divididas em predicados com nome de regra (`horario_completo?`, `sobrepoe?`, `identificacao_repetida?`) e scope `Catraca.do_restaurante`; acréscimo de pisos e gravação da catraca separados em métodos de uma etapa. F10: importação do cardápio separada por restaurante, refeição e opção da dieta; montagem da tela do cardápio em `carregar_restaurante`, `carregar_refeicao` e `cardapio_consultado`. Remoção de restaurante e de catraca unificada em `Admin::BaseController#remover_e_voltar_a_lista` (eliminou a duplicação apontada pelo Flay). Mantidas as transações, as mensagens e a idempotência da importação. RubyCritic no escopo: nota 92,86 → 93,76 e smells 63 → 40 |
+| Tarsila | F09/F11/F12: filtros, consultas, agregações e exportações divididos por etapa; composição de PDF compartilhada em `Extratos::ComposicaoPdf` e entrega dos arquivos em `EntregaDeExportacao`; testes de falha das exportações e RDoc de todo o escopo |
 
 No escopo do Daniel, foram acrescentados **59 exemplos RSpec** (547 → 606 no projeto), cobrindo sucesso e recusa da seleção, rollback da reconfiguração, sessão/perfil/cadastros indisponíveis, dados obrigatórios da passagem, limites financeiros e atualização do próprio rateio, entradas inválidas, perda de vínculo entre leitura e passagem, crédito esgotado no FIFO, rollback por falta de créditos e respostas de erro/expiração do terminal. Os sete arquivos têm **100% de cobertura** e **100% de documentação RDoc** (61 métodos; 74 itens). Nenhum método tem Flog ou ABC ≥ 18.
 
-Os resultados do Daniel foram medidos localmente a partir da `sprint-3` (`5ad39cb`), em **23/11/2026**, com Ruby **3.4.10** no macOS. As alterações estão na branch `sprint-3-refactor-Daniel/catracas`, com integração acompanhada no [PR #68](https://github.com/Luisserra99/UnB_RU/pull/68). Daniel informou que revisou e aprovou seu escopo e autorizou sua finalização em **23/11/2026**. As linhas vazias dos demais escopos e o resumo final permanecem para preenchimento após a integração e a medição de todos; o estado parcial está na seção 6.3.
+Os resultados do Daniel foram medidos localmente a partir da `sprint-3` (`5ad39cb`), em **23/11/2026**, com Ruby **3.4.10** no macOS. As alterações estão na branch `sprint-3-refactor-Daniel/catracas`, com integração acompanhada no [PR #68](https://github.com/Luisserra99/UnB_RU/pull/68). Daniel informou que revisou e aprovou seu escopo e autorizou sua finalização em **23/11/2026**. Os resultados dos demais escopos também estão consolidados abaixo; a verificação completa está na seção 6.4.
 
 No escopo da Tarsila (F09, F11 e F12): depois da refatoração, a maior nota do escopo é 17,25 (Flog de `Relatorios::AcessosOperacao#montar_acesso`); nenhum método do escopo, novo ou antigo, chega a 18 em nenhuma das duas medidas. Os services, o helper e os dois arquivos novos (`app/services/extratos/composicao_pdf.rb` e `app/controllers/concerns/entrega_de_exportacao.rb`) também estão com 100,00%.
 
@@ -589,7 +593,7 @@ No escopo da Tarsila (F09, F11 e F12): depois da refatoração, a maior nota do 
 | Leonardo | `CardapiosController#show` | 22,75 | 9,45 | 19,72 | 8,31 | *Extract method*: `carregar_restaurante`, `carregar_refeicao` e `cardapio_consultado` |
 | Leonardo | `Catraca#identificacao_unica_no_restaurante` | 21,43 | 8,73 | 15,33 | 7,62 | Consulta extraída para o predicado `identificacao_repetida?`, com o scope `Catraca.do_restaurante` |
 | Leonardo | `Cardapios::ImportadorJson#importar_cardapio` | 18,05 | 9,62 | 16,67 | 10,20 | Gravação da opção e dos itens extraída para `criar_opcao` |
-| Leonardo | `Cardapios::ImportadorJson#itens_da_dieta` | 17,15 | 8,35 | 16,03 | 8,77 | Predicados `possui_item_proprio?` e `campo_da_dieta?` ||
+| Leonardo | `Cardapios::ImportadorJson#itens_da_dieta` | 17,15 | 8,35 | 16,03 | 8,77 | Predicados `possui_item_proprio?` e `campo_da_dieta?` |
 | Tarsila | `Relatorios::AcessosOperacaoPdf#corpo_agrupado` | 45,84 | 4,81 | 28,23 | 4,58 | *Extract method*: `bloco_do_restaurante`, `bloco_da_catraca` e `resumo` |
 | Tarsila | `Relatorios::AcessosOperacao#initialize` | 45,77 | 9,02 | 37,43 | 8,54 | *Extract method*, uma etapa por grupo de filtros: `definir_periodo`, `definir_locais`, `definir_exibicao`, `interpretar_por_pagina` e `encontrar_por_id` |
 | Tarsila | `Relatorios::AcessosOperacaoPdf#cabecalho` | 37,04 | 9,80 | 28,04 | 8,06 | Linhas do cabeçalho viram listas de dados (`linhas_de_titulo`, `linhas_de_emissao`, `linhas_de_filtros`) escritas por `ComposicaoPdf#escrever_linhas` |
@@ -680,27 +684,31 @@ No escopo da Tarsila (F09, F11 e F12): depois da refatoração, a maior nota do 
 | Tarsila | `app/controllers/admin/relatorios_base_controller.rb` | 100,00% | 100,00% |
 | Tarsila | `app/controllers/admin/relatorios_globais_controller.rb` | 100,00% | 100,00% |
 | Tarsila | `app/controllers/exportacoes_extrato_controller.rb` | 100,00% | 100,00% |
+| Tarsila | `app/controllers/concerns/entrega_de_exportacao.rb` | — (novo na refatoração) | 100,00% |
 | Tarsila | `app/models/exportacao_relatorio.rb` | 100,00% | 100,00% |
 
 
 #### Resumo do projeto
 
-| Métrica | Antes | Depois |
+| Métrica | Antes | Depois — conjunto completo |
 |---|---|---|
-| Métodos com Flog ≥ 20 | 57 | |
-| Métodos com ABC ≥ 20 | 30 | |
-| Maior Flog | 67,65 (`Catracas::Operar#ler`) | |
-| Maior ABC | 54,90 (`Catracas::Operar#ler`) | |
-| Nota geral do RubyCritic | 85,37 | |
-| Cobertura total (SimpleCov, RSpec) | 99,27% | |
-| Controllers e models com cobertura ≤ 90% | 1 | |
-| Exemplos RSpec | 507 (501 da Sprint 2 + 6 das ferramentas) | |
-| Cenários Cucumber | 163 | |
-| Métodos sem documentação RDoc | 305 de 369 | |
+| Métodos com Flog ≥ 20 | 57 | 0 |
+| Métodos com ABC ≥ 20 | 30 | 0 |
+| Maior Flog | 67,65 (`Catracas::Operar#ler`) | 17,25 (`Relatorios::AcessosOperacao#montar_acesso`) |
+| Maior ABC | 54,90 (`Catracas::Operar#ler`) | 15,84 (`Extratos::ComposicaoPdf#desenhar_tabela`) |
+| Nota geral do RubyCritic | 85,37 | 86,12 |
+| Cobertura total (SimpleCov, RSpec) | 99,27% | 99,96% (2327/2328 linhas) |
+| Controllers e models com cobertura ≤ 90% | 1 | 0; os 49 arquivos estão com 100% |
+| Exemplos RSpec | 507 (501 da Sprint 2 + 6 das ferramentas) | 687, sem falhas |
+| Cenários Cucumber | 163 | 163 cenários e 1456 passos passando |
+| Métodos sem documentação RDoc | 305 de 369 | 0 de 534; 818 itens com 100% de documentação |
 
 ---
 
+
 ### 6.3 Verificação parcial do PO — 23/11/2026 (T4, T5 e T6)
+
+> Registro histórico de 23/11/2026. O estado atual está na seção 6.4.
 
 Verificação do checkout local da `sprint-3` (base `5ad39cb` mais as alterações de F05/F06). **A entrega final ainda não está liberada:** a etapa 7 depende dos merges e das medições dos demais integrantes. Os números abaixo não substituem a coluna final de depois da seção 6.2.
 
@@ -717,7 +725,7 @@ Verificação do checkout local da `sprint-3` (base `5ad39cb` mais as alteraçõ
 | RubyCritic | Relatório gerado em `tmp/rubycritic/overview.html`; nota geral **85,47** |
 | C4 no projeto | HTML gerado por `bin/rails documentacao` em `doc/app/index.html`; ainda **216 de 434 métodos sem comentário**, fora do escopo Daniel |
 
-**Pendências para concluir as tarefas do PO:**
+**Pendências registradas em 23/11/2026 (histórico):**
 
 - **T4:** incorporar os resultados medidos dos demais escopos depois dos merges e preencher o resumo final. O PR [#52 (Weldo)](https://github.com/Luisserra99/UnB_RU/pull/52) está aberto; seus resultados ainda não fazem parte desta medição da `sprint-3`.
 - **T5:** repetir os comandos da seção 3 após integrar todos os escopos; conferir C1–C4 e obter a revisão de outro integrante antes do aceite. A cobertura de linhas, por si só, não substitui a revisão dos happy paths e sad paths.
@@ -734,6 +742,34 @@ Verificação do checkout local da `sprint-3` (base `5ad39cb` mais as alteraçõ
 | T4 — Consolidação da wiki | [#65](https://github.com/Luisserra99/UnB_RU/issues/65) | 2 |
 | T5 — Verificação final | [#66](https://github.com/Luisserra99/UnB_RU/issues/66) | 3 |
 | T6 — Home e PR da disciplina | [#67](https://github.com/Luisserra99/UnB_RU/issues/67) | 2 |
+
+### 6.4 Verificação consolidada do PO — 25/11/2026
+
+O `.txt` do Weldo está em [`docs/sprint-3/entrega.txt`](../docs/sprint-3/entrega.txt), integrado pelo [PR #70](https://github.com/Luisserra99/UnB_RU/pull/70). Conferidos o repositório, a branch de entrega, o link da wiki, os cinco nomes e as matrículas. As integrações de Luis (piloto), Weldo ([#52](https://github.com/Luisserra99/UnB_RU/pull/52)), Daniel ([#68](https://github.com/Luisserra99/UnB_RU/pull/68)), Tarsila ([#69](https://github.com/Luisserra99/UnB_RU/pull/69) e [#73](https://github.com/Luisserra99/UnB_RU/pull/73)) e Leonardo ([#72](https://github.com/Luisserra99/UnB_RU/pull/72)) constam da `sprint-3` até `e6c17a4`.
+
+Validação local em macOS, Ruby 3.4.10, com as versões do `Gemfile.lock`. O único ajuste final em `app/` é o comentário da classe-base `ApplicationJob`, que completa a documentação das classes e não altera comportamento.
+
+| Critério | Evidência | Resultado |
+|---|---|---|
+| C1 — Complexidade | `qualidade:metodos[0]`, 539 definições | Nenhuma com Flog ou ABC ≥ 18; maiores notas 17,25 e 15,84 |
+| C2 — Cobertura | RSpec + SimpleCov | 49 controllers/models com 100%; total 2327/2328 linhas, 99,96% arredondado |
+| C3 — Sucesso e recusa | RSpec e Cucumber | 687 exemplos sem falhas; 163 cenários e 1456 passos passando |
+| C3 — Preservação dos BDD | Comparação dos `.feature` existentes com `origin/sprint-2` | Nenhuma diferença |
+| C4 — Documentação | `qualidade:rdoc` e geração do HTML | 100% dos 818 itens, incluindo os 534 métodos reconhecidos pelo RDoc |
+| C4 — Formato dos comentários | Conferência das 539 definições Ruby | Todas possuem `Argumentos::`, `Retorno::` e `Efeitos colaterais::`, além da descrição |
+| Estilo | RuboCop | 235 arquivos, nenhuma ocorrência |
+| Consolidado | Tabelas da seção 6.2 | 82 linhas de complexidade conferidas; coberturas e uso de IA dos cinco integrantes preenchidos |
+| CI remoto | Consulta do PR interno #74 em 25/11/2026 | Nenhum check novo apresentado pelo GitHub; resultados desta verificação obtidos localmente |
+
+A única linha sem cobertura é a declaração da classe-base `ApplicationJob`, que não contém métodos nem é usada pelos fluxos atuais. A meta C2 se aplica a controllers e models, todos com 100%. A tarefa de complexidade conta definições no AST; o RDoc organiza 534 itens do tipo método. Os dois relatórios estão completos no seu respectivo escopo.
+
+**Estado das tarefas do PO:**
+
+- **T4 (#65):** cinco escopos, tabelas e uso de IA consolidados; a publicação e o encerramento da tarefa são registrados na issue #65.
+- **T5 (#66):** verificação completa C1–C4 concluída localmente, com HTML de RDoc e RubyCritic gerados. O GitHub não apresentou checks novos do [PR interno #74](https://github.com/Luisserra99/UnB_RU/pull/74); Daniel autorizou a integração do fechamento com essa validação local em 25/11/2026. O encerramento da tarefa é registrado na issue #66.
+- **T6 (#67):** Home e README atualizados e descrição do PR preparada em [`docs/sprint-3/pr-final.md`](../docs/sprint-3/pr-final.md). **Daniel autorizou a abertura do PR final em 25/11/2026**; o link da submissão fica registrado na [issue #67](https://github.com/Luisserra99/UnB_RU/issues/67) e na wiki pública.
+
+A documentação da verificação está em [`docs/sprint-3/verificacao-final.md`](../docs/sprint-3/verificacao-final.md). A entrega prevista para **27/11/2026** será o PR `Grupo 02 - Sprint 3`, de `Luisserra99:sprint-3` para `neatzzy/UnB_RU:main`, acompanhado do `.txt` e do link da wiki.
 
 ---
 
@@ -756,7 +792,6 @@ Cada integrante registra aqui, na etapa 6, se usou IA no seu escopo, no mesmo fo
 |---|---|---|---|
 | Luis Eduardo Curi Serra | Claude Code (Claude Opus 5.5) | Ferramentas da T0 (configuração e tarefas `qualidade:*`, com specs); medição de antes (T1) e de depois do escopo; refatoração da F02, da F03 e do login do portal; testes RSpec de happy path e sad path; comentários RDoc de todo o escopo; padrão de RDoc e de refatoração da seção 5; texto das issues do Luis (criadas por ele no GitHub) | Verificação automática a cada passo: RSpec (547 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop e RDoc a 100% no escopo. O código PIX e o SVG do QR Code foram comparados byte a byte antes e depois da refatoração. Revisão do código e dos textos pelo Luis antes do push e dos PRs |
 | Weldo Gonçalves da Silva Junior | Claude Code (Claude Opus 5.5) | Medição de antes e depois do escopo (F01, F04, F07 e base de identidade); refatoração dos 6 métodos com nota ≥ 15; comentários RDoc de todo o escopo (21 arquivos, 100% documentado); testes RSpec de happy path e sad path (specs novos de `ControleHelper`, `IconesHelper` e da página inicial; banco rejeitando o cadastro; papel inexistente; ponto de acesso e encerramento da sessão; logout sem sessão; escolha de restaurante no painel) | Verificação automática a cada passo: RSpec (593 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop e RDoc a 100% no escopo, nenhum método do escopo com nota ≥ 15. Revisão do código e dos textos pelo Weldo antes do push e do PR |
-| Daniel Dezan Baby | Codex (GPT-6) | Refatoração de F05/F06; 59 exemplos RSpec de sucesso, falha e rollback; RDoc dos sete arquivos do escopo; medições de complexidade e cobertura; consolidação parcial da wiki, atualização da Home e registro das issues | Verificação automatizada: 606 exemplos RSpec, 163 cenários Cucumber, RuboCop sem ocorrências; 100% de cobertura e RDoc no escopo, Flog e ABC < 18; `.feature` existentes preservados. Daniel confirmou sua revisão humana, aprovou o resultado e autorizou a finalização do seu escopo em 23/11/2026 |
+| Daniel Dezan Baby | Codex (GPT-6) | Refatoração de F05/F06; 59 exemplos RSpec de sucesso, falha e rollback; RDoc dos sete arquivos do escopo; medições de complexidade e cobertura; consolidação da wiki, atualização da Home e registro das issues; fechamento de T4/T5, conferência do `.txt` e preparação do PR final | Verificação automatizada do escopo: 606 exemplos RSpec, 163 cenários Cucumber, RuboCop sem ocorrências; 100% de cobertura e RDoc no escopo, Flog e ABC < 18; `.feature` existentes preservados. Daniel confirmou sua revisão humana, aprovou o resultado e autorizou a finalização do seu escopo em 23/11/2026. Em 25/11/2026, a verificação do conjunto completo confirmou 687 exemplos RSpec e 163 cenários; Daniel autorizou a integração do fechamento e a abertura do PR final em 25/11/2026 |
 | Leonardo Tome Sampaio | Claude Code (Claude Opus 5.5) | Refatoração de F08 e F10; 16 exemplos RSpec de happy path e sad path; comentários RDoc de todo o escopo; medição de antes e depois do escopo; teste visual das telas de F08 e F10 no navegador (agent-browser) | Verificação automática: RSpec (622 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop sem ocorrências, RDoc a 100% no escopo e todos os métodos com Flog e ABC < 18. Revisão do código e dos textos pelo Leonardo antes do push e do PR |
 | Tarsila Marques de Oliveira Alves | Claude (Claude Fable 5.2) | Medição do escopo com `qualidade:metodos`; refatoração dos 38 métodos de F09, F11 e F12; specs de sad path das exportações e specs dos módulos novos; comentários RDoc de todo o escopo; texto das issues (criadas por ela no GitHub) | Saída dos PDFs e CSVs comparada byte a byte antes e depois da refatoração; RSpec (566 exemplos), Cucumber (163 cenários, `.feature` inalterados), RuboCop sem ocorrências e `qualidade:rdoc` em 100%; código lido e conferido pela responsável antes do PR |
-

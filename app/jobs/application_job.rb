@@ -1,3 +1,4 @@
+# Base dos jobs assíncronos da aplicação.
 class ApplicationJob < ActiveJob::Base
   # Automatically retry jobs that encountered a deadlock
   # retry_on ActiveRecord::Deadlocked
