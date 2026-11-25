@@ -64,4 +64,56 @@ RSpec.describe CadastroEstudante do
     expect(email_repetido.salvar).to be(false)
     expect(email_repetido.errors[:email]).to include("Email já cadastrado")
   end
+
+  it "rejeita matrícula já usada como identificação de outro usuário" do
+    create(:usuario, identificacao: "222014133")
+    form = cadastro
+    expect(form.salvar).to be(false)
+    expect(form.errors[:matricula]).to include("Matrícula já cadastrada")
+  end
+
+  it "exige o nome" do
+    form = cadastro(nome: "")
+    expect(form.salvar).to be(false)
+    expect(form.errors[:nome]).to include("Nome é obrigatório")
+  end
+
+  it "ignora espaços em volta da matrícula e do email" do
+    form = cadastro(matricula: " 222014133 ", email: " 222014133@aluno.unb.br ")
+    expect(form.salvar).to be(true)
+    expect(form.usuario).to have_attributes(identificacao: "222014133", email: "222014133@aluno.unb.br")
+  end
+
+  describe "quando o banco rejeita a gravação" do
+    it "devolve false, informa o motivo e não deixa o usuário gravado pela metade" do
+      allow_any_instance_of(Usuario).to receive(:atribuir_papel!).and_raise(ActiveRecord::RecordNotUnique, "papel repetido")
+
+      form = cadastro
+      expect(form.salvar).to be(false)
+      expect(Usuario.count).to eq(0)
+      expect(Estudante.count).to eq(0)
+      expect(form.errors[:base]).to include("Não foi possível concluir o cadastro: papel repetido")
+    end
+
+    it "trata registro inválido no banco da mesma forma" do
+      allow(Usuario).to receive(:create!).and_raise(ActiveRecord::RecordInvalid.new(Usuario.new))
+
+      form = cadastro
+      expect(form.salvar).to be(false)
+      expect(form.errors[:base].first).to start_with("Não foi possível concluir o cadastro")
+    end
+  end
+
+  describe ".dominio_da_faculdade?" do
+    it "aceita os domínios da faculdade, com espaços e maiúsculas" do
+      expect(described_class.dominio_da_faculdade?(" Fulano@ALUNO.unb.br ")).to be(true)
+      expect(described_class.dominio_da_faculdade?("fulano@unb.br")).to be(true)
+    end
+
+    it "recusa outro domínio, email sem arroba e nil" do
+      expect(described_class.dominio_da_faculdade?("fulano@gmail.com")).to be(false)
+      expect(described_class.dominio_da_faculdade?("fulano")).to be(false)
+      expect(described_class.dominio_da_faculdade?(nil)).to be(false)
+    end
+  end
 end

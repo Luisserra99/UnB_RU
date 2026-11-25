@@ -540,6 +540,8 @@ No escopo do Daniel, foram acrescentados **59 exemplos RSpec** (547 → 606 no p
 
 Os resultados do Daniel foram medidos localmente a partir da `sprint-3` (`5ad39cb`), em **23/11/2026**, com Ruby **3.4.10** no macOS. As alterações estão na branch `sprint-3-refactor-Daniel/catracas`, com integração acompanhada no [PR #68](https://github.com/Luisserra99/UnB_RU/pull/68). Daniel informou que revisou e aprovou seu escopo e autorizou sua finalização em **23/11/2026**. As linhas vazias dos demais escopos e o resumo final permanecem para preenchimento após a integração e a medição de todos; o estado parcial está na seção 6.3.
 
+No escopo da Tarsila (F09, F11 e F12): depois da refatoração, a maior nota do escopo é 17,25 (Flog de `Relatorios::AcessosOperacao#montar_acesso`); nenhum método do escopo, novo ou antigo, chega a 18 em nenhuma das duas medidas. Os services, o helper e os dois arquivos novos (`app/services/extratos/composicao_pdf.rb` e `app/controllers/concerns/entrega_de_exportacao.rb`) também estão com 100,00%.
+
 #### Complexidade por método
 
 | Responsável | Classe#método | Flog antes | Flog depois | ABC antes | ABC depois | Refatoração aplicada |
@@ -562,12 +564,12 @@ Os resultados do Daniel foram medidos localmente a partir da `sprint-3` (`5ad39c
 | Luis | `DadosCartao#luhn_valido?` | 15,68 | 15,68 | 11,53 | 11,53 | Revisto e mantido: algoritmo de Luhn em um só bloco |
 | Luis | `RecargasHelper#qr_modulos` | 15,57 | 15,57 | 12,25 | 12,25 | Revisto e mantido: um laço sobre a grade do QR Code |
 | Luis | `MovimentacaoSaldo#descricao` | 15,21 | 7,86 | 12,08 | 6,32 | Descrição do crédito extraída para `descricao_do_credito` |
-| Weldo | `Controle::HistoricoController#create` | 30,17 | | 25,40 | | |
-| Weldo | `Controle::SessoesController#create` | 25,52 | | 22,91 | | |
-| Weldo | `CadastroEstudante#salvar` | 18,78 | | 13,30 | | |
-| Weldo | `ControleHelper#item_nav_controle` | 17,13 | | 13,64 | | |
-| Weldo | `CadastroEstudante#validar_email` | 16,99 | | 13,34 | | |
-| Weldo | `Controle::HistoricoController#historico_liberado?` | 16,27 | | 10,82 | | |
+| Weldo | `Controle::HistoricoController#create` | 30,17 | 5,58 | 25,40 | 5,20 | *Extract method*: `credencial_valida?`, `liberar_historico` e `recusar_credencial` |
+| Weldo | `Controle::SessoesController#create` | 25,52 | 13,28 | 22,91 | 11,45 | *Extract method*: `campos_em_branco` (como no login do estudante), `autenticar`, `motivo_da_recusa` e `entrar` |
+| Weldo | `CadastroEstudante#salvar` | 18,78 | 8,22 | 13,30 | 6,40 | Gravação de Usuario, Estudante e papel extraída para `criar_conta!` |
+| Weldo | `ControleHelper#item_nav_controle` | 17,13 | 6,45 | 13,64 | 7,07 | Predicado `item_nav_ativo?` e item desabilitado extraído para `item_nav_desabilitado`, com `return` antecipado |
+| Weldo | `CadastroEstudante#validar_email` | 16,99 | 9,83 | 13,34 | 8,25 | Condição composta virou o predicado `email_institucional?`; no mesmo padrão, `validar_matricula` (14,17 → 9,92) ganhou `matricula_ja_cadastrada?` |
+| Weldo | `Controle::HistoricoController#historico_liberado?` | 16,27 | 4,62 | 10,82 | 4,24 | Conferência do ponto de acesso e do prazo extraída para o predicado `liberacao_vigente?` |
 | Daniel | `Catracas::Operar#ler` | 67,65 | 8,38 | 54,90 | 7,68 | *Extract method*: validação da entrada, referência idempotente, disponibilidade e avaliação da leitura |
 | Daniel | `RateioConsumo#origens_e_limites` | 59,79 | 9,98 | 43,12 | 8,94 | Origens, crédito da recarga e limite do débito separados; somas excluem o próprio rateio |
 | Daniel | `Catracas::Operar#passar` | 40,28 | 14,07 | 26,27 | 10,63 | Extraídos `cobrar_passagem!`, `estudante_apto?` e `debitar!`, preservando os locks e a transação |
@@ -587,45 +589,45 @@ Os resultados do Daniel foram medidos localmente a partir da `sprint-3` (`5ad39c
 | Leonardo | `CardapiosController#show` | 22,75 | 9,45 | 19,72 | 8,31 | *Extract method*: `carregar_restaurante`, `carregar_refeicao` e `cardapio_consultado` |
 | Leonardo | `Catraca#identificacao_unica_no_restaurante` | 21,43 | 8,73 | 15,33 | 7,62 | Consulta extraída para o predicado `identificacao_repetida?`, com o scope `Catraca.do_restaurante` |
 | Leonardo | `Cardapios::ImportadorJson#importar_cardapio` | 18,05 | 9,62 | 16,67 | 10,20 | Gravação da opção e dos itens extraída para `criar_opcao` |
-| Leonardo | `Cardapios::ImportadorJson#itens_da_dieta` | 17,15 | 8,35 | 16,03 | 8,77 | Predicados `possui_item_proprio?` e `campo_da_dieta?` |
-| Tarsila | `Relatorios::AcessosOperacaoPdf#corpo_agrupado` | 45,84 | | 28,23 | | |
-| Tarsila | `Relatorios::AcessosOperacao#initialize` | 45,77 | | 37,43 | | |
-| Tarsila | `Relatorios::AcessosOperacaoPdf#cabecalho` | 37,04 | | 28,04 | | |
-| Tarsila | `Relatorios::OperacaoGlobalCsv#render` | 34,02 | | 19,13 | | |
-| Tarsila | `Relatorios::OperacaoGlobalPdf#indicadores` | 33,83 | | 25,02 | | |
-| Tarsila | `Extratos::Relatorio#paginas_visiveis` | 31,48 | | 19,10 | | |
-| Tarsila | `Extratos::Pdf#resumo` | 30,58 | | 22,02 | | |
-| Tarsila | `Relatorios::OperacaoGlobalPdf#cabecalho` | 29,70 | | 22,02 | | |
-| Tarsila | `Extratos::Pdf#cabecalho` | 28,52 | | 22,09 | | |
-| Tarsila | `Relatorios::OperacaoGlobal#initialize` | 28,47 | | 23,02 | | |
-| Tarsila | `Relatorios::AcessosOperacao#grupos` | 27,87 | | 17,61 | | |
-| Tarsila | `Relatorios::AcessosOperacao#consulta` | 26,67 | | 19,34 | | |
-| Tarsila | `Extratos::Relatorio#lancamento_de_refeicao` | 26,17 | | 20,32 | | |
-| Tarsila | `Extratos::Pdf#tabela` | 25,88 | | 22,83 | | |
-| Tarsila | `Relatorios::AcessosOperacaoPdf#tabela` | 25,52 | | 23,11 | | |
-| Tarsila | `Extratos::Relatorio#initialize` | 25,38 | | 21,68 | | |
-| Tarsila | `Relatorios::AcessosOperacao#montar_acesso` | 24,83 | | 19,47 | | |
-| Tarsila | `Relatorios::OperacaoGlobalPdf#consolidacao` | 24,05 | | 18,28 | | |
-| Tarsila | `Relatorios::OperacaoGlobal#distribuicao_por_refeicao` | 23,77 | | 18,60 | | |
-| Tarsila | `ExportacaoRelatorio#validar_conclusao` | 22,92 | | 17,72 | | |
-| Tarsila | `ExportacoesExtratoController#create` | 22,61 | | 18,22 | | |
-| Tarsila | `Relatorios::OperacaoGlobal#horarios_das_refeicoes` | 22,24 | | 16,03 | | |
-| Tarsila | `Extratos::PlanilhaCsv#render` | 21,88 | | 13,19 | | |
-| Tarsila | `Relatorios::OperacaoGlobal#acessos` | 21,55 | | 15,33 | | |
-| Tarsila | `Relatorios::ExportarAcessosOperacao#call` | 20,88 | | 15,65 | | |
-| Tarsila | `Relatorios::AcessosOperacaoPdf#render` | 20,63 | | 15,07 | | |
-| Tarsila | `Relatorios::OperacaoGlobal#linhas` | 20,33 | | 16,40 | | |
-| Tarsila | `Extratos::Relatorio#corresponde?` | 20,23 | | 14,90 | | |
-| Tarsila | `Admin::RelatoriosGlobaisController#exportar` | 20,03 | | 16,25 | | |
-| Tarsila | `Relatorios::OperacaoGlobal#liquidacoes` | 18,94 | | 13,15 | | |
-| Tarsila | `Relatorios::ExportarAcessosOperacao#concluir` | 17,34 | | 14,32 | | |
-| Tarsila | `Relatorios::OperacaoGlobalPdf#liquidacao` | 16,77 | | 13,38 | | |
-| Tarsila | `Relatorios::OperacaoGlobalPdf#tabela` | 15,00 | | 16,67 | | |
-| Tarsila | `Extratos::Exportar#concluir` | 16,43 | | 13,60 | | |
-| Tarsila | `Extratos::Relatorio#refeicoes_por_tipo` | 16,32 | | 10,95 | | |
-| Tarsila | `Admin::AcessosOperacaoController#exportar` | 16,16 | | 13,30 | | |
-| Tarsila | `Relatorios::ExportarOperacaoGlobal#call` | 15,01 | | 11,58 | | |
-| Tarsila | `Extratos::Exportar#call` | 15,01 | | 11,58 | | |
+| Leonardo | `Cardapios::ImportadorJson#itens_da_dieta` | 17,15 | 8,35 | 16,03 | 8,77 | Predicados `possui_item_proprio?` e `campo_da_dieta?` ||
+| Tarsila | `Relatorios::AcessosOperacaoPdf#corpo_agrupado` | 45,84 | 4,81 | 28,23 | 4,58 | *Extract method*: `bloco_do_restaurante`, `bloco_da_catraca` e `resumo` |
+| Tarsila | `Relatorios::AcessosOperacao#initialize` | 45,77 | 9,02 | 37,43 | 8,54 | *Extract method*, uma etapa por grupo de filtros: `definir_periodo`, `definir_locais`, `definir_exibicao`, `interpretar_por_pagina` e `encontrar_por_id` |
+| Tarsila | `Relatorios::AcessosOperacaoPdf#cabecalho` | 37,04 | 9,80 | 28,04 | 8,06 | Linhas do cabeçalho viram listas de dados (`linhas_de_titulo`, `linhas_de_emissao`, `linhas_de_filtros`) escritas por `ComposicaoPdf#escrever_linhas` |
+| Tarsila | `Relatorios::OperacaoGlobalCsv#render` | 34,02 | 7,41 | 19,13 | 5,48 | Linhas do arquivo viram uma lista (`linhas`, `linha_de_dados`) percorrida por um laço |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#indicadores` | 33,83 | 7,30 | 25,02 | 6,08 | Indicadores viram listas de dados (`indicadores_de_movimento`, `indicadores_de_conferencia`) escritas por `escrever_linhas` |
+| Tarsila | `Extratos::Relatorio#paginas_visiveis` | 31,48 | 7,62 | 19,10 | 6,63 | *Extract method*: `paginas_candidatas`; predicado `salto_entre?` |
+| Tarsila | `Extratos::Pdf#resumo` | 30,58 | 7,30 | 22,02 | 6,08 | Linhas do resumo viram listas de dados (`linhas_de_valores`, `linhas_de_quantidades`); título pela `ComposicaoPdf#secao` |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#cabecalho` | 29,70 | 8,60 | 22,02 | 7,07 | Linhas do cabeçalho viram listas de dados (`linhas_de_filtros`, `linhas_de_emissao`) |
+| Tarsila | `Extratos::Pdf#cabecalho` | 28,52 | 8,60 | 22,09 | 7,07 | Linhas do cabeçalho viram listas de dados (`linhas_do_estudante`, `linhas_de_filtros`) |
+| Tarsila | `Relatorios::OperacaoGlobal#initialize` | 28,47 | 13,36 | 23,02 | 13,08 | *Extract method*: `escolher_unidade` |
+| Tarsila | `Relatorios::AcessosOperacao#grupos` | 27,87 | 8,03 | 17,61 | 6,56 | *Extract method*: `montar_grupo`, `subtotais_por_catraca` e `somar_valores` |
+| Tarsila | `Relatorios::AcessosOperacao#consulta` | 26,67 | 5,68 | 19,34 | 5,20 | *Extract method*: `registros_do_periodo`, `intervalo_do_periodo` e `filtro_de_local`; associações em constante |
+| Tarsila | `Extratos::Relatorio#lancamento_de_refeicao` | 26,17 | 12,64 | 20,32 | 10,39 | *Extract method*: `local_da_refeicao` |
+| Tarsila | `Extratos::Pdf#tabela` | 25,88 | 7,04 | 22,83 | 6,78 | *Extract method* `linha_da_tabela`; desenho movido para `ComposicaoPdf#desenhar_tabela` (*extract module*) |
+| Tarsila | `Relatorios::AcessosOperacaoPdf#tabela` | 25,52 | 5,78 | 23,11 | 6,48 | *Extract method* `linha_da_tabela`; desenho movido para `ComposicaoPdf#desenhar_tabela` (*extract module*) |
+| Tarsila | `Extratos::Relatorio#initialize` | 25,38 | 5,49 | 21,68 | 6,40 | *Extract method*: `definir_filtros`, `valor_permitido` e `id_de_catraca_disponivel` |
+| Tarsila | `Relatorios::AcessosOperacao#montar_acesso` | 24,83 | 17,25 | 19,47 | 13,08 | *Extract method*: `local_do_acesso` e `nome_da_refeicao` |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#consolidacao` | 24,05 | 15,17 | 18,28 | 12,41 | *Extract method* `linha_de_restaurante`; título da seção passa a ser escrito por `tabela` |
+| Tarsila | `Relatorios::OperacaoGlobal#distribuicao_por_refeicao` | 23,77 | 7,87 | 18,60 | 7,48 | Consulta repetida extraída para `totais_por` (reusada em `linhas`); *extract method* `montar_turno` |
+| Tarsila | `ExportacaoRelatorio#validar_conclusao` | 22,92 | 7,66 | 17,72 | 6,78 | Uma validação por regra, com `return` antecipado: `validar_conclusao` (laço sobre `CAMPOS_DA_CONCLUSAO`) e `validar_emissao_sem_conclusao` |
+| Tarsila | `ExportacoesExtratoController#create` | 22,61 | 16,12 | 18,22 | 13,15 | Resposta (arquivo ou redirecionamento) movida para o concern `EntregaDeExportacao#entregar_exportacao` |
+| Tarsila | `Relatorios::OperacaoGlobal#horarios_das_refeicoes` | 22,24 | 11,39 | 16,03 | 7,87 | *Extract method*: `faixa_de_horario` |
+| Tarsila | `Extratos::PlanilhaCsv#render` | 21,88 | 10,87 | 13,19 | 7,35 | *Extract method*: `linha` |
+| Tarsila | `Relatorios::OperacaoGlobal#acessos` | 21,55 | 7,07 | 15,33 | 5,39 | *Extract method*: `acessos_do_dia` e `servicos_do_turno` |
+| Tarsila | `Relatorios::ExportarAcessosOperacao#call` | 20,88 | 11,78 | 15,65 | 8,77 | *Extract method*: `registrar_pedido` e `falhar` |
+| Tarsila | `Relatorios::AcessosOperacaoPdf#render` | 20,63 | 6,38 | 15,07 | 6,08 | *Extract method*: `corpo` e `numerar_paginas`; abertura do documento em `ComposicaoPdf#novo_documento` |
+| Tarsila | `Relatorios::OperacaoGlobal#linhas` | 20,33 | 6,45 | 16,40 | 6,16 | Consulta extraída para `totais_por`; *extract method* `montar_linha` |
+| Tarsila | `Extratos::Relatorio#corresponde?` | 20,23 | 4,08 | 14,90 | 3,74 | Um predicado por filtro: `no_periodo?`, `do_tipo?` e `da_catraca?` |
+| Tarsila | `Admin::RelatoriosGlobaisController#exportar` | 20,03 | 13,55 | 16,25 | 11,18 | Resposta movida para o concern `EntregaDeExportacao#entregar_exportacao` |
+| Tarsila | `Relatorios::OperacaoGlobal#liquidacoes` | 18,94 | 6,82 | 13,15 | 6,71 | *Extract method*: `valores_liquidados` e `montar_liquidacao` |
+| Tarsila | `Relatorios::ExportarAcessosOperacao#concluir` | 17,34 | 13,48 | 14,32 | 11,40 | *Extract method*: `dados_da_conclusao` |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#liquidacao` | 16,77 | 14,47 | 13,38 | 12,41 | Título da seção passa a ser escrito por `tabela` |
+| Tarsila | `Relatorios::OperacaoGlobalPdf#tabela` | 15,00 | 4,50 | 16,67 | 6,40 | Desenho movido para `ComposicaoPdf#desenhar_tabela` (*extract module*) |
+| Tarsila | `Extratos::Exportar#concluir` | 16,43 | 9,96 | 13,60 | 8,94 | *Extract method*: `dados_da_conclusao` |
+| Tarsila | `Extratos::Relatorio#refeicoes_por_tipo` | 16,32 | 10,40 | 10,95 | 5,39 | Ordem das refeições em constante (`ORDEM_DAS_REFEICOES`) e `Hash#slice` no lugar do laço |
+| Tarsila | `Admin::AcessosOperacaoController#exportar` | 16,16 | 9,81 | 13,30 | 8,25 | Resposta movida para o concern `EntregaDeExportacao#entregar_exportacao` |
+| Tarsila | `Relatorios::ExportarOperacaoGlobal#call` | 15,01 | 7,45 | 11,58 | 5,74 | *Extract method*: `registrar_pedido` e `falhar` |
+| Tarsila | `Extratos::Exportar#call` | 15,01 | 7,45 | 11,58 | 5,74 | *Extract method*: `registrar_pedido` e `falhar` |
 
 #### Cobertura (SimpleCov)
 
@@ -641,20 +643,20 @@ Os resultados do Daniel foram medidos localmente a partir da `sprint-3` (`5ad39c
 | Luis | `app/models/pagamento.rb` | 100,00% | 100,00% |
 | Luis | `app/models/recarga.rb` | 100,00% | 100,00% |
 | Luis | `app/models/tarifa_refeicao.rb` | 95,65% | 100,00% |
-| Weldo | `app/controllers/application_controller.rb` | 100,00% | |
-| Weldo | `app/controllers/cadastros_controller.rb` | 100,00% | |
-| Weldo | `app/controllers/concerns/autenticacao_funcionario.rb` | 100,00% | |
-| Weldo | `app/controllers/controle/base_controller.rb` | 100,00% | |
-| Weldo | `app/controllers/controle/historico_controller.rb` | 100,00% | |
-| Weldo | `app/controllers/controle/painel_controller.rb` | 100,00% | |
-| Weldo | `app/controllers/controle/sessoes_controller.rb` | 100,00% | |
-| Weldo | `app/controllers/paginas_controller.rb` | 100,00% | |
-| Weldo | `app/models/application_record.rb` | 100,00% | |
-| Weldo | `app/models/estudante.rb` | 100,00% | |
-| Weldo | `app/models/papel.rb` | 100,00% | |
-| Weldo | `app/models/sessao_autenticacao.rb` | 100,00% | |
-| Weldo | `app/models/usuario.rb` | 100,00% | |
-| Weldo | `app/models/usuario_papel.rb` | 100,00% | |
+| Weldo | `app/controllers/application_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/cadastros_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/concerns/autenticacao_funcionario.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/controle/base_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/controle/historico_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/controle/painel_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/controle/sessoes_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/controllers/paginas_controller.rb` | 100,00% | 100,00% |
+| Weldo | `app/models/application_record.rb` | 100,00% | 100,00% |
+| Weldo | `app/models/estudante.rb` | 100,00% | 100,00% |
+| Weldo | `app/models/papel.rb` | 100,00% | 100,00% |
+| Weldo | `app/models/sessao_autenticacao.rb` | 100,00% | 100,00% |
+| Weldo | `app/models/usuario.rb` | 100,00% | 100,00% |
+| Weldo | `app/models/usuario_papel.rb` | 100,00% | 100,00% |
 | Daniel | `app/controllers/controle/pontos_acesso_controller.rb` | 100,00% | 100,00% |
 | Daniel | `app/controllers/controle/terminal_controller.rb` | 83,33% | 100,00% |
 | Daniel | `app/models/configuracao_ponto_acesso.rb` | 100,00% | 100,00% |
@@ -674,11 +676,12 @@ Os resultados do Daniel foram medidos localmente a partir da `sprint-3` (`5ad39c
 | Leonardo | `app/models/servico_refeicao.rb` | 100,00% | 100,00% |
 | Leonardo | `app/models/tipo_refeicao.rb` | 100,00% | 100,00% |
 | Leonardo | `app/models/unidade_gestora.rb` | 100,00% | 100,00% |
-| Tarsila | `app/controllers/admin/acessos_operacao_controller.rb` | 100,00% | |
-| Tarsila | `app/controllers/admin/relatorios_base_controller.rb` | 100,00% | |
-| Tarsila | `app/controllers/admin/relatorios_globais_controller.rb` | 100,00% | |
-| Tarsila | `app/controllers/exportacoes_extrato_controller.rb` | 100,00% | |
-| Tarsila | `app/models/exportacao_relatorio.rb` | 100,00% | |
+| Tarsila | `app/controllers/admin/acessos_operacao_controller.rb` | 100,00% | 100,00% |
+| Tarsila | `app/controllers/admin/relatorios_base_controller.rb` | 100,00% | 100,00% |
+| Tarsila | `app/controllers/admin/relatorios_globais_controller.rb` | 100,00% | 100,00% |
+| Tarsila | `app/controllers/exportacoes_extrato_controller.rb` | 100,00% | 100,00% |
+| Tarsila | `app/models/exportacao_relatorio.rb` | 100,00% | 100,00% |
+
 
 #### Resumo do projeto
 
@@ -752,7 +755,8 @@ Cada integrante registra aqui, na etapa 6, se usou IA no seu escopo, no mesmo fo
 | Integrante | Ferramenta e modelo | Uso | Revisão |
 |---|---|---|---|
 | Luis Eduardo Curi Serra | Claude Code (Claude Opus 5.5) | Ferramentas da T0 (configuração e tarefas `qualidade:*`, com specs); medição de antes (T1) e de depois do escopo; refatoração da F02, da F03 e do login do portal; testes RSpec de happy path e sad path; comentários RDoc de todo o escopo; padrão de RDoc e de refatoração da seção 5; texto das issues do Luis (criadas por ele no GitHub) | Verificação automática a cada passo: RSpec (547 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop e RDoc a 100% no escopo. O código PIX e o SVG do QR Code foram comparados byte a byte antes e depois da refatoração. Revisão do código e dos textos pelo Luis antes do push e dos PRs |
-| Weldo Gonçalves da Silva Junior | | | |
+| Weldo Gonçalves da Silva Junior | Claude Code (Claude Opus 5.5) | Medição de antes e depois do escopo (F01, F04, F07 e base de identidade); refatoração dos 6 métodos com nota ≥ 15; comentários RDoc de todo o escopo (21 arquivos, 100% documentado); testes RSpec de happy path e sad path (specs novos de `ControleHelper`, `IconesHelper` e da página inicial; banco rejeitando o cadastro; papel inexistente; ponto de acesso e encerramento da sessão; logout sem sessão; escolha de restaurante no painel) | Verificação automática a cada passo: RSpec (593 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop e RDoc a 100% no escopo, nenhum método do escopo com nota ≥ 15. Revisão do código e dos textos pelo Weldo antes do push e do PR |
 | Daniel Dezan Baby | Codex (GPT-6) | Refatoração de F05/F06; 59 exemplos RSpec de sucesso, falha e rollback; RDoc dos sete arquivos do escopo; medições de complexidade e cobertura; consolidação parcial da wiki, atualização da Home e registro das issues | Verificação automatizada: 606 exemplos RSpec, 163 cenários Cucumber, RuboCop sem ocorrências; 100% de cobertura e RDoc no escopo, Flog e ABC < 18; `.feature` existentes preservados. Daniel confirmou sua revisão humana, aprovou o resultado e autorizou a finalização do seu escopo em 23/11/2026 |
 | Leonardo Tome Sampaio | Claude Code (Claude Opus 5.5) | Refatoração de F08 e F10; 16 exemplos RSpec de happy path e sad path; comentários RDoc de todo o escopo; medição de antes e depois do escopo; teste visual das telas de F08 e F10 no navegador (agent-browser) | Verificação automática: RSpec (622 exemplos), Cucumber (163 cenários, `.feature` sem alteração), RuboCop sem ocorrências, RDoc a 100% no escopo e todos os métodos com Flog e ABC < 18. Revisão do código e dos textos pelo Leonardo antes do push e do PR |
-| Tarsila Marques de Oliveira Alves | | | |
+| Tarsila Marques de Oliveira Alves | Claude (Claude Fable 5.2) | Medição do escopo com `qualidade:metodos`; refatoração dos 38 métodos de F09, F11 e F12; specs de sad path das exportações e specs dos módulos novos; comentários RDoc de todo o escopo; texto das issues (criadas por ela no GitHub) | Saída dos PDFs e CSVs comparada byte a byte antes e depois da refatoração; RSpec (566 exemplos), Cucumber (163 cenários, `.feature` inalterados), RuboCop sem ocorrências e `qualidade:rdoc` em 100%; código lido e conferido pela responsável antes do PR |
+

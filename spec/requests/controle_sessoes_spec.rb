@@ -30,6 +30,21 @@ RSpec.describe "Login de funcionário (F04)", type: :request do
       expect(response.body).to include("Escolha do restaurante e da catraca")
     end
 
+    it "encerra a sessão anterior ao entrar de novo" do
+      login_controle(funcionario)
+      anterior = SessaoAutenticacao.last
+
+      login_controle(funcionario)
+      expect(anterior.reload.encerrada_em).to be_present
+      expect(SessaoAutenticacao.last).to be_ativa
+    end
+
+    it "indica os dois campos quando ambos estão em branco" do
+      post controle_login_path, params: { identificacao: " ", senha: "" }
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Identificação é obrigatória", "Senha é obrigatória")
+    end
+
     it "permite administrador na aplicação de controle" do
       admin = create(:administrador)
       login_controle(admin)
@@ -89,6 +104,13 @@ RSpec.describe "Login de funcionário (F04)", type: :request do
 
       get controle_root_path
       expect(response).to redirect_to(controle_login_path)
+    end
+
+    it "volta ao login mesmo sem sessão aberta" do
+      expect { delete controle_logout_path }.not_to change(SessaoAutenticacao, :count)
+      expect(response).to redirect_to(controle_login_path)
+      follow_redirect!
+      expect(response.body).to include("Sessão encerrada")
     end
   end
 end
