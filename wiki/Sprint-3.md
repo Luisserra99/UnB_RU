@@ -745,7 +745,7 @@ Verificação do checkout local da `sprint-3` (base `5ad39cb` mais as alteraçõ
 
 ### 6.4 Verificação consolidada do PO — 25/11/2026
 
-O `.txt` do Weldo está em [`docs/sprint-3/entrega.txt`](../docs/sprint-3/entrega.txt), integrado pelo [PR #70](https://github.com/Luisserra99/UnB_RU/pull/70). Conferidos o repositório, a branch de entrega, o link da wiki, os cinco nomes e as matrículas. As integrações de Luis (piloto), Weldo ([#52](https://github.com/Luisserra99/UnB_RU/pull/52)), Daniel ([#68](https://github.com/Luisserra99/UnB_RU/pull/68)), Tarsila ([#69](https://github.com/Luisserra99/UnB_RU/pull/69) e [#73](https://github.com/Luisserra99/UnB_RU/pull/73)) e Leonardo ([#72](https://github.com/Luisserra99/UnB_RU/pull/72)) constam da `sprint-3` até `e6c17a4`.
+O `.txt` do Weldo está em [`docs/sprint-3/entrega.txt`](../docs/sprint-3/entrega.txt), integrado pelo [PR #70](https://github.com/Luisserra99/UnB_RU/pull/70). Conferidos o repositório, a branch de entrega, os cinco nomes e as matrículas; o link da wiki segue à parte, como pede o enunciado. As integrações de Luis (piloto), Weldo ([#52](https://github.com/Luisserra99/UnB_RU/pull/52)), Daniel ([#68](https://github.com/Luisserra99/UnB_RU/pull/68)), Tarsila ([#69](https://github.com/Luisserra99/UnB_RU/pull/69) e [#73](https://github.com/Luisserra99/UnB_RU/pull/73)) e Leonardo ([#72](https://github.com/Luisserra99/UnB_RU/pull/72)) constam da `sprint-3` até `e6c17a4`.
 
 Validação local em macOS, Ruby 3.4.10, com as versões do `Gemfile.lock`. O único ajuste final em `app/` é o comentário da classe-base `ApplicationJob`, que completa a documentação das classes e não altera comportamento.
 

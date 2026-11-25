@@ -2,7 +2,6 @@ UnB RU - Grupo 02 - Sprint 3 (Refatoração e documentação)
 
 Repositório: https://github.com/Luisserra99/UnB_RU
 Branch de entrega: sprint-3
-Wiki da Sprint 3: https://github.com/Luisserra99/UnB_RU/wiki/Sprint-3
 
 Integrantes:
 Nome                                  Matrícula

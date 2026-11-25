@@ -19,7 +19,7 @@ O PR final **`Grupo 02 - Sprint 3`**, de **`Luisserra99:sprint-3`** para **`neat
 
 ## Conferência do arquivo do Scrum Master
 
-Localizado em [entrega.txt](entrega.txt). Conferidos o repositório do grupo, a branch `sprint-3`, o link da wiki e os cinco nomes/matrículas, sem alterar o arquivo do Weldo:
+Localizado em [entrega.txt](entrega.txt). Conferidos o repositório do grupo, a branch `sprint-3` e os cinco nomes/matrículas, sem alterar o arquivo do Weldo. O link da wiki segue à parte, como pede o enunciado:
 
 | Integrante | Matrícula |
 |---|---|
